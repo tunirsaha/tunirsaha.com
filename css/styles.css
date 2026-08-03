@@ -1,0 +1,589 @@
+/* ═══════════════════════════════════════════════════════════
+   TUNIR SAHA — BRUTALIST PORTFOLIO  (mobile-first, zero deps)
+   flat color blocks · hard edges · oversized type · raw grid
+   base = mobile  →  @768  →  @1100
+   ═══════════════════════════════════════════════════════════ */
+
+:root{
+  --paper:#edeae2;
+  --paper-2:#e4e0d5;
+  --ink:#100f0d;
+  --ink-2:#3a3833;
+  --accent:#2436ff;
+  --accent-ink:#edeae2;
+  --accent-2:#ff4d00;  /* signal orange — live markers, status heat only */
+  --accent-2-ink:#b83600;  /* darkened orange — for orange TEXT on paper (≥4.5:1) */
+
+  /* hairlines on the BASE (paper) surface — flip per theme */
+  --line:rgba(16,15,13,.22);
+  --line-soft:rgba(16,15,13,.12);
+
+  /* tokens on the INVERTED (alt) surface — flip per theme */
+  --line-alt:rgba(237,234,226,.25);
+  --line-alt-2:rgba(237,234,226,.35);
+  --line-alt-soft:rgba(237,234,226,.18);
+  --dim-alt:#9a978f;
+  --soft-alt:#c7c4bb;
+
+  --disp:"Archivo Black", system-ui, sans-serif;
+  --sans:"Space Grotesk", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+
+  --bd-hair:1px;   /* internal cell dividers */
+  --bd:2px;        /* the default rule — blocks, cards, controls */
+  --bd-heavy:4px;  /* state rules: the hovered capability's top edge */
+
+  /* offset-shadow scale. zero blur throughout (Hard-Shadow Rule). depth tracks
+     the element's weight: controls sit shallow, cards mid, the lab panel deep.
+     each rest value has one hover step, so the lift is a token not a guess. */
+  --sh-1:3px;  --sh-1-up:5px;   /* buttons, links, the theme toggle */
+  --sh-2:5px;  --sh-2-up:8px;   /* cards: .exp, .sig, .rsm__btn */
+  --sh-3:10px;                  /* the open lab panel — static, no hover */
+  --pad:clamp(1.1rem, 5vw, 4.5rem);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --accent-on-ink:#8899ff;   /* lighter blue — readable on dark ink bg (light theme) */
+
+  /* a11y floor — no text below these */
+  --fs-xs:13px;   /* was 9-10px */
+  --fs-sm:14px;   /* was 11-12px */
+  --fs-md:15px;   /* was 13px   */
+}
+
+/* ── DARK THEME ── base = dark, alt blocks become light islands ── */
+:root[data-theme="dark"]{
+  --paper:#15151c;     /* charcoal, slight blue */
+  --paper-2:#1e1e27;
+  --ink:#e9e7df;       /* warm off-white text */
+  --ink-2:#a6a39a;
+  --accent:#7c88ff;    /* lifted ultramarine — ≥4.5:1 on charcoal for text */
+  --accent-ink:#0c0c12;
+  --accent-2:#ff6a2b;
+  --accent-2-ink:#ff6a2b;  /* on dark surfaces bright orange already clears 4.5:1 */
+
+  --line:rgba(233,231,223,.22);
+  --line-soft:rgba(233,231,223,.12);
+
+  --line-alt:rgba(21,21,28,.20);
+  --line-alt-2:rgba(21,21,28,.30);
+  --line-alt-soft:rgba(21,21,28,.14);
+  --dim-alt:#5a574f;   /* 5.4:1 on #e9e7df — was #6e6b62 at 4.30:1, under the AA floor */
+  --soft-alt:#46443d;
+  --accent-on-ink:#1a28cc;   /* darker blue — readable on cream ink bg (dark theme) */
+}
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; background:var(--paper); transition:background .4s var(--ease); scroll-behavior:smooth; }
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-weight:400; line-height:1.4;
+  overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  transition:background .4s var(--ease), color .4s var(--ease);
+}
+body.is-loading{ overflow:hidden; height:100svh; }
+body.menu-open{ overflow:hidden; }
+[id]{ scroll-margin-top:72px; }
+
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; border:none; background:none; color:inherit; cursor:pointer; }
+img,svg{ display:block; max-width:100%; }
+ul,ol{ list-style:none; }
+.mono{ font-family:var(--mono); letter-spacing:.02em; }
+s{ text-decoration-line:line-through; text-decoration-color:var(--accent-2); text-decoration-thickness:2px; color:var(--ink-2); }
+::selection{ background:var(--accent); color:var(--accent-ink); }
+.dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent-2); }
+
+/* keyboard users get a loud, honest outline.
+   two-tone on purpose: signal orange alone is 2.0–2.8:1 against paper, paper-2
+   and the ultramarine CONTACT block — it fails 1.4.11 on every surface here and
+   is invisible (1.08:1) on dark-theme CONTACT. the second ring is the surface's
+   own opposite, so one of the two always clears 3:1. zero blur, so the
+   hard-shadow rule still holds. */
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+  outline:3px solid var(--accent-2); outline-offset:3px;
+  box-shadow:0 0 0 9px var(--ink);
+}
+/* ink-backed panels — the backing ring flips to paper */
+.block--alt a:focus-visible, .block--alt button:focus-visible,
+.exp__panel a:focus-visible, .exp__panel button:focus-visible,
+.exp.active:focus-visible{ box-shadow:0 0 0 9px var(--paper); }
+/* ultramarine surfaces */
+.contact a:focus-visible, .mmenu a:focus-visible{ box-shadow:0 0 0 9px var(--accent-ink); }
+/* focusables that already carry a hard-offset shadow keep it and gain the ring */
+.themer:focus-visible, .topbar__cta:focus-visible{
+  box-shadow:var(--sh-1) var(--sh-1) 0 var(--ink), 0 0 0 9px var(--ink);
+}
+.exp:focus-visible{ box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink), 0 0 0 9px var(--ink); }
+.contact__link:focus-visible{ box-shadow:var(--sh-1) var(--sh-1) 0 var(--accent-ink), 0 0 0 9px var(--accent-ink); }
+
+/* ░░ REVEAL SYSTEM (observer-driven, fails safe without .js) ░░ */
+/* motion is stepped, not eased. an exponential ease-out is the house style of
+   every other site; a brutalist surface should look like it is being ratcheted
+   into position by a machine. steps() quantises the move so you SEE the frames.
+   the three reveal kinds move on different axes on purpose — a single uniform
+   entrance applied to every section is the tell, not the motion itself. */
+.js [data-reveal]{ opacity:0; transform:translateY(12px); transition:opacity .3s steps(3), transform .3s steps(3); }
+.js [data-reveal].is-in{ opacity:1; transform:none; }
+/* lists ratchet in from the left — different axis to the block reveals above */
+.js [data-stagger] > *{ opacity:0; transform:translateX(-16px); transition:opacity .28s steps(4), transform .28s steps(4); }
+.js [data-stagger].is-in > *{ opacity:1; transform:none; }
+.js [data-stagger].is-in > *:nth-child(1){ transition-delay:.00s }
+.js [data-stagger].is-in > *:nth-child(2){ transition-delay:.07s }
+.js [data-stagger].is-in > *:nth-child(3){ transition-delay:.14s }
+.js [data-stagger].is-in > *:nth-child(4){ transition-delay:.21s }
+.js [data-stagger].is-in > *:nth-child(5){ transition-delay:.28s }
+.js [data-stagger].is-in > *:nth-child(6){ transition-delay:.35s }
+
+/* name intro — spans rise once body.booted lands */
+.js [data-name]{ display:block; overflow:hidden; }
+.js [data-name] span{ display:inline-block; transform:translateY(105%); transition:transform .9s steps(7); }
+.booted [data-name] span{ transform:translateY(0); }
+.booted .hero__line--2 span{ transition-delay:.12s; }
+
+/* ░░ LOADER / BOOT SEQUENCE ░░ */
+.loader{ position:fixed; inset:0; z-index:9000; background:var(--paper); color:var(--ink); display:flex; flex-direction:column; justify-content:flex-end; padding:var(--pad); gap:1rem; transition:transform .8s var(--ease); }
+.loader.done{ transform:translateY(-101%); }
+.loader__boot{ display:flex; flex-direction:column; gap:.3rem; font-size:var(--fs-xs); letter-spacing:.05em; text-transform:uppercase; color:var(--ink-2); min-height:4.6em; }
+.loader__row{ display:flex; justify-content:space-between; align-items:flex-end; font-family:var(--disp); font-size:clamp(2rem,11vw,5rem); line-height:.9; }
+.loader__pct{ font-family:var(--mono); font-size:1rem; }
+.loader__bar{ height:var(--bd); background:var(--line); }
+.loader__bar span{ display:block; height:100%; width:0%; background:var(--accent); }
+
+/* ░░ PROGRESS ░░ */
+.progress{ position:fixed; top:0; left:0; height:3px; width:0%; background:var(--accent); z-index:200; }
+
+/* ░░ THEME TOGGLE (inside topbar) ░░ */
+.topbar__right{ display:flex; align-items:center; gap:.7rem; }
+.themer{
+  position:relative; width:44px; height:44px; flex:0 0 auto; display:grid; place-items:center;
+  color:var(--ink); background:var(--paper); border:var(--bd) solid var(--ink);
+  box-shadow:var(--sh-1) var(--sh-1) 0 var(--ink);
+  transition:background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease), border-color .3s, box-shadow .3s var(--ease);
+}
+.themer:hover{ background:var(--accent); color:var(--accent-ink); border-color:var(--ink); transform:rotate(-8deg); }
+.themer svg{ position:absolute; width:22px; height:22px; transition:opacity .3s var(--ease), transform .4s var(--ease); }
+.themer__sun{ opacity:0; transform:scale(.4) rotate(-90deg); }
+.themer__moon{ opacity:1; transform:scale(1) rotate(0); }
+:root[data-theme="dark"] .themer__sun{ opacity:1; transform:scale(1) rotate(0); }
+:root[data-theme="dark"] .themer__moon{ opacity:0; transform:scale(.4) rotate(90deg); }
+
+/* ░░ TOPBAR ░░ */
+.topbar{ position:fixed; top:0; left:0; width:100%; z-index:120; display:flex; align-items:center; justify-content:space-between; padding:.85rem var(--pad); border-bottom:var(--bd) solid var(--ink); background:var(--paper); transition:transform .5s var(--ease), background .4s var(--ease), border-color .4s; }
+.js .topbar{ transform:translateY(-101%); }
+.booted .topbar{ transform:translateY(0); }
+.topbar.hide, .booted .topbar.hide{ transform:translateY(-101%); }
+.topbar__id{ font-family:var(--disp); font-size:1.05rem; letter-spacing:-.01em; display:flex; align-items:baseline; gap:.3rem; }
+.topbar__sup{ font-size:var(--fs-xs); color:var(--accent); }
+.topbar__nav{ display:none; gap:1.6rem; }
+.topbar__nav a{ font-family:var(--mono); font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.05em; }
+.topbar__nav a span{ color:var(--accent); }
+.topbar__nav a:hover{ color:var(--accent); }
+.topbar__cta{ display:none; align-items:center; gap:.5rem; font-family:var(--mono); font-size:var(--fs-sm); font-weight:600; text-transform:uppercase; padding:.5rem .8rem; border:var(--bd) solid var(--ink); box-shadow:var(--sh-1) var(--sh-1) 0 var(--ink); transition:background .25s var(--ease), color .25s, transform .25s var(--ease), box-shadow .25s var(--ease); }
+.topbar__cta:hover{ background:var(--accent); color:var(--accent-ink); border-color:var(--ink); transform:translate(-1px,-1px); box-shadow:var(--sh-1-up) var(--sh-1-up) 0 var(--ink); }
+.topbar__cta:hover .dot{ background:var(--accent-ink); }
+.topbar__burger{ display:flex; flex-direction:column; justify-content:center; gap:5px; width:44px; min-height:44px; padding:4px; }
+.topbar__burger span{ height:var(--bd); background:var(--ink); transition:transform .3s var(--ease), opacity .2s; }
+body.menu-open .topbar__burger span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+body.menu-open .topbar__burger span:nth-child(2){ opacity:0; }
+body.menu-open .topbar__burger span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+/* ░░ MOBILE MENU ░░ */
+.mmenu{ position:fixed; inset:0; z-index:110; background:var(--accent); color:var(--accent-ink); padding:5.5rem var(--pad) 2rem; display:flex; flex-direction:column; justify-content:center; transform:translateY(-101%); transition:transform .5s var(--ease); overflow-y:auto; }
+body.menu-open .mmenu{ transform:translateY(0); }
+.mmenu a{ font-family:var(--disp); font-size:clamp(1.7rem,10vw,3rem); line-height:1.05; display:flex; align-items:baseline; gap:.7rem; border-bottom:var(--bd) solid color-mix(in srgb, var(--accent-ink) 35%, transparent); padding:.45rem 0; }
+.mmenu a span{ font-family:var(--mono); font-size:.95rem; }
+.mmenu__foot{ display:flex; flex-direction:column; gap:.4rem; margin-top:1.6rem; font-size:var(--fs-sm); }
+
+/* ░░ HERO ░░ */
+.hero{ position:relative; z-index:1; min-height:100svh; display:flex; flex-direction:column; padding:6rem var(--pad) 2rem; border-bottom:var(--bd) solid var(--ink); }
+.hero__top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:.4rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.05em; padding-bottom:1.2rem; }
+.hero__avail{ display:inline-flex; align-items:center; gap:.5rem; }
+.hero__avail .dot{ animation:blink 1.6s infinite; }
+@keyframes blink{ 50%{ opacity:.25; } }
+.hero__mid{ margin:auto 0; padding:1.5rem 0; }
+.hero__name{ font-family:var(--disp); font-weight:400; line-height:.86; letter-spacing:-.03em; text-transform:uppercase; font-size:clamp(3rem, 14vw, 8rem); }
+.hero__line{ display:block; overflow:hidden; }
+.hero__line span{ display:inline-block; }
+.hero__line--2{ color:var(--accent); }
+.hero__tag{ font-family:var(--disp); font-weight:400; font-size:clamp(1rem,4.5vw,1.7rem); text-transform:uppercase; letter-spacing:-.01em; margin-top:1.1rem; }
+.hero__intro{ font-size:clamp(1rem,3.4vw,1.15rem); color:var(--ink-2); max-width:54ch; line-height:1.55; margin-top:1rem; }
+.hero__sys{ display:flex; flex-wrap:wrap; gap:.6rem 1.8rem; margin-top:1.6rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.06em; color:var(--ink-2); }
+.hero__sys b{ font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums; }
+.hero__sys .sys-on{ color:var(--accent-2-ink); }
+.hero__sys a{ text-decoration:underline; text-underline-offset:3px; }
+.hero__sys a:hover{ color:var(--accent); }
+.hero__facts{ display:grid; grid-template-columns:repeat(2,1fr); gap:.6rem 1rem; padding:1.4rem 0; border-top:var(--bd) solid var(--ink); font-size:var(--fs-sm); text-transform:uppercase; }
+.hero__facts li{ display:flex; gap:.5rem; align-items:baseline; }
+.hero__facts b{ font-family:var(--disp); font-size:1.5rem; color:var(--accent); font-variant-numeric:tabular-nums; }
+.hero__scroll{ display:inline-flex; align-items:center; gap:.7rem; font-size:var(--fs-sm); font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding-top:1rem; }
+
+/* ░░ TICKER ░░ */
+.ticker{ position:relative; z-index:1; background:var(--paper-2); color:var(--ink); overflow-x:auto; overflow-y:hidden; padding:.7rem 0; border-top:var(--bd) solid var(--ink); border-bottom:var(--bd) solid var(--ink); cursor:grab; scrollbar-width:none; -ms-overflow-style:none; -webkit-overflow-scrolling:touch; }
+.ticker::-webkit-scrollbar{ display:none; }
+.ticker:active{ cursor:grabbing; }
+.ticker__track{ display:flex; gap:1.4rem; align-items:center; width:max-content; white-space:nowrap; font-family:var(--disp); font-size:clamp(1.3rem,5vw,2.4rem); text-transform:uppercase; will-change:transform; }
+.ticker__track > *{ flex:0 0 auto; }
+.ticker__track i{ font-style:normal; }
+
+/* ░░ BLOCK SHELL ░░ */
+.block{ position:relative; z-index:1; padding:clamp(3rem,9vw,7rem) var(--pad); border-bottom:var(--bd) solid var(--ink); }
+/* THE INVERSION RULE — alt panels flip to ink. in dark theme --ink IS the warm
+   off-white, so they become cream islands; same role, inverted, as designed.
+   this had been flattened to --paper-2: a 1.10:1 tint you cannot see, which
+   also remapped every *-alt token back to base-surface values and silently made
+   the whole ACCENT-ON-INK block at the bottom of this file a no-op. the :root
+   *-alt values are already authored for an ink surface — nothing to override. */
+.block--alt{
+  background-color:var(--ink); color:var(--paper);
+}
+/* grid, not flex: a flex row put the machine label beside a 13vw slab, and at
+   360px the label had nowhere to go. stacked below 768 it reads as a spec
+   stamp above the title, which is what it always was. */
+.block__head{ display:grid; grid-template-columns:minmax(0,1fr); gap:.9rem; margin-bottom:2.5rem; }
+.block__title{ font-family:var(--disp); font-weight:400; font-size:clamp(2.6rem,13vw,7rem); line-height:.86; text-transform:uppercase; letter-spacing:-.02em; }
+.block__title-2{ color:var(--accent); }
+/* single-word title set on one line — scaled down by its character count so it
+   still fills the same measure as the two-line titles instead of overflowing */
+.block__title--solo{ font-size:clamp(1.7rem,8.3vw,4.4rem); }
+/* stacked default: label first, reading left like the rest of the page */
+.block__meta{ order:-1; font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.06em; text-align:left; line-height:1.7; color:var(--ink-2); }
+.block__title{ min-width:0; overflow-wrap:break-word; }
+.block--alt .block__meta{ color:var(--dim-alt); }
+
+/* sub-headings inside blocks (Skill Distribution / How I Work / Build Log) */
+.tk__lbl{ display:block; font-family:var(--disp); font-weight:400; font-size:clamp(1.3rem,4.5vw,1.9rem); text-transform:uppercase; line-height:1; letter-spacing:-.01em; color:var(--accent); margin-bottom:1.2rem; }
+
+/* ░░ SYSTEM DIAGRAM — FIG.01 (ink bg) ░░ */
+.schem-wrap{ margin-bottom:clamp(2rem,5vw,3.5rem); overflow-x:auto; }
+.schem{ width:100%; min-width:620px; height:auto; }
+.schem rect{ fill:none; stroke:var(--ink); stroke-width:2; }
+.schem text{ fill:var(--ink); font-family:var(--mono); font-size:17px; text-anchor:middle; letter-spacing:.06em; }
+.schem .schem__sub{ fill:var(--soft-alt); font-size:12px; }
+.schem .schem__wire{ stroke:var(--line-alt-2); stroke-width:2; fill:none; }
+.schem .schem__ret{ stroke-dasharray:3 5; }
+.schem .schem__tick{ stroke:var(--line-alt-2); stroke-width:2; fill:none; }
+.schem .schem__brace{ stroke:var(--line-alt-2); stroke-width:2; fill:none; }
+.schem .schem__opt{ stroke-dasharray:7 5; }
+.schem rect.schem__tab{ fill:var(--accent); stroke:none; }
+.schem .schem__no{ fill:var(--accent); font-size:12px; letter-spacing:.14em; }
+.schem .schem__l{ text-anchor:end; }
+.schem .schem__r{ text-anchor:start; }
+.schem__cap{ display:block; margin-top:.8rem; font-size:var(--fs-sm); letter-spacing:.06em; text-transform:uppercase; color:var(--soft-alt); max-width:72ch; line-height:1.6; }
+
+/* ░░ WHAT I BUILD — capability cards (ink bg) ░░ */
+.caps{ display:grid; grid-template-columns:1fr; border-top:var(--bd-hair) solid var(--line-alt-2); }
+.cap{ padding:1.8rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); border-top:var(--bd-heavy) solid transparent; transition:padding-left .35s var(--ease), border-top-color .25s var(--ease); position:relative; }
+.cap:nth-child(3),
+.cap:last-child{ border-bottom:none; }
+.cap::before{ content:attr(data-pct); position:absolute; top:0.5rem; left:0.3rem; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); opacity:0; transition:opacity .25s var(--ease); text-transform:uppercase; }
+.cap__no{ font-size:var(--fs-sm); color:var(--accent); }
+.cap h3{ font-family:var(--disp); font-weight:400; font-size:clamp(2rem,9vw,3rem); text-transform:uppercase; line-height:1; margin:.4rem 0 .7rem; }
+.cap p{ color:var(--soft-alt); font-size:1rem; line-height:1.5; max-width:48ch; }
+.cap__tags{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.1rem; }
+.cap__tags li{ font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.04em; padding:.35rem .65rem; border:var(--bd-hair) solid var(--line-alt-2); transition:background .2s var(--ease), color .2s, border-color .2s; }
+@media (hover:hover){
+  .cap:hover{ padding-left:1rem; border-top-color:var(--accent); }
+  .cap:hover h3{ color:var(--accent); }
+  .cap:hover::before{ opacity:1; }
+  .cap__tags li:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+}
+
+/* ░░ WORK HISTORY — ACCORDION ░░ */
+.cv{ border-top:var(--bd) solid var(--ink); }
+.acc{ border-bottom:var(--bd) solid var(--ink); }
+.acc__hd{ width:100%; text-align:left; display:grid; grid-template-columns:1fr auto; grid-template-areas:"role ico" "yr ico" "co loc"; gap:.5rem 1rem; align-items:center; padding:1.4rem .2rem; transition:background .25s var(--ease), color .25s, padding-left .35s var(--ease); }
+.acc__yr{ grid-area:yr; font-size:var(--fs-md); color:var(--accent); }
+.acc__role{ grid-area:role; font-family:var(--disp); font-weight:400; font-size:clamp(1.5rem,6.5vw,2.6rem); text-transform:uppercase; line-height:1; letter-spacing:-.02em; }
+.acc__co{ grid-area:co; }
+.acc__co img{ height:27px; width:auto; max-width:100%; object-fit:contain; filter:brightness(0); opacity:.72; transition:filter .25s, opacity .25s; }
+:root[data-theme="dark"] .acc__co img{ filter:brightness(0) invert(1); opacity:.8; }
+.acc__loc{ grid-area:loc; font-size:var(--fs-sm); color:var(--ink-2); justify-self:end; align-self:end; }
+.acc__ico{ grid-area:ico; position:relative; width:22px; height:22px; flex:0 0 auto; justify-self:end; }
+.acc__ico::before,.acc__ico::after{ content:""; position:absolute; background:var(--accent); transition:transform .3s var(--ease), background .25s; }
+.acc__ico::before{ left:0; top:50%; width:100%; height:var(--bd); transform:translateY(-50%); }
+.acc__ico::after{ top:0; left:50%; width:var(--bd); height:100%; transform:translateX(-50%); }
+.acc.open .acc__ico::after{ transform:translateX(-50%) scaleY(0); }
+.acc__body{ overflow:hidden; height:0; transition:height .5s var(--ease); }
+.acc__body ul{ padding:.9rem .2rem 1.7rem; display:flex; flex-direction:column; gap:.85rem; }
+.acc__body li{ position:relative; padding-left:1.4rem; color:var(--ink-2); font-size:clamp(1rem,3.4vw,1.1rem); line-height:1.55; }
+.acc__body li::before{ content:"—"; position:absolute; left:0; color:var(--accent); }
+.acc__body b{ color:var(--ink); font-weight:600; }
+@media (hover:hover){
+  .acc__hd:hover{ background:var(--ink); color:var(--paper); padding-left:1.2rem; }
+  .acc__hd:hover .acc__loc{ color:var(--dim-alt); }
+  .acc__hd:hover .acc__co img{ filter:brightness(0) invert(1); opacity:1; }
+}
+.acc.open .acc__hd{ background:var(--ink); color:var(--paper); }
+.acc.open .acc__hd .acc__loc{ color:var(--dim-alt); }
+.acc.open .acc__hd .acc__co img{ filter:brightness(0) invert(1); opacity:1; }
+:root[data-theme="dark"] .acc.open .acc__hd .acc__co img,
+:root[data-theme="dark"] .acc__hd:hover .acc__co img{ filter:brightness(0); opacity:.85; }
+.acc.open .acc__ico::before,.acc.open .acc__ico::after{ background:var(--paper); }
+
+/* ░░ SKILL DISTRIBUTION — segmented bar, hard edges ░░ */
+
+/* ░░ TIMELINE (paper bg) ░░ */
+
+/* ░░ CREDENTIALS (ink bg) ░░ */
+.creds{ display:flex; flex-direction:column; gap:0; border-top:var(--bd-hair) solid var(--line-alt-2); }
+.cred{ padding:.85rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); }
+.cred:last-child{ border-bottom:none; }
+.cred__lbl{ display:block; font-family:var(--mono); font-size:var(--fs-sm); letter-spacing:.12em; color:var(--accent); margin-bottom:1rem; }
+.cred > .cred__item{ display:inline-flex; flex-direction:column; padding:0; border:none; margin:0 2.2rem 1rem 0; }
+.cred__item h4{ font-weight:600; font-size:1.08rem; line-height:1.25; }
+.cred__item p{ font-size:var(--fs-sm); color:var(--dim-alt); margin-top:.3rem; text-transform:uppercase; letter-spacing:.04em; }
+
+/* ░░ LIVE STATS — cards with hard shadows (ink bg) ░░ */
+.live{ display:grid; grid-template-columns:1fr; gap:1rem; }
+/* signal cards sit ON the inverted panel — they are cut-outs in it, not paper
+   tiles laid on top. transparent body, paper rule, accent-on-ink shadow. */
+.sig{ border:var(--bd) solid var(--paper); box-shadow:var(--sh-2) var(--sh-2) 0 var(--accent-on-ink); padding:1.5rem; display:flex; flex-direction:column; gap:1rem; background:transparent; }
+.sig__hd{ display:flex; justify-content:space-between; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.sig__src{ font-family:var(--mono); font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.08em; color:var(--accent); }
+.sig__live{ display:inline-flex; align-items:center; gap:.4rem; font-family:var(--mono); font-size:var(--fs-xs); text-transform:uppercase; color:var(--soft-alt); }
+.sig__live .dot{ width:6px; height:6px; animation:blink 1.4s infinite; }
+.sig__title{ font-family:var(--disp); font-weight:400; font-size:1.4rem; text-transform:uppercase; line-height:1; }
+.sig__link{ font-family:var(--mono); font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; margin-top:auto; text-decoration:underline; text-underline-offset:3px; }
+.sig__link:hover{ color:var(--accent); }
+.sig__err{ font-family:var(--mono); font-size:var(--fs-xs); color:var(--soft-alt); }
+
+/* github heatmap */
+.sig--gh{ grid-column:1 / -1; }
+.gh__grid{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,1fr); gap:4px; overflow-x:auto; padding-bottom:.3rem; }
+.gh__cell{ width:11px; height:11px; aspect-ratio:1; }
+/* the ramp follows the SURFACE, not the theme. telemetry lives in a .block--alt
+   panel, which is ink in light theme and cream in dark — so the ramp inverts
+   with the panel, not with :root. */
+:root{
+  --gh-0:rgba(16,15,13,.10);
+  --gh-1:#b9c0ff; --gh-2:#6f7eff; --gh-3:#3a4cff; --gh-4:#1c2ad0;
+}
+.block--alt{
+  --gh-0:rgba(233,231,223,.12);
+  --gh-1:#3a46b3; --gh-2:#4a5cff; --gh-3:#6f7eff; --gh-4:#9aa6ff;
+}
+:root[data-theme="dark"]{
+  --gh-0:rgba(233,231,223,.12);
+  --gh-1:#3a46b3; --gh-2:#4a5cff; --gh-3:#6f7eff; --gh-4:#9aa6ff;
+}
+:root[data-theme="dark"] .block--alt{
+  --gh-0:rgba(16,15,13,.10);
+  --gh-1:#b9c0ff; --gh-2:#6f7eff; --gh-3:#3a4cff; --gh-4:#1c2ad0;
+}
+.gh__cell[data-lvl="0"]{ background:var(--gh-0); }
+.gh__cell[data-lvl="1"]{ background:var(--gh-1); }
+.gh__cell[data-lvl="2"]{ background:var(--gh-2); }
+.gh__cell[data-lvl="3"]{ background:var(--gh-3); }
+.gh__cell[data-lvl="4"]{ background:var(--gh-4); }
+.gh__foot{ display:flex; justify-content:space-between; align-items:center; gap:.6rem; flex-wrap:wrap; font-family:var(--mono); font-size:var(--fs-xs); text-transform:uppercase; color:var(--soft-alt); }
+.gh__legend{ display:inline-flex; align-items:center; gap:3px; }
+.gh__legend i{ width:10px; height:10px; display:inline-block; }
+.gh__legend i[data-lvl="0"]{ background:var(--gh-0); }
+.gh__legend i[data-lvl="1"]{ background:var(--gh-1); }
+.gh__legend i[data-lvl="2"]{ background:var(--gh-2); }
+.gh__legend i[data-lvl="3"]{ background:var(--gh-3); }
+.gh__legend i[data-lvl="4"]{ background:var(--gh-4); }
+
+/* stat rows (leetcode + chess) */
+.stat-row{ display:flex; gap:1rem; flex-wrap:wrap; }
+.stat{ flex:1 1 70px; }
+.stat b{ display:block; font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); line-height:1; font-variant-numeric:tabular-nums; }
+.stat span{ font-family:var(--mono); font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.05em; color:var(--soft-alt); }
+.stat-row .stat:first-child b{ color:var(--accent-on-ink); }
+.stat--m b{ opacity:.72; } .stat--h b{ opacity:.48; }
+.skel{ color:transparent; background:linear-gradient(90deg, var(--line-alt-soft), var(--line-alt), var(--line-alt-soft)); background-size:200% 100%; animation:skel 1.2s infinite; }
+@keyframes skel{ to{ background-position:-200% 0; } }
+
+/* ░░ LAB — cards with hard shadows (paper bg) ░░ */
+.lab__note{ color:var(--ink-2); font-size:1rem; max-width:55ch; margin:-1rem 0 2rem; }
+.lab{ display:grid; grid-template-columns:1fr; gap:1rem; }
+.exp{ text-align:left; padding:1.4rem; border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); background:var(--paper); display:flex; flex-direction:column; gap:.6rem; min-height:150px; transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
+.exp__top{ display:flex; justify-content:space-between; gap:.6rem; font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.05em; }
+.exp__tag{ color:var(--accent); }
+.exp__st{ color:var(--ink-2); }
+.exp[data-status="LIVE"]:not(:hover) .exp__st{ color:var(--accent-2-ink); }
+.exp__name{ font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); text-transform:uppercase; line-height:1; margin-top:auto; }
+.exp__type{ font-size:var(--fs-xs); text-transform:uppercase; color:var(--ink-2); }
+@media (hover:hover){
+  .exp:hover{ background:var(--accent); color:var(--accent-ink); transform:translate(-2px,-2px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); }
+  .exp:hover .exp__tag,.exp:hover .exp__st,.exp:hover .exp__type{ color:var(--accent-ink); }
+}
+.exp.active{ background:var(--ink); color:var(--paper); }
+.exp.active .exp__tag{ color:var(--accent); } .exp.active .exp__st,.exp.active .exp__type{ color:var(--dim-alt); }
+.exp__panel{ position:relative; margin:1rem 10px 10px 0; padding:1.8rem; background:var(--ink); color:var(--paper); display:none; opacity:0; transform:translateY(12px); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent); transition:opacity .4s var(--ease), transform .4s var(--ease); }
+.exp__panel.open{ display:block; }
+.exp__panel.in{ opacity:1; transform:none; }
+.exp__panel ::selection{ background:var(--paper); color:var(--ink); }
+.exp__close{ position:absolute; top:1rem; right:1rem; font-size:var(--fs-xs); font-weight:600; color:var(--paper); }
+.exp__close:hover{ color:var(--accent); }
+.exp__panel-st{ font-size:var(--fs-xs); color:var(--accent); }
+.exp__panel h3{ font-family:var(--disp); font-weight:400; font-size:clamp(2rem,8vw,3rem); text-transform:uppercase; line-height:1; margin:.4rem 0 .8rem; }
+.exp__panel p{ color:var(--soft-alt); max-width:60ch; line-height:1.55; font-size:1rem; }
+.exp__panel-stack{ margin-top:1rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; color:var(--accent); }
+.exp__panel-link{ display:inline-block; margin-top:1.4rem; padding:.7rem 1.1rem; border:var(--bd) solid var(--paper); font-size:var(--fs-sm); letter-spacing:.06em; text-transform:uppercase; transition:background .25s var(--ease), color .25s var(--ease); }
+.exp__panel-link:hover,.exp__panel-link:focus-visible{ background:var(--paper); color:var(--ink); }
+.exp__panel-link[hidden]{ display:none; }
+
+/* ░░ CONTACT ░░ */
+.contact{ background:var(--accent); color:var(--accent-ink); border-bottom:none; min-height:90svh; display:flex; flex-direction:column; justify-content:center; }
+.contact ::selection{ background:var(--accent-ink); color:var(--accent); }
+.contact__eyebrow{ font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.08em; margin-bottom:1rem; }
+.contact__big{ font-family:var(--disp); font-weight:400; font-size:clamp(4rem,24vw,16rem); line-height:.82; text-transform:uppercase; letter-spacing:-.03em; }
+.contact__mail{ display:inline-block; font-family:var(--disp); font-size:clamp(1.3rem,6vw,2.6rem); text-transform:uppercase; margin:1.4rem 0 2.4rem; border-bottom:var(--bd) solid var(--accent-ink); padding-bottom:.2rem; word-break:break-all; }
+.contact__mail:hover{ background:var(--accent-ink); color:var(--accent); }
+.contact__note{ font-size:var(--fs-sm); letter-spacing:.06em; margin:-1.6rem 0 2.2rem; color:var(--accent-ink); }
+.contact__grid{ display:flex; flex-wrap:wrap; gap:.8rem .7rem; }
+.contact__link{ display:inline-flex; align-items:center; gap:.5rem; font-family:var(--mono); font-size:var(--fs-md); text-transform:uppercase; letter-spacing:.03em; padding:.65rem 1rem; border:var(--bd) solid var(--accent-ink); box-shadow:var(--sh-1) var(--sh-1) 0 var(--accent-ink); transition:background .25s var(--ease), color .25s, transform .25s var(--ease), box-shadow .25s var(--ease); }
+.contact__link span{ color:inherit; }
+.contact__link svg{ flex:0 0 auto; }
+/* resume gets the inverted treatment — it is the one link recruiters want */
+.contact__link--cv{ background:var(--accent-ink); color:var(--accent); font-weight:600; }
+@media (hover:hover){ .contact__link--cv:hover{ background:var(--accent); color:var(--accent-ink); box-shadow:var(--sh-1-up) var(--sh-1-up) 0 var(--accent-ink); } }
+@media (hover:hover){ .contact__link:hover{ background:var(--accent-ink); color:var(--accent); transform:translate(-2px,-2px); box-shadow:var(--sh-1-up) var(--sh-1-up) 0 var(--accent-ink); } }
+.foot{ display:flex; flex-direction:column; gap:.5rem; margin-top:3rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; }
+.foot a:hover{ text-decoration:underline; }
+
+/* ░░ WIPE ░░ */
+/* the accent slab wipe is now on exactly two headings — the first block title
+   and the closing CTA — instead of all nine. a signature move repeated nine
+   times stops being a signature and becomes the page's default transition. */
+.wipe-cover{ position:absolute; inset:0; background:var(--accent); transform-origin:right; z-index:2; transition:transform .55s steps(5); }
+.wipe-cover.out{ transform:scaleX(0); }
+
+/* ░░ THE SUMMARY — plain-language Q&A (also the citable block for answer engines) ░░ */
+.faq{ border-top:var(--bd) solid var(--ink); counter-reset:faq; }
+.faq__item{ padding:1.6rem 0; border-bottom:var(--bd-hair) solid var(--line); }
+.faq__q{
+  counter-increment:faq;
+  font-family:var(--sans); font-weight:700; font-size:clamp(1.15rem,4.2vw,1.5rem);
+  line-height:1.2; letter-spacing:-.01em; margin:0 0 .7rem;
+}
+.faq__q::before{
+  content:counter(faq,decimal-leading-zero);
+  font-family:var(--mono); font-size:var(--fs-sm); font-weight:500;
+  color:var(--accent); margin-right:.8rem; vertical-align:.15em;
+}
+.faq__a{ color:var(--ink-2); font-size:1rem; line-height:1.65; max-width:68ch; }
+.faq__a b{ color:var(--ink); font-weight:600; }
+.faq__a a{ color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+@media (hover:hover){ .faq__a a:hover{ background:var(--accent); color:var(--accent-ink); text-decoration:none; } }
+
+/* ░░ THE RESUME — PDF download ░░ */
+.rsm{ display:grid; grid-template-columns:1fr; gap:2rem; border-top:var(--bd) solid var(--ink); padding-top:2rem; }
+.rsm > *{ min-width:0; }
+.rsm__lede{ color:var(--ink-2); font-size:clamp(1.05rem,3.6vw,1.25rem); line-height:1.55; max-width:52ch; }
+.rsm__meta{ list-style:none; margin-top:1.8rem; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.9rem 1.4rem; max-width:min(34rem,100%); }
+.rsm__meta li{ display:flex; flex-direction:column; gap:.25rem; border-top:var(--bd-hair) solid var(--line); padding-top:.55rem; }
+.rsm__meta span{ font-size:var(--fs-xs); letter-spacing:.1em; color:var(--ink-2); }
+.rsm__meta b{ font-size:var(--fs-md); font-weight:600; letter-spacing:.03em; }
+
+.rsm__actions{ display:flex; flex-direction:column; align-items:flex-start; gap:1rem; }
+.rsm__btn{
+  display:flex; align-items:center; justify-content:space-between; gap:1.6rem; width:100%; max-width:min(26rem,100%);
+  padding:1.5rem 1.6rem; background:var(--accent); color:var(--accent-ink);
+  border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink);
+  transition:transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+}
+.rsm__btn-txt{ font-family:var(--disp); font-weight:400; font-size:clamp(1.5rem,6vw,2.1rem); line-height:.95; text-transform:uppercase; letter-spacing:-.01em; }
+.rsm__btn-ico{ flex:0 0 auto; }
+@media (hover:hover){
+  .rsm__btn:hover{ transform:translate(-3px,-3px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); }
+  .rsm__btn:hover .rsm__btn-ico{ animation:cvdrop .6s var(--ease); }
+}
+.rsm__btn:focus-visible{ transform:translate(-3px,-3px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); }
+@keyframes cvdrop{ 0%{transform:translateY(0)} 45%{transform:translateY(5px)} 100%{transform:translateY(0)} }
+
+.rsm__alt{ font-size:var(--fs-md); letter-spacing:.06em; text-transform:uppercase; border-bottom:var(--bd-hair) solid var(--line); padding-bottom:.15rem; color:var(--ink-2); transition:color .2s var(--ease), border-color .2s var(--ease); }
+@media (hover:hover){ .rsm__alt:hover{ color:var(--accent); border-color:var(--accent); } }
+
+/* ═══ TABLET ═══ */
+@media (min-width:768px){
+  /* every section head reads title-left / label-right, alt panels included.
+     mirroring the head on inverted panels was tried and read as a mistake
+     rather than a rhythm — one consistent axis is the stronger call. */
+  .block__head{ grid-template-columns:minmax(0,1fr) auto; align-items:start; gap:2rem; }
+  .block__meta{ order:0; text-align:right; padding-top:.5rem; }
+
+  .hero__facts{ grid-template-columns:repeat(4,1fr); }
+  .caps{ grid-template-columns:1fr 1fr; }
+  .caps .cap{ padding:1.8rem; border-right:var(--bd) solid var(--line-alt); }
+  .caps .cap:nth-child(2n){ border-right:none; }
+  .live{ grid-template-columns:1fr 1fr; gap:1.2rem; }
+  .lab{ grid-template-columns:1fr 1fr; gap:1.2rem; }
+  .acc__hd{ grid-template-columns:1.2fr 1.6fr 110px 1fr auto; grid-template-areas:"yr role co loc ico"; gap:1.5rem; align-items:center; }
+  .acc__yr{ justify-self:start; } .acc__loc{ align-self:center; }
+  /* roles that wrap to two lines must still start on the same baseline as
+     single-line ones — centring made row 3/4 sit lower than the rest */
+  .acc__role{ align-self:start; }
+  .rsm{ grid-template-columns:1.35fr 1fr; gap:3rem; align-items:start; }
+  .rsm__actions{ align-items:stretch; }
+  .rsm__btn{ max-width:none; }
+  .rsm__meta{ grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+
+/* ═══ DESKTOP ═══ */
+@media (min-width:1100px){
+  .topbar__nav,.topbar__cta{ display:flex; }
+  .topbar__burger{ display:none; }
+  .lab{ grid-template-columns:repeat(3,1fr); }
+  .block__head{ margin-bottom:3.5rem; }
+  /* question left, answer right — editorial two-column */
+  .faq__item{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.7fr); gap:2.5rem; padding:2.2rem 0; }
+  .faq__q{ margin:0; }
+  .faq__a{ margin:0; }
+}
+
+/* ░░ ACCENT-ON-INK — readable accent for text sitting on var(--ink) backgrounds ░░ */
+/* block--alt static labels */
+.block--alt .cap__no,
+.block--alt .tk__lbl,
+.block--alt .cred__lbl,
+.block--alt .sig__src { color:var(--accent-on-ink); }
+.block--alt .block__title-2 { color:var(--accent-on-ink); }
+/* FAQ — base-surface tokens have to flip on the inverted summary panel */
+.block--alt .faq{ border-top-color:var(--paper); }
+.block--alt .faq__item{ border-bottom-color:var(--line-alt-2); }
+.block--alt .faq__q::before{ color:var(--accent-on-ink); }
+.block--alt .faq__a{ color:var(--soft-alt); }
+.block--alt .faq__a b{ color:var(--paper); }
+.block--alt .faq__a a{ color:var(--accent-on-ink); }
+@media (hover:hover){
+  .block--alt .faq__a a:hover{ background:var(--accent-on-ink); color:var(--ink); }
+}
+.block--alt .sig__link:hover { color:var(--accent-on-ink); }
+/* hover percentage + top rule — plain accent is ~2.2:1 on ink, under 1.4.11 */
+.block--alt .cap::before{ color:var(--accent-on-ink); }
+.block--alt .cap:hover{ border-top-color:var(--accent-on-ink); }
+/* the system diagram is drawn in --ink; on an inverted panel it must flip.
+   target the children, not .schem — they set stroke/fill directly, so a rule
+   on the parent never inherits down to them. */
+.block--alt .schem rect{ stroke:var(--paper); }
+.block--alt .schem text{ fill:var(--paper); }
+.block--alt .schem rect.schem__tab,
+.block--alt .schem .schem__no{ fill:var(--accent-on-ink); stroke:none; }
+.block--alt .schem .schem__sub{ fill:var(--soft-alt); }
+/* tag hover inverts the inversion: paper chip on the ink panel */
+@media (hover:hover){
+  .block--alt .cap__tags li:hover{ background:var(--paper); color:var(--ink); border-color:var(--paper); }
+}
+/* block--alt hover (bg stays ink) */
+@media (hover:hover){ .block--alt .cap:hover h3{ color:var(--accent-on-ink); } }
+/* ticker sits on the page surface — plain accent reads fine */
+.ticker__track i { color:var(--accent); }
+/* accordion: open + hovered header gets ink bg */
+.acc.open .acc__yr,
+.acc__hd:hover .acc__yr { color:var(--accent-on-ink); }
+/* lab panel (background: var(--ink)) */
+.exp__panel-st,
+.exp__panel-stack,
+.exp__close:hover { color:var(--accent-on-ink); }
+/* lab active card (background: var(--ink)) */
+.exp.active .exp__tag { color:var(--accent-on-ink); }
+
+/* ░░ REDUCED MOTION ░░ */
+@media (prefers-reduced-motion:reduce){
+  *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  html{ scroll-behavior:auto; }
+  .js [data-reveal],.js [data-stagger] > *,.js [data-name] span{ opacity:1 !important; transform:none !important; }
+  .js .topbar{ transform:none !important; }
+  .wipe-cover{ display:none !important; }
+}
