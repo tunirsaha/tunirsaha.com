@@ -4,6 +4,35 @@
    base = mobile  →  @768  →  @1100
    ═══════════════════════════════════════════════════════════ */
 
+/* ── FONTS ────────────────────────────────────────────────────
+   self-hosted, latin subset, woff2. these used to come from
+   fonts.googleapis.com, which cost a render-blocking stylesheet on a third
+   origin — 826ms of the mobile first paint — before a single glyph was even
+   requested from fonts.gstatic.com. served from our own origin the connection
+   is already open, so the files ride in on the connection that fetched the
+   HTML and land near first paint instead of well after it.
+
+   Space Grotesk and JetBrains Mono ship as variable fonts, so one file each
+   covers every weight the page uses; three files, 71 KiB, versus two DNS
+   lookups and two TLS handshakes. weights are declared as ranges rather than
+   one @font-face per weight for the same reason — same file, no extra fetch.
+   ─────────────────────────────────────────────────────────── */
+@font-face{
+  font-family:"Archivo Black"; font-style:normal; font-weight:400;
+  font-display:swap; src:url(../assets/fonts/archivo-black-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"Space Grotesk"; font-style:normal; font-weight:300 700;
+  font-display:swap; src:url(../assets/fonts/space-grotesk-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:"JetBrains Mono"; font-style:normal; font-weight:100 800;
+  font-display:swap; src:url(../assets/fonts/jetbrains-mono-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
 :root{
   --paper:#edeae2;
   --paper-2:#e4e0d5;
@@ -254,7 +283,21 @@ body.menu-open .mmenu{ transform:translateY(0); }
 
 /* ░░ SYSTEM DIAGRAM — FIG.01 (ink bg) ░░ */
 .schem-wrap{ margin-bottom:clamp(2rem,5vw,3.5rem); overflow-x:auto; }
-.schem{ width:100%; min-width:620px; height:auto; }
+.schem{ width:100%; height:auto; }
+/* FIG.01 ships as two drawings of the same four layers, not one drawing in a
+   scroller. the horizontal cut needs 620px to stay legible, and a 620px canvas
+   on a 360px phone is either a sideways scroll nobody discovers or type shrunk
+   past reading size. so below the tablet breakpoint the diagram is redrawn
+   stacked - boxes down the page, arrows pointing down, braces rotated onto the
+   right edge - and the wide cut is swapped in from 768 up. exactly one is in
+   the DOM's a11y tree at a time: display:none removes the other outright, which
+   is why each carries its own <title> id. */
+.schem--h{ display:none; min-width:620px; }
+.schem--v{ display:block; max-width:360px; }
+@media (min-width:768px){
+  .schem--h{ display:block; }
+  .schem--v{ display:none; }
+}
 .schem rect{ fill:none; stroke:var(--ink); stroke-width:2; }
 .schem text{ fill:var(--ink); font-family:var(--mono); font-size:17px; text-anchor:middle; letter-spacing:.06em; }
 .schem .schem__sub{ fill:var(--soft-alt); font-size:12px; }
@@ -270,7 +313,12 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .schem__cap{ display:block; margin-top:.8rem; font-size:var(--fs-sm); letter-spacing:.06em; text-transform:uppercase; color:var(--soft-alt); max-width:72ch; line-height:1.6; }
 
 /* ░░ WHAT I BUILD — capability cards (ink bg) ░░ */
-.caps{ display:grid; grid-template-columns:1fr; border-top:var(--bd-hair) solid var(--line-alt-2); }
+/* minmax(0,1fr), not 1fr: a grid track's min-width:auto floors it at the item's
+   min-content width. .cap's tag chips and display-type h3 push that past the
+   track, so the track grows and the whole document gets wider than the viewport.
+   minmax(0,…) lets the track shrink and the content wrap instead. */
+.caps{ display:grid; grid-template-columns:minmax(0,1fr); border-top:var(--bd-hair) solid var(--line-alt-2); }
+.caps > *{ min-width:0; }
 .cap{ padding:1.8rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); border-top:var(--bd-heavy) solid transparent; transition:padding-left .35s var(--ease), border-top-color .25s var(--ease); position:relative; }
 .cap:nth-child(3),
 .cap:last-child{ border-bottom:none; }
@@ -294,7 +342,13 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .acc__yr{ grid-area:yr; font-size:var(--fs-md); color:var(--accent); }
 .acc__role{ grid-area:role; font-family:var(--disp); font-weight:400; font-size:clamp(1.5rem,6.5vw,2.6rem); text-transform:uppercase; line-height:1; letter-spacing:-.02em; }
 .acc__co{ grid-area:co; }
-.acc__co img{ height:27px; width:auto; max-width:100%; object-fit:contain; filter:brightness(0); opacity:.72; transition:filter .25s, opacity .25s; }
+/* fixed box, not width:auto. these are lazy SVGs of eight different aspect
+   ratios, so with an auto width the column has no idea how wide a logo is until
+   the file lands — Lighthouse counts every one of them as an unsized image and
+   the reflow shows up as layout shift. 110x27 is the pair already declared on
+   the <img> attributes; object-fit keeps each logo at its own aspect inside that
+   box and object-position pins it to the left edge, where auto width put it. */
+.acc__co img{ height:27px; width:110px; max-width:100%; object-fit:contain; object-position:left center; filter:brightness(0); opacity:.72; transition:filter .25s, opacity .25s; }
 :root[data-theme="dark"] .acc__co img{ filter:brightness(0) invert(1); opacity:.8; }
 .acc__loc{ grid-area:loc; font-size:var(--fs-sm); color:var(--ink-2); justify-self:end; align-self:end; }
 .acc__ico{ grid-area:ico; position:relative; width:22px; height:22px; flex:0 0 auto; justify-self:end; }
@@ -331,9 +385,23 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .cred > .cred__item{ display:inline-flex; flex-direction:column; padding:0; border:none; margin:0 2.2rem 1rem 0; }
 .cred__item h4{ font-weight:600; font-size:1.08rem; line-height:1.25; }
 .cred__item p{ font-size:var(--fs-sm); color:var(--dim-alt); margin-top:.3rem; text-transform:uppercase; letter-spacing:.04em; }
+/* a credential can cite more than one register — the patent is on both WIPO and
+   the IP India mirror, and neither alone is authoritative enough to be the only
+   link. a row of sources, not a link on the title, keeps every .cred__item's
+   heading behaving the same whether it has 0, 1 or 2 places to verify it. */
+.cred__src{ display:flex; flex-wrap:wrap; gap:.15rem 1.1rem; }
+.cred__src a{ color:var(--accent-on-ink); text-decoration:underline; text-underline-offset:3px; padding:.15rem 0; }
+@media (hover:hover){ .cred__src a:hover{ background:var(--accent-on-ink); color:var(--ink); text-decoration:none; } }
 
 /* ░░ LIVE STATS — cards with hard shadows (ink bg) ░░ */
-.live{ display:grid; grid-template-columns:1fr; gap:1rem; }
+/* same min-content trap as .caps, but far worse here: .gh__grid is ~795px of
+   contribution (53 week columns). its own overflow-x:auto only zeroes ITS
+   automatic minimum size — it does not stop that min-content width propagating
+   up through .sig into the track, so the track sized to 843px and took the
+   document with it. constrain the track and the min-widths, and the heatmap's
+   overflow-x:auto finally has a box to scroll inside of. */
+.live{ display:grid; grid-template-columns:minmax(0,1fr); gap:1rem; }
+.live > *{ min-width:0; }
 /* signal cards sit ON the inverted panel — they are cut-outs in it, not paper
    tiles laid on top. transparent body, paper rule, accent-on-ink shadow. */
 .sig{ border:var(--bd) solid var(--paper); box-shadow:var(--sh-2) var(--sh-2) 0 var(--accent-on-ink); padding:1.5rem; display:flex; flex-direction:column; gap:1rem; background:transparent; }
@@ -348,7 +416,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 
 /* github heatmap */
 .sig--gh{ grid-column:1 / -1; }
-.gh__grid{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,1fr); gap:4px; overflow-x:auto; padding-bottom:.3rem; }
+.gh__grid{ display:grid; grid-auto-flow:column; grid-template-rows:repeat(7,1fr); gap:4px; min-width:0; overflow-x:auto; overscroll-behavior-x:contain; padding-bottom:.3rem; }
 .gh__cell{ width:11px; height:11px; aspect-ratio:1; }
 /* the ramp follows the SURFACE, not the theme. telemetry lives in a .block--alt
    panel, which is ink in light theme and cream in dark — so the ramp inverts
@@ -395,7 +463,8 @@ body.menu-open .mmenu{ transform:translateY(0); }
 
 /* ░░ LAB — cards with hard shadows (paper bg) ░░ */
 .lab__note{ color:var(--ink-2); font-size:1rem; max-width:55ch; margin:-1rem 0 2rem; }
-.lab{ display:grid; grid-template-columns:1fr; gap:1rem; }
+.lab{ display:grid; grid-template-columns:minmax(0,1fr); gap:1rem; }
+.lab > *{ min-width:0; }
 .exp{ text-align:left; padding:1.4rem; border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); background:var(--paper); display:flex; flex-direction:column; gap:.6rem; min-height:150px; transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
 .exp__top{ display:flex; justify-content:space-between; gap:.6rem; font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.05em; }
 .exp__tag{ color:var(--accent); }
@@ -412,6 +481,14 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .exp__panel{ position:relative; margin:1rem 10px 10px 0; padding:1.8rem; background:var(--ink); color:var(--paper); display:none; opacity:0; transform:translateY(12px); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent); transition:opacity .4s var(--ease), transform .4s var(--ease); }
 .exp__panel.open{ display:block; }
 .exp__panel.in{ opacity:1; transform:none; }
+/* stacked, the panel is moved INTO .lab so it opens under the tapped card. two
+   things follow from becoming a grid child: the grid's own 1rem gap now doubles
+   the panel's top margin, and .lab's [data-stagger] rules — .is-in > * at
+   (0,3,1) — outrank .exp__panel/.in and would pin it visible with a stagger
+   delay. drop the margin, re-assert the entrance at higher specificity. */
+.lab > .exp__panel{ margin-top:0; }
+.js .lab[data-stagger].is-in > .exp__panel{ opacity:0; transform:translateY(12px); transition-delay:0s; }
+.js .lab[data-stagger].is-in > .exp__panel.in{ opacity:1; transform:none; }
 .exp__panel ::selection{ background:var(--paper); color:var(--ink); }
 .exp__close{ position:absolute; top:1rem; right:1rem; font-size:var(--fs-xs); font-weight:600; color:var(--paper); }
 .exp__close:hover{ color:var(--accent); }
@@ -504,11 +581,11 @@ body.menu-open .mmenu{ transform:translateY(0); }
   .block__meta{ order:0; text-align:right; padding-top:.5rem; }
 
   .hero__facts{ grid-template-columns:repeat(4,1fr); }
-  .caps{ grid-template-columns:1fr 1fr; }
+  .caps{ grid-template-columns:repeat(2,minmax(0,1fr)); }
   .caps .cap{ padding:1.8rem; border-right:var(--bd) solid var(--line-alt); }
   .caps .cap:nth-child(2n){ border-right:none; }
-  .live{ grid-template-columns:1fr 1fr; gap:1.2rem; }
-  .lab{ grid-template-columns:1fr 1fr; gap:1.2rem; }
+  .live{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2rem; }
+  .lab{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2rem; }
   .acc__hd{ grid-template-columns:1.2fr 1.6fr 110px 1fr auto; grid-template-areas:"yr role co loc ico"; gap:1.5rem; align-items:center; }
   .acc__yr{ justify-self:start; } .acc__loc{ align-self:center; }
   /* roles that wrap to two lines must still start on the same baseline as
@@ -524,7 +601,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 @media (min-width:1100px){
   .topbar__nav,.topbar__cta{ display:flex; }
   .topbar__burger{ display:none; }
-  .lab{ grid-template-columns:repeat(3,1fr); }
+  .lab{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .block__head{ margin-bottom:3.5rem; }
   /* question left, answer right — editorial two-column */
   .faq__item{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.7fr); gap:2.5rem; padding:2.2rem 0; }

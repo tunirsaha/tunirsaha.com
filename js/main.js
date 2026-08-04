@@ -176,10 +176,25 @@
     const lab = $('.lab'), panel = $('#expPanel'); if (!lab) return;
     const f = { name: $('#expPanelName'), desc: $('#expPanelDesc'), st: $('#expPanelSt'), stack: $('#expPanelStack'), link: $('#expPanelLink') };
     let cur = null;
+
+    /* the panel is authored after .lab, which is right for the 2- and 3-column
+       grids: it spans the full width below every card. stacked on one column it
+       is wrong - tap the first card and the detail opens past the last one, with
+       no visible connection to what you tapped. so while the grid is stacked,
+       move the panel to sit directly under the active card instead. */
+    const homeParent = panel.parentNode, homeNext = panel.nextSibling;
+    const stacked = matchMedia('(max-width: 767px)');
+    const place = () => {
+      if (cur && stacked.matches) { if (cur.nextElementSibling !== panel) cur.after(panel); }
+      else if (panel.parentNode !== homeParent) homeParent.insertBefore(panel, homeNext);
+    };
+    (stacked.addEventListener ? stacked.addEventListener.bind(stacked, 'change') : stacked.addListener.bind(stacked))(place);
+
     const close = () => {
       panel.classList.remove('open', 'in'); panel.setAttribute('aria-hidden', 'true');
       $$('.exp').forEach(e => { e.classList.remove('active'); e.setAttribute('aria-expanded', 'false'); });
       cur = null;
+      place();
     };
     $$('[data-exp]').forEach(btn => {
       btn.setAttribute('aria-controls', 'expPanel');
@@ -188,6 +203,7 @@
       if (cur === btn) { close(); return; }
       $$('.exp').forEach(e => { e.classList.remove('active'); e.setAttribute('aria-expanded', 'false'); });
       btn.classList.add('active'); btn.setAttribute('aria-expanded', 'true'); cur = btn;
+      place();
       f.name.textContent = $('.exp__name', btn).textContent;
       f.st.textContent = btn.dataset.status; f.desc.textContent = btn.dataset.desc; f.stack.textContent = btn.dataset.stack;
       if (f.link) {
@@ -219,8 +235,17 @@
       document.body.classList.toggle('menu-open', on);
       burger.setAttribute('aria-expanded', on); menu.setAttribute('aria-hidden', !on);
       inertBg.forEach(el => on ? el.setAttribute('inert', '') : el.removeAttribute('inert'));
-      if (on) { if (links[0]) links[0].focus(); }
-      else if (document.activeElement && menu.contains(document.activeElement)) burger.focus();
+      /* the closed menu is only translated off-screen, so its eight links stayed in
+         the tab order under aria-hidden="true" — the exact pairing axe flags as
+         aria-hidden-focus. inert is the same tool already used on main/footer, just
+         pointed the other way. order matters at both ends: uninert before focusing
+         into the menu, and move focus out to the burger before inerting it, since
+         focus() is a no-op inside an inert subtree. */
+      if (on) { menu.removeAttribute('inert'); if (links[0]) links[0].focus(); }
+      else {
+        if (document.activeElement && menu.contains(document.activeElement)) burger.focus();
+        menu.setAttribute('inert', '');
+      }
     };
     burger.addEventListener('click', () => set(!document.body.classList.contains('menu-open')));
     $$('[data-mlink]').forEach(a => a.addEventListener('click', e => {

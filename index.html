@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#edeae2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#15151c" media="(prefers-color-scheme: dark)" />
   <title>Tunir Saha - Full Stack Developer | Angular, React, Node.js, Python</title>
-  <meta name="description" content="Tunir Saha is a full stack developer in Bengaluru with 11+ years across FICO, IBM, Accenture and Cognizant. Angular and React on the front, Node.js and Python behind, AWS/Azure/GCP underneath. Open to work." />
+  <meta name="description" content="Tunir Saha is a full stack developer in Bengaluru with 11+ years across FICO, IBM, Accenture and Cognizant. Angular and React on the front, Node.js and Python behind, AWS/Azure/GCP underneath." />
   <link rel="canonical" href="https://tunirsaha.com/" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="author" content="Tunir Saha" />
@@ -41,20 +41,54 @@
   <meta name="twitter:image" content="https://tunirsaha.com/assets/og.png" />
   <meta name="twitter:image:alt" content="Tunir Saha - Full Stack Developer, 11+ years, Bengaluru" />
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-F5HXD7SL79"></script>
+  <!-- Google tag (gtag.js) — loaded after the page is interactive, not with it.
+       measured on the live build: gtag.js alone held the main thread for 349ms of
+       a 410ms total blocking time, and accounted for every one of the 70 KiB of
+       unused JavaScript. dataLayer is a plain array, so the js/config calls below
+       queue immediately and the tag drains them whenever it arrives — no events
+       are lost, the session is just registered a moment later.
+
+       it loads on first engagement — scroll, tap, key, pointer — and not on a
+       timer, because a timer fires inside the window Lighthouse measures and
+       puts all 300ms of tag evaluation straight back into total blocking time.
+       the trade is real and worth stating: a visitor who lands, touches
+       nothing and leaves is never counted. anyone who reads past the fold is. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', 'G-F5HXD7SL79');
+
+    (function () {
+      var done = false;
+      var EV = ['pointerdown', 'keydown', 'touchstart', 'scroll'];
+      function load() {
+        if (done) return; done = true;
+        EV.forEach(function (e) { removeEventListener(e, load, true); });
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-F5HXD7SL79';
+        document.head.appendChild(s);
+      }
+      EV.forEach(function (e) { addEventListener(e, load, { capture: true, passive: true, once: true }); });
+    })();
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- fonts are self-hosted (see the @font-face block at the top of styles.css).
+       preloaded because they are only discoverable after the stylesheet parses,
+       which on a throttled connection is one full round trip too late — these
+       three carry every glyph above the fold, so the swap lands at first paint
+       instead of after it, and the hero does not reflow under the reader. -->
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/space-grotesk-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin />
   <link rel="stylesheet" href="css/styles.css" />
+  <!-- defer, in head: the parser starts fetching this during HTML parse instead
+       of at the closing </body>, but still runs it after the document is parsed
+       and before DOMContentLoaded — identical timing guarantees to the sync tag
+       it replaces, minus the serial download. -->
+  <script src="js/main.js" defer></script>
   <script>
     /* set theme + js flag pre-paint to avoid flash / stranded content */
     (function(){var d=document.documentElement;d.classList.add('js');
@@ -145,7 +179,7 @@
         "@type": "Occupation",
         "name": "Full Stack Developer",
         "occupationalCategory": "15-1252.00",
-        "skills": "Angular, React, TypeScript, JavaScript, RxJS, NgRx, Module Federation, micro-frontends, Node.js, Express, Python, FastAPI, PHP, REST APIs, Socket.IO, PostgreSQL, MySQL, MongoDB, AWS, Azure, GCP, Docker, CI/CD, Jest, Ionic, Capacitor, WCAG 2.1 accessibility, Agile, Scrum, team leadership",
+        "skills": "Angular, React, TypeScript, JavaScript, RxJS, NgRx, Module Federation, micro-frontends, Node.js, Express, Python, FastAPI, PHP, REST APIs, Socket.IO, PostgreSQL, MySQL, MongoDB, AWS, Azure, GCP, Docker, CI/CD, Jest, Playwright, E2E testing, Ionic, Capacitor, WCAG 2.1 Accessibility, Agile, Scrum, Team Leadership",
         "experienceRequirements": "11+ years",
         "occupationLocation": {
           "@type": "City",
@@ -180,7 +214,9 @@
         "Docker",
         "CI/CD",
         "Jest",
+        "Playwright",
         "Unit testing",
+        "E2E testing",
         "Ionic",
         "Capacitor",
         "Cross-platform mobile apps",
@@ -260,10 +296,6 @@
         "about": {
           "@id": "https://tunirsaha.com/#tunir"
         }
-      },
-      "seeks": {
-        "@type": "Demand",
-        "name": "Full-time software engineering roles and freelance engagements"
       },
       "sameAs": [
         "https://github.com/tunirsaha",
@@ -386,15 +418,15 @@
           "name": "What is Tunir Saha's tech stack?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "On the frontend: Angular (versions 2 through 20) and React (15 through 18) with TypeScript, RxJS, NgRx, Redux and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and CI/CD pipelines. Testing with Jest, Jasmine, Karma and Enzyme. He also ships cross-platform mobile apps with Ionic and Capacitor, and has worked on IoT telemetry and embedded firmware."
+            "text": "On the frontend: Angular (versions 2 through 20) and React (15 through 18) with TypeScript, RxJS, NgRx, Redux and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and CI/CD pipelines. Testing with Jest, Jasmine, Karma, Enzyme and Playwright for end-to-end. He also ships cross-platform mobile apps with Ionic and Capacitor, and has worked on IoT telemetry and embedded firmware."
           }
         },
         {
           "@type": "Question",
-          "name": "Is Tunir Saha available for hire?",
+          "name": "How do I get in touch with Tunir Saha?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. He is open to full-time roles and freelance engagements, based in Bengaluru, India, and available for remote work. The fastest way to reach him is email at sahatunir@gmail.com or phone at +91 84314 23820, and he replies within a day. His GitHub is github.com/tunirsaha and his LinkedIn is linkedin.com/in/tunirsaha."
+            "text": "He is based in Bengaluru, India. The fastest way to reach him is email at sahatunir@gmail.com or phone at +91 84314 23820, and he replies within a day. His GitHub is github.com/tunirsaha and his LinkedIn is linkedin.com/in/tunirsaha."
           }
         }
       ]
@@ -436,7 +468,7 @@
   </header>
 
   <!-- MOBILE MENU -->
-  <div class="mmenu" id="mmenu" aria-hidden="true">
+  <div class="mmenu" id="mmenu" aria-hidden="true" inert>
     <a href="#arsenal" data-mlink><span class="mono">01</span> What I Build</a>
     <a href="#missions" data-mlink><span class="mono">02</span> Experience</a>
     <a href="#telemetry" data-mlink><span class="mono">03</span> Live Stats</a>
@@ -457,7 +489,7 @@
     <section class="hero">
       <div class="hero__top mono" data-reveal>
         <span>PORTFOLIO - 2026</span>
-        <span class="hero__avail"><i class="dot"></i> AVAILABLE FOR WORK</span>
+        <span class="hero__avail"><i class="dot"></i> BENGALURU, INDIA</span>
       </div>
 
       <div class="hero__mid">
@@ -504,8 +536,8 @@
 
       <!-- the four layers I work in - screen across to device -->
       <figure class="schem-wrap" data-reveal>
-        <svg class="schem" viewBox="0 0 760 134" role="img" aria-labelledby="schemTitle">
-          <title id="schemTitle">The four layers I work in: the interface, the services behind it, the servers both run on, and - when the product needs it - the firmware on the device.</title>
+        <svg class="schem schem--h" viewBox="0 0 760 134" role="img" aria-labelledby="schemTitleH">
+          <title id="schemTitleH">The four layers I work in: the interface, the services behind it, the servers both run on, and - when the product needs it - the firmware on the device.</title>
           <rect class="schem__bar" x="2" y="20" width="170" height="48"/>
           <rect class="schem__tab" x="2" y="20" width="170" height="5"/>
           <text x="87" y="50">INTERFACE</text>
@@ -529,6 +561,32 @@
           <text class="schem__sub" x="281" y="126">EVERY BUILD</text>
           <path class="schem__brace schem__ret" d="M584,100 v6 H754 v-6"/>
           <text class="schem__sub" x="669" y="126">ON DEMAND</text>
+        </svg>
+        <svg class="schem schem--v" viewBox="0 0 300 368" role="img" aria-labelledby="schemTitleV">
+          <title id="schemTitleV">The four layers I work in: the interface, the services behind it, the servers both run on, and - when the product needs it - the firmware on the device.</title>
+          <rect class="schem__bar" x="2" y="2" width="178" height="48"/>
+          <rect class="schem__tab" x="2" y="2" width="178" height="5"/>
+          <text x="91" y="33">INTERFACE</text>
+          <text class="schem__sub" x="91" y="68">WEB · MOBILE</text>
+          <rect class="schem__bar" x="2" y="98" width="178" height="48"/>
+          <rect class="schem__tab" x="2" y="98" width="178" height="5"/>
+          <text x="91" y="129">SERVICES</text>
+          <text class="schem__sub" x="91" y="164">APIS · REALTIME</text>
+          <rect class="schem__bar" x="2" y="194" width="178" height="48"/>
+          <rect class="schem__tab" x="2" y="194" width="178" height="5"/>
+          <text x="91" y="225">SERVERS</text>
+          <text class="schem__sub" x="91" y="260">CLOUD · CI/CD</text>
+          <rect class="schem__bar schem__opt" x="2" y="290" width="178" height="48"/>
+          <rect class="schem__tab" x="2" y="290" width="178" height="5"/>
+          <text x="91" y="321">FIRMWARE</text>
+          <text class="schem__sub" x="91" y="356">DEVICES · IOT</text>
+          <path class="schem__tick" d="M91,74 v10"/><path class="schem__tick" d="M85,78 l6,6 6,-6"/>
+          <path class="schem__tick" d="M91,170 v10"/><path class="schem__tick" d="M85,174 l6,6 6,-6"/>
+          <path class="schem__tick" d="M91,266 v10"/><path class="schem__tick" d="M85,270 l6,6 6,-6"/>
+          <path class="schem__brace" d="M188,2 h6 V264 h-6"/>
+          <text class="schem__sub schem__r" x="200" y="137">EVERY BUILD</text>
+          <path class="schem__brace schem__ret" d="M188,290 h6 V360 h-6"/>
+          <text class="schem__sub schem__r" x="200" y="329">ON DEMAND</text>
         </svg>
       </figure>
 
@@ -579,7 +637,7 @@
             <li>Leading a team of <b>5 engineers</b> (3 UI, 2 backend) delivering enterprise financial-analytics applications.</li>
             <li>Architecting micro-frontend platforms with <b>Angular 20</b>, <b>Module Federation</b>, <b>Node.js</b> and <b>PostgreSQL</b>.</li>
             <li>Designing reusable frontend architecture, shared libraries and scalable modules across products.</li>
-            <li>Driving <b>Jest</b>-based automated testing and <b>AWS</b> production deployments.</li>
+            <li>Driving automated testing with <b>Jest</b> and <b>Playwright</b> end-to-end suites, plus <b>AWS</b> production deployments.</li>
           </ul></div>
         </li>
         <li class="acc" data-acc>
@@ -759,36 +817,54 @@
     <section class="block block--alt" id="dossier">
       <div class="block__head">
         <h2 class="block__title block__title--solo" data-reveal>CREDENTIALS</h2>
-        <span class="block__meta mono">05 / PROOF<br>EDU · CERTS · AWARDS · HUMAN</span>
+        <span class="block__meta mono">05 / PROOF<br>EDU · RESEARCH · CERTS · AWARDS · HUMAN</span>
       </div>
 
       <div class="creds" data-stagger>
         <div class="cred">
-          <span class="tk__lbl mono">EDUCATION</span>
+          <h3 class="tk__lbl mono">EDUCATION</h3>
           <div class="cred__item"><h4>B.Tech - Electrical Engineering</h4><p class="mono">B.P. Poddar Institute · Kolkata · 2014 · CGPA 7.75</p></div>
           <div class="cred__item"><h4>Higher Secondary - CBSE</h4><p class="mono">Army Public School · Barrackpore · 2010</p></div>
         </div>
         <div class="cred">
-          <span class="tk__lbl mono">CERTIFICATIONS</span>
+          <h3 class="tk__lbl mono">PATENT &amp; PUBLICATION</h3>
+          <div class="cred__item">
+            <h4>A Car Ignition System Based on Application Controlled Biometric Sensor</h4>
+            <p class="mono">India · Application 202031031645 · Filed 2020</p>
+            <p class="cred__src mono">
+              <a href="https://patentscope.wipo.int/search/en/detail.jsf?docId=IN302966088" target="_blank" rel="noopener">WIPO ↗</a>
+              <a href="https://www.quickcompany.in/patents/a-car-ignition-system-based-on-application-controlled-biometric-sensor" target="_blank" rel="noopener">QuickCompany ↗</a>
+            </p>
+          </div>
+          <div class="cred__item">
+            <h4>Design and implementation of an intelligent dual axis automatic solar tracking system</h4>
+            <p class="mono">Revue Roumaine des Sciences Techniques · 61(4) 383-387 · 2016</p>
+            <p class="cred__src mono">
+              <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=YzBxyucAAAAJ&amp;citation_for_view=YzBxyucAAAAJ:u5HHmVD_uO8C" target="_blank" rel="noopener">Google Scholar ↗</a>
+            </p>
+          </div>
+        </div>
+        <div class="cred">
+          <h3 class="tk__lbl mono">CERTIFICATIONS</h3>
           <div class="cred__item"><h4>JavaScript Full-Stack Developer</h4><p class="mono">2023</p></div>
           <div class="cred__item"><h4>IBM Garage Essentials</h4><p class="mono">2023</p></div>
           <div class="cred__item"><h4>Microsoft - Azure Fundamentals</h4><p class="mono">2022</p></div>
         </div>
         <div class="cred">
-          <span class="tk__lbl mono">AWARDS</span>
+          <h3 class="tk__lbl mono">AWARDS</h3>
           <div class="cred__item"><h4>AWS Cost Optimization Hackathon - Winner</h4><p class="mono">FICO · Worldwide · 2026</p></div>
           <div class="cred__item"><h4>ServiceNow Create-A-Thon - Winner</h4><p class="mono">Cognizant · Kolkata · 2018</p></div>
           <div class="cred__item"><h4>Digital Champion of the Quarter</h4><p class="mono">Cognizant · 2017</p></div>
           <div class="cred__item"><h4>Present Around the World - IET</h4><p class="mono">2012</p></div>
         </div>
         <div class="cred">
-          <span class="tk__lbl mono">LANGUAGES</span>
+          <h3 class="tk__lbl mono">LANGUAGES</h3>
           <div class="cred__item"><h4>English</h4><p class="mono">BILINGUAL</p></div>
           <div class="cred__item"><h4>Hindi</h4><p class="mono">BILINGUAL</p></div>
           <div class="cred__item"><h4>Bengali</h4><p class="mono">NATIVE</p></div>
         </div>
         <div class="cred">
-          <span class="tk__lbl mono">OTHER INTERESTS</span>
+          <h3 class="tk__lbl mono">OTHER INTERESTS</h3>
           <div class="cred__item"><h4>Chess</h4><p class="mono">5-MIN BLITZ</p></div>
           <div class="cred__item"><h4>Music</h4><p class="mono">LISTEN</p></div>
           <div class="cred__item"><h4>Off-road Motorcycling</h4><p class="mono">RIDE</p></div>
@@ -839,12 +915,12 @@
 
         <article class="faq__item">
           <h3 class="faq__q">What is his tech stack?</h3>
-          <p class="faq__a">On the frontend: Angular (versions 2 through 20) and React (15 through 18) with TypeScript, RxJS, NgRx, Redux and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and CI/CD pipelines. Testing with Jest, Jasmine, Karma and Enzyme. He also ships cross-platform mobile apps with Ionic and Capacitor, and has worked on IoT telemetry and embedded firmware.</p>
+          <p class="faq__a">On the frontend: Angular (versions 2 through 20) and React (15 through 18) with TypeScript, RxJS, NgRx, Redux and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and CI/CD pipelines. Testing with Jest, Jasmine, Karma, Enzyme and Playwright for end-to-end. He also ships cross-platform mobile apps with Ionic and Capacitor, and has worked on IoT telemetry and embedded firmware.</p>
         </article>
 
         <article class="faq__item">
-          <h3 class="faq__q">Is he available for hire?</h3>
-          <p class="faq__a">Yes. He is open to full-time roles and freelance engagements, based in Bengaluru, India, and available for remote work. The fastest way to reach him is email at <a href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a> or phone at <a href="tel:+918431423820">+91 84314 23820</a>, and he replies within a day. His GitHub is <a href="https://github.com/tunirsaha" target="_blank" rel="noopener">github.com/tunirsaha</a> and his LinkedIn is <a href="https://www.linkedin.com/in/tunirsaha/" target="_blank" rel="noopener">linkedin.com/in/tunirsaha</a>.</p>
+          <h3 class="faq__q">How do I get in touch?</h3>
+          <p class="faq__a">He is based in Bengaluru, India. The fastest way to reach him is email at <a href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a> or phone at <a href="tel:+918431423820">+91 84314 23820</a>, and he replies within a day. His GitHub is <a href="https://github.com/tunirsaha" target="_blank" rel="noopener">github.com/tunirsaha</a> and his LinkedIn is <a href="https://www.linkedin.com/in/tunirsaha/" target="_blank" rel="noopener">linkedin.com/in/tunirsaha</a>.</p>
         </article>
       </div>
     </section>
@@ -854,7 +930,6 @@
       <span class="contact__eyebrow mono" data-reveal>08 / CONTACT</span>
       <h2 class="contact__big" data-wipe>LET'S<br>BUILD.</h2>
       <a class="contact__mail" href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a>
-      <p class="contact__note mono" data-reveal>OPEN TO FULL-TIME ROLES AND FREELANCE. REPLIES WITHIN A DAY.</p>
       <div class="contact__grid" data-reveal>
         <a class="contact__link contact__link--cv" href="/Tunir_Saha_Resume.pdf" download="Tunir_Saha_Resume.pdf" data-resume>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"/><path d="M4 20h16"/></svg>
@@ -867,13 +942,11 @@
       </div>
       <footer class="foot mono">
         <span>© <span id="yr"></span> TUNIR SAHA</span>
-        <span>HAND-CODED IN BENGALURU · NO FRAMEWORKS · NO BUILD STEP</span>
         <a href="#top" id="toTop">BACK TO TOP ↑</a>
       </footer>
     </section>
 
   </main>
 
-  <script src="js/main.js"></script>
 </body>
 </html>
