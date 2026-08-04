@@ -98,6 +98,8 @@ Options -Indexes
 </IfModule>
 
 # ── compression ──
+# woff2 is deliberately absent: it is already brotli-compressed internally, so
+# deflating it again costs CPU and adds bytes.
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
     application/javascript application/json application/xml image/svg+xml
@@ -113,6 +115,10 @@ Options -Indexes
   ExpiresByType image/x-icon          "access plus 30 days"
   ExpiresByType application/pdf       "access plus 7 days"
   ExpiresByType text/html             "access plus 0 seconds"
+  # the fonts are the one thing here that genuinely never changes — same three
+  # files, same glyphs, for the life of the design. a year is safe because a
+  # revision means a new filename, not new bytes behind the old one.
+  ExpiresByType font/woff2            "access plus 1 year"
 </IfModule>
 
 <IfModule mod_headers.c>
@@ -121,12 +127,22 @@ Options -Indexes
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
+  # immutable stops the browser revalidating the fonts on every reload — without
+  # it a returning visitor still pays three conditional requests before any text
+  # can be painted, which is most of what self-hosting them was meant to avoid.
+  <FilesMatch "\.woff2$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
 </IfModule>
 
 # ── correct types for the SEO/GEO files ──
 AddType text/plain .txt
 AddType application/xml .xml
 AddType image/svg+xml .svg
+# older Apache mime.types predates woff2 and falls back to octet-stream, which
+# makes the browser reject the rel=preload as a type mismatch, fetch the font a
+# second time off the @font-face rule, and flash fallback text in between.
+AddType font/woff2 .woff2
 
 # never serve source/config files if any ever land here.
 # .md is intentionally NOT blocked — a project subfolder may legitimately

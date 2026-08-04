@@ -2,7 +2,7 @@
 
 > Full stack developer with 11+ years of experience, based in Bengaluru, India.
 > Builds the frontend, the API behind it, and the cloud infrastructure both run on.
-> Currently Lead Engineer at FICO. Open to full-time roles and freelance work.
+> Currently Lead Engineer at FICO.
 
 ## Summary
 
@@ -20,7 +20,6 @@ rather than a single-layer specialist.
 - **Current role:** Lead Engineer, FICO (Fair Isaac), Bengaluru — since October 2024
 - **Experience:** 11+ years (since 2014), 6 companies
 - **Location:** Bengaluru, Karnataka, India
-- **Availability:** Open to full-time roles and freelance engagements
 - **Email:** sahatunir@gmail.com
 - **Phone:** +91 84314 23820
 - **Website:** https://tunirsaha.com/
@@ -35,7 +34,7 @@ rather than a single-layer specialist.
   Socket.IO, real-time and event-driven services
 - **Data:** PostgreSQL, MySQL, MongoDB, Mongoose, Sequelize
 - **Cloud & DevOps:** AWS, Azure, GCP, Docker, CI/CD pipelines, Heroku, Webpack, npm
-- **Testing:** Jest, Jasmine, Karma, Enzyme, unit and integration coverage
+- **Testing:** Jest, Jasmine, Karma, Enzyme, Playwright, unit, integration and end-to-end coverage
 - **Other:** IoT telemetry, embedded C, circuit design, AI-assisted development
 - **Process:** Agile, Scrum, sprint planning, code review, Git/GitLab/Bitbucket,
   Jira, Trello, Asana, Figma
@@ -45,6 +44,7 @@ rather than a single-layer specialist.
 - **FICO — Lead Engineer** (Oct 2024 – present, Bengaluru). Leads 5 engineers
   building enterprise financial-analytics applications. Architects micro-frontend
   platforms with Angular 20, Module Federation, Node.js and PostgreSQL on AWS.
+  Drives automated testing with Jest and Playwright end-to-end suites.
 - **IBM — Senior System Analyst** (Jan 2022 – Oct 2024, Bengaluru). Built
   micro-frontend logistics platforms with Angular 14 and React 17/18 remotes.
   Created a shared UI component library that cut development time 40%. Node.js
