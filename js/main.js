@@ -135,7 +135,15 @@
       e.preventDefault();
       rail.scrollLeft = startScroll - (e.pageX - startX);
     });
-    rail.addEventListener('touchstart', () => { paused = true; }, { passive: true });
+    /* touch has no mouseleave to resume on, so the pause has to be released
+       explicitly - without this the first tap froze the ticker for the rest of
+       the visit. the delay lets momentum scrolling settle before the transform
+       starts moving again, otherwise the two fight each other under the finger. */
+    let resume;
+    rail.addEventListener('touchstart', () => { paused = true; clearTimeout(resume); }, { passive: true });
+    const unpause = () => { clearTimeout(resume); resume = setTimeout(() => { paused = false; }, 900); };
+    rail.addEventListener('touchend', unpause, { passive: true });
+    rail.addEventListener('touchcancel', unpause, { passive: true });
   }
 
   /* ── mission log accordion (height tween via CSS transition) ── */
@@ -359,14 +367,22 @@
     const set = (id, v) => { const el = $(id); if (!el) return; el.classList.remove('skel');
       typeof v === 'number' ? countTo(el, v) : el.textContent = v; };
     const pick = (a, b) => (a != null ? a : b);
-    const endpoints = [
-      `https://alfa-leetcode-api.onrender.com/userProfile/${LEETCODE_USER}`,
-      `https://leetcode-stats-api.herokuapp.com/${LEETCODE_USER}`
-    ];
-    for (let i = 0; i < endpoints.length; i++) {
+    /* the same endpoint twice, not two providers. it runs on a free tier that
+       sleeps: the first request after an idle window spends most of a minute
+       booting, so attempt one pays for the boot and aborts, and attempt two
+       lands on a warm process. the second gets the longer budget because by
+       then the only question is whether the boot finished.
+
+       the old leetcode-stats-api.herokuapp.com fallback was removed rather than
+       repaired — heroku ended its free tier and that host now answers 503 with
+       no Access-Control-Allow-Origin. the browser reports the missing header
+       instead of the status, so a dead fallback was surfacing in the console as
+       a CORS failure on a site that never had one. */
+    const url = `https://alfa-leetcode-api.onrender.com/userProfile/${LEETCODE_USER}`;
+    for (const ms of [12000, 20000]) {
       try {
-        const d = await getJSON(endpoints[i], 12000);
-        const total = pick(d.totalSolved, d.solvedProblem);
+        const d = await getJSON(url, ms);
+        const total = d.totalSolved;
         if (total == null) throw new Error('shape');
         set('#lcTotal', +total);
         set('#lcEasy', pick(d.easySolved, '-'));

@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  changefreq and priority are deliberately absent. Google confirmed in 2023 that
+  it ignores both outright, and a stale <priority> is worse than none — it is a
+  claim about the site that nothing else in it backs up.
+
+  <lastmod> is the one element still read, and only while it stays honest. Keep
+  each value equal to the file's real modification date; a lastmod that moves
+  when the content did not gets the whole sitemap discounted.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tunirsaha.com/</loc>
-    <lastmod>2026-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://tunirsaha.com/Tunir_Saha_Resume.pdf</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://tunirsaha.com/projects/billmate/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-08-04</lastmod>
   </url>
   <url>
     <loc>https://tunirsaha.com/projects/between/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://tunirsaha.com/Tunir_Saha_Resume.pdf</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
 </urlset>

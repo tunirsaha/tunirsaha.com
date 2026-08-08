@@ -7,8 +7,17 @@
 #
 #   File Manager → public_html → Upload → tunirsaha-deploy.zip → Extract
 #
-# Existing files in public_html are overwritten by the extract; nothing
-# else there is touched. Delete the old zip after extracting.
+# Existing files in public_html are overwritten by the extract; nothing else
+# there is touched, so projects/ survives. Delete the zip after extracting.
+#
+# One caveat, for the record rather than for ceremony: during the extract the
+# site is briefly half-written. On 2026-08-08 a deploy caught mid-flight served a
+# four-day-old index.html while robots.txt, sitemap.xml, llms.txt, styles.css and
+# main.js all 404'd — and the host's default 404 is a domain-parking loader, so
+# for those few seconds the site looked parked. The 404.html + ErrorDocument in
+# .htaccess now shipping fixes the visible symptom permanently. The window itself
+# is a few seconds against a crawler that visits maybe daily; not worth
+# engineering around.
 #
 # Usage: ./deploy.sh
 #
@@ -22,7 +31,9 @@ ZIP="$ROOT/tunirsaha-deploy.zip"
 
 # Everything the live site actually serves. Add new top-level files here.
 FILES=(
+  .htaccess
   index.html
+  404.html
   robots.txt
   sitemap.xml
   llms.txt
@@ -71,86 +82,12 @@ for d in "${DIRS[@]}"; do cp -R "$d" "$BUILD/"; done
 find "$BUILD" -name '.DS_Store' -delete
 find "$BUILD" -name '._*' -delete
 
-# ── 4. Apache config for shared hosting ──
-cat > "$BUILD/.htaccess" <<'HTACCESS'
-# tunirsaha.com — Hostinger / Apache
-#
-# SCOPE: this file lives in public_html and its rules are INHERITED by every
-# subfolder, including public_html/projects/*. Rules below are deliberately
-# limited to transport (https/www), compression, caching and headers — no
-# rewriting of paths — so an existing project subfolder keeps working. Any
-# project with its own .htaccess (SPA fallback, PHP rules) overrides this one
-# for that folder.
-
-DirectoryIndex index.html
-
-# no directory listings — relevant with a projects/ folder present
-Options -Indexes
-
-# ── force https + non-www (canonical is https://tunirsaha.com/) ──
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
-  RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
-</IfModule>
-
-# ── compression ──
-# woff2 is deliberately absent: it is already brotli-compressed internally, so
-# deflating it again costs CPU and adds bytes.
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
-    application/javascript application/json application/xml image/svg+xml
-</IfModule>
-
-# ── caching: hashless assets get a short-ish life, html never cached ──
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType text/css              "access plus 7 days"
-  ExpiresByType application/javascript "access plus 7 days"
-  ExpiresByType image/svg+xml         "access plus 30 days"
-  ExpiresByType image/png             "access plus 30 days"
-  ExpiresByType image/x-icon          "access plus 30 days"
-  ExpiresByType application/pdf       "access plus 7 days"
-  ExpiresByType text/html             "access plus 0 seconds"
-  # the fonts are the one thing here that genuinely never changes — same three
-  # files, same glyphs, for the life of the design. a year is safe because a
-  # revision means a new filename, not new bytes behind the old one.
-  ExpiresByType font/woff2            "access plus 1 year"
-</IfModule>
-
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  <FilesMatch "\.(html)$">
-    Header set Cache-Control "no-cache, must-revalidate"
-  </FilesMatch>
-  # immutable stops the browser revalidating the fonts on every reload — without
-  # it a returning visitor still pays three conditional requests before any text
-  # can be painted, which is most of what self-hosting them was meant to avoid.
-  <FilesMatch "\.woff2$">
-    Header set Cache-Control "public, max-age=31536000, immutable"
-  </FilesMatch>
-</IfModule>
-
-# ── correct types for the SEO/GEO files ──
-AddType text/plain .txt
-AddType application/xml .xml
-AddType image/svg+xml .svg
-# older Apache mime.types predates woff2 and falls back to octet-stream, which
-# makes the browser reject the rel=preload as a type mismatch, fetch the font a
-# second time off the @font-face rule, and flash fallback text in between.
-AddType font/woff2 .woff2
-
-# never serve source/config files if any ever land here.
-# .md is intentionally NOT blocked — a project subfolder may legitimately
-# serve one, and this rule is inherited by every subfolder.
-<FilesMatch "(^\.env|^\.git|\.tex$|\.sh$|\.log$)">
-  Require all denied
-</FilesMatch>
-HTACCESS
+# ── 4. Apache config ──
+# .htaccess is copied from the repo in step 3 like any other payload. it used to
+# be generated here by a heredoc, which meant the copy you could read at the repo
+# root and the copy that actually shipped were two files free to drift — and they
+# did: the root one silently fell a full font-caching revision behind. one file,
+# edited in one place, is the whole point.
 
 # ── 5. zip with contents at the archive root ──
 rm -f "$ZIP"
@@ -166,4 +103,7 @@ echo "── next ────────────────────�
 echo "  hPanel → File Manager → public_html"
 echo "  Upload $(basename "$ZIP") → right-click → Extract → overwrite"
 echo "  Then delete the zip from public_html."
+echo
+echo "  ('show hidden files' must be on, or .htaccess will not extract —"
+echo "   that file carries the https redirect, HSTS and the 404 handler.)"
 echo
