@@ -184,7 +184,17 @@ No form inputs exist in the current build (contact is a `mailto:` link, not a fo
 - **Live telemetry (`.sig`):** GitHub contribution heatmap, LeetCode and Chess.com panels pulling real data on load, with skeleton shimmer states. "Show, don't tell" made literal.
 - **Ticker:** Full-bleed ink marquee of capability keywords in Archivo Black.
 
-## 6. Do's and Don'ts
+## 6. Machine Readability
+
+The site has a reader that never sees the design: the answer engine that summarizes it before a human arrives. It does not scroll, hover, or fire a click handler. The rules below exist because each one has already been broken once and cost real crawl coverage.
+
+**The Parallel Path Rule.** A `<button>` is not a link. The project cards are buttons — they open the detail panel in place rather than navigating — which meant their URLs existed nowhere a crawler could follow. Every destination reachable by interaction must also exist as a literal `<a href>` in the served HTML. `.crawl-links` is that parallel path; it is content, not scaffolding, and it must be updated whenever a project is added or removed.
+
+**The Clip-Not-Hide Rule.** Visually-hidden means `clip-path: inset(50%)` with `clip` fallback — never `display: none` or `visibility: hidden`. Those two remove the element from the accessibility tree, so a screen reader loses exactly what a sighted user loses, which is the opposite of the intent. Anything hidden this way must return on `:focus-within` (`.crawl-links`) or `:focus` (`.skip-link`) — hidden from the eye, never from the keyboard.
+
+**The Served-HTML Rule.** Everything that matters is in the HTML the server sends. JavaScript may enhance the page — boot loader, telemetry panels, panel transitions — but nothing load-bearing may depend on it. With scripts disabled the page still reads top to bottom, and the JSON-LD `@graph` still describes the same person. Asset references stay root-absolute (`/css/styles.css`, not `css/styles.css`) so they resolve identically from any path a crawler invents.
+
+## 7. Do's and Don'ts
 
 ### Do:
 - **Do** keep every corner square (`border-radius: 0`); reserve `50%` for the `.dot` status light only.
@@ -195,6 +205,8 @@ No form inputs exist in the current build (contact is a `mailto:` link, not a fo
 - **Do** make every effect informational — if a flourish carries no data, cut it (medium-is-the-proof).
 - **Do** keep the reduced-motion path intact: content visible without JS, animations collapsed under `prefers-reduced-motion`.
 - **Do** honor the 13px type floor and the loud orange focus-visible outline.
+- **Do** keep the skip link as the first focusable element, and keep every landmark (`main`, `nav`, `header`, `footer`) and the single `<h1>` intact.
+- **Do** give every button-driven destination a real `<a href>` twin in the markup.
 
 ### Don't:
 - **Don't** ship the **generic SaaS/template look** — no cookie-cutter identical card grids, no soft rounded corners, no ghost-shadow cards.
@@ -205,3 +217,5 @@ No form inputs exist in the current build (contact is a `mailto:` link, not a fo
 - **Don't** put raw ultramarine text on an ink surface (fails contrast) — use Accent-on-Ink.
 - **Don't** fake a bold weight on the display face; Archivo Black is already the weight.
 - **Don't** round card corners `≥ 4px` or pill-ify panels; that breaks the die-cut brutalist logic.
+- **Don't** "tidy up" `.crawl-links` or `.skip-link` because they look empty in the browser — they are load-bearing for crawlers and keyboards. Read section 6 before touching either.
+- **Don't** hide anything with `display: none` or `visibility: hidden` when the goal is visual-only; clip it instead, or it leaves the accessibility tree too.
