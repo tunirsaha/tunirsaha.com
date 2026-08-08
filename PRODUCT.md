@@ -6,12 +6,18 @@ brand
 
 ## Users
 
-Two readers, weighted equally:
+Two human readers, weighted equally:
 
 - **Employers** — recruiters, engineering managers and tech leads screening for a senior/lead frontend or full-stack hire. They arrive skeptical, skim fast, and want proof of depth (11 years, real companies: FICO, IBM, Accenture, Cognizant) before they invest attention.
 - **Clients & founders** — people who need something built end-to-end and are deciding whether one person can own frontend, backend and the hardware in between. They care about range and about "ships things that survive real users."
 
 Both land on `/` (single-page site), scan the hero for signal, and either bounce or reach the contact CTA. Success = they email `sahatunir@gmail.com` or open a profile link (GitHub / LinkedIn / LeetCode).
+
+There is also a third reader, and increasingly it reads first:
+
+- **Answer engines** — ChatGPT, Claude, Perplexity, Google AI Overviews. They arrive before the human does, and what they extract is what the human is shown. They do not scroll, hover, or run a click handler. Success = the model can state the role, the range and the contact route correctly, and cite `https://tunirsaha.com/` for it.
+
+This reader constrains design, not just markup: anything reachable only through a JS interaction is invisible to it. Whenever a navigational affordance is a `<button>`, the same destination must also exist as a real `<a href>` somewhere in the document — see **The Parallel Path Rule** in DESIGN.md.
 
 ## Product Purpose
 
