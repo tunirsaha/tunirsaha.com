@@ -6,7 +6,9 @@
   <meta name="theme-color" content="#edeae2" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#15151c" media="(prefers-color-scheme: dark)" />
   <title>Tunir Saha - Full Stack Developer | Angular, React, Node.js, Python</title>
-  <meta name="description" content="Tunir Saha is a full stack developer in Bengaluru with 11+ years across FICO, IBM, Accenture and Cognizant. Angular and React on the front, Node.js and Python behind, AWS/Azure/GCP underneath." />
+  <!-- 152 chars. the previous copy ran 214 and truncated mid-clause in the SERP;
+       everything past ~155 is written for a reader who never sees it. -->
+  <meta name="description" content="Full stack developer in Bengaluru, 11+ years across FICO, IBM, Accenture and Cognizant. Angular and React up front, Node.js and Python behind." />
   <link rel="canonical" href="https://tunirsaha.com/" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
   <meta name="author" content="Tunir Saha" />
@@ -83,12 +85,12 @@
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/space-grotesk-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
   <!-- defer, in head: the parser starts fetching this during HTML parse instead
        of at the closing </body>, but still runs it after the document is parsed
        and before DOMContentLoaded — identical timing guarantees to the sync tag
        it replaces, minus the serial download. -->
-  <script src="js/main.js" defer></script>
+  <script src="/js/main.js" defer></script>
   <script>
     /* set theme + js flag pre-paint to avoid flash / stranded content */
     (function(){var d=document.documentElement;d.classList.add('js');
@@ -109,7 +111,9 @@
       "familyName": "Saha",
       "url": "https://tunirsaha.com/",
       "mainEntityOfPage": "https://tunirsaha.com/",
-      "image": "https://tunirsaha.com/assets/og.png",
+      "image": {
+        "@id": "https://tunirsaha.com/#ogimage"
+      },
       "jobTitle": "Lead Engineer",
       "description": "Full stack developer with 11+ years building web, mobile and cloud applications. Angular and React on the frontend, Node.js and Python on the backend, AWS, Azure and GCP underneath. Currently Lead Engineer at FICO in Bengaluru.",
       "disambiguatingDescription": "Full stack developer and engineering lead based in Bengaluru, India, working across Angular, React, Node.js, Python and cloud infrastructure.",
@@ -187,46 +191,46 @@
         }
       },
       "knowsAbout": [
+        { "@type": "DefinedTerm", "name": "Angular", "@id": "https://www.wikidata.org/wiki/Q3183866" },
+        { "@type": "DefinedTerm", "name": "React", "@id": "https://www.wikidata.org/wiki/Q19399674" },
+        { "@type": "DefinedTerm", "name": "TypeScript", "@id": "https://www.wikidata.org/wiki/Q978185" },
+        { "@type": "DefinedTerm", "name": "JavaScript", "@id": "https://www.wikidata.org/wiki/Q2005" },
+        { "@type": "DefinedTerm", "name": "Node.js", "@id": "https://www.wikidata.org/wiki/Q756100" },
+        { "@type": "DefinedTerm", "name": "Express.js", "@id": "https://www.wikidata.org/wiki/Q16878131" },
+        { "@type": "DefinedTerm", "name": "Python", "@id": "https://www.wikidata.org/wiki/Q28865" },
+        { "@type": "DefinedTerm", "name": "PHP", "@id": "https://www.wikidata.org/wiki/Q59" },
+        { "@type": "DefinedTerm", "name": "PostgreSQL", "@id": "https://www.wikidata.org/wiki/Q192490" },
+        { "@type": "DefinedTerm", "name": "MySQL", "@id": "https://www.wikidata.org/wiki/Q850" },
+        { "@type": "DefinedTerm", "name": "MongoDB", "@id": "https://www.wikidata.org/wiki/Q1165204" },
+        { "@type": "DefinedTerm", "name": "Amazon Web Services", "@id": "https://www.wikidata.org/wiki/Q715779" },
+        { "@type": "DefinedTerm", "name": "Microsoft Azure", "@id": "https://www.wikidata.org/wiki/Q725967" },
+        { "@type": "DefinedTerm", "name": "Google Cloud Platform", "@id": "https://www.wikidata.org/wiki/Q17512808" },
+        { "@type": "DefinedTerm", "name": "Docker", "@id": "https://www.wikidata.org/wiki/Q15206305" },
+        { "@type": "DefinedTerm", "name": "Ionic", "@id": "https://www.wikidata.org/wiki/Q21015360" },
+        { "@type": "DefinedTerm", "name": "Web accessibility", "@id": "https://www.wikidata.org/wiki/Q371980" },
+        { "@type": "DefinedTerm", "name": "Software architecture", "@id": "https://www.wikidata.org/wiki/Q846636" },
+        { "@type": "DefinedTerm", "name": "Continuous integration", "@id": "https://www.wikidata.org/wiki/Q193657" },
+        { "@type": "DefinedTerm", "name": "Scrum", "@id": "https://www.wikidata.org/wiki/Q1155133" },
         "Full stack development",
-        "Angular",
-        "React",
-        "TypeScript",
-        "JavaScript",
         "RxJS",
         "NgRx",
         "Redux",
         "Micro-frontends",
         "Module Federation",
-        "Node.js",
-        "Express.js",
-        "Python",
         "FastAPI",
-        "PHP",
         "REST API design",
         "Socket.IO",
         "Real-time applications",
-        "PostgreSQL",
-        "MySQL",
-        "MongoDB",
-        "AWS",
-        "Microsoft Azure",
-        "Google Cloud Platform",
-        "Docker",
-        "CI/CD",
         "Jest",
         "Playwright",
         "Unit testing",
         "E2E testing",
-        "Ionic",
         "Capacitor",
         "Cross-platform mobile apps",
-        "Web accessibility",
         "WCAG 2.1",
         "IoT telemetry",
         "Embedded systems",
-        "Software architecture",
         "Agile",
-        "Scrum",
         "Technical leadership",
         "Code review"
       ],
@@ -331,8 +335,21 @@
       "about": {
         "@id": "https://tunirsaha.com/#tunir"
       },
-      "primaryImageOfPage": "https://tunirsaha.com/assets/og.png",
-      "inLanguage": "en"
+      "primaryImageOfPage": {
+        "@id": "https://tunirsaha.com/#ogimage"
+      },
+      "inLanguage": "en",
+      "dateModified": "2026-08-08"
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://tunirsaha.com/#ogimage",
+      "url": "https://tunirsaha.com/assets/og.png",
+      "contentUrl": "https://tunirsaha.com/assets/og.png",
+      "width": 1200,
+      "height": 630,
+      "encodingFormat": "image/png",
+      "caption": "Tunir Saha - Full Stack Developer, 11+ years, Bengaluru"
     },
     {
       "@type": "ItemList",
@@ -410,7 +427,7 @@
           "name": "Who is Tunir Saha?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he leads a team of five engineers delivering enterprise financial-analytics products. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014."
+            "text": "Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20 and Module Federation. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014."
           }
         },
         {
@@ -435,6 +452,8 @@
 }</script>
 </head>
 <body class="is-loading">
+
+  <a class="skip-link" href="#top">Skip to content</a>
 
   <!-- preloader / boot sequence -->
   <div class="loader" id="loader" aria-hidden="true">
@@ -634,10 +653,10 @@
             <span class="acc__ico" aria-hidden="true"></span>
           </button>
           <div class="acc__body"><ul>
-            <li>Leading a team of <b>5 engineers</b> (3 UI, 2 backend) delivering enterprise financial-analytics applications.</li>
-            <li>Architecting micro-frontend platforms with <b>Angular 20</b>, <b>Module Federation</b>, <b>Node.js</b> and <b>PostgreSQL</b>.</li>
-            <li>Designing reusable frontend architecture, shared libraries and scalable modules across products.</li>
-            <li>Driving automated testing with <b>Jest</b> and <b>Playwright</b> end-to-end suites, plus <b>AWS</b> production deployments.</li>
+            <li>Architecting enterprise <b>micro-frontend</b> solutions with <b>Angular 20</b> and <b>Module Federation</b>.</li>
+            <li>Building reusable, performance-optimized <b>UI component libraries</b> consumed across multiple engineering teams.</li>
+            <li>Establishing scalable frontend architecture and shared development standards for enterprise applications.</li>
+            <li>Implementing automated testing with <b>Jest</b> and <b>Playwright</b> - strengthening application quality and release confidence.</li>
           </ul></div>
         </li>
         <li class="acc" data-acc>
@@ -730,7 +749,11 @@
             <span class="sig__src">GITHUB / @tunirsaha</span>
             <span class="sig__live"><i class="dot"></i> <span id="ghTotal" aria-live="polite">- contributions</span></span>
           </div>
-          <div class="gh__grid" id="ghGrid" aria-label="GitHub contribution graph"></div>
+          <!-- tabindex makes the 53-column scroller reachable without a mouse; the
+               shared [tabindex]:focus-visible ring in styles.css already covers it.
+               role="img" collapses ~365 meaningless cell divs into one announcement
+               - the actual figure is read out from the total above this graph. -->
+          <div class="gh__grid" id="ghGrid" tabindex="0" role="img" aria-label="GitHub contribution graph, last 12 months"></div>
           <div class="gh__foot">
             <span class="gh__legend">LESS <i data-lvl="0"></i><i data-lvl="1"></i><i data-lvl="2"></i><i data-lvl="3"></i><i data-lvl="4"></i> MORE</span>
             <a class="sig__link" href="https://github.com/tunirsaha" target="_blank" rel="noopener">VIEW PROFILE ↗</a>
@@ -803,6 +826,23 @@
           <span class="exp__name">SocietyKit</span><span class="exp__type mono">SOCIETY MANAGEMENT</span>
         </button>
       </div>
+      <!-- The cards above are <button>s: the detail panel is the interaction, so a
+           button is the correct control and an <a> would be a lie about what a
+           click does. The cost is that the project URLs live only in data-url,
+           where no crawler will ever find them — the pages were in sitemap.xml
+           and in the ItemList JSON-LD, but nothing on this page linked to them,
+           which is the definition of an orphaned URL.
+
+           This list closes that gap with real, static <a href>s to the same three
+           destinations the buttons open. It is not cloaking: identical targets,
+           identical labels, visible to keyboard users the moment one is focused
+           (see .crawl-links in styles.css). Keep it in sync when a card is added. -->
+      <ul class="crawl-links" aria-label="Project links">
+        <li><a href="https://tunirsaha.com/projects/billmate/">BillMate - GST invoicing for Indian businesses</a></li>
+        <li><a href="https://tunirsaha.com/projects/between/">Between - meeting point finder</a></li>
+        <li><a href="https://societykit.in/" target="_blank" rel="noopener">SocietyKit - housing society management</a></li>
+      </ul>
+
       <div class="exp__panel" id="expPanel" role="region" aria-label="Selected project details" aria-hidden="true">
         <button class="exp__close mono" id="expClose">CLOSE ✕</button>
         <span class="exp__panel-st mono" id="expPanelSt">LIVE</span>
@@ -910,7 +950,7 @@
       <div class="faq" data-stagger>
         <article class="faq__item">
           <h3 class="faq__q">Who is Tunir Saha?</h3>
-          <p class="faq__a">Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he leads a team of five engineers delivering enterprise financial-analytics products. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014.</p>
+          <p class="faq__a">Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20 and Module Federation. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014.</p>
         </article>
 
         <article class="faq__item">

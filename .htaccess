@@ -1,7 +1,36 @@
-DirectoryIndex index.html
+# tunirsaha.com — Hostinger / Apache
+#
+# THIS is the file that ships. deploy.sh copies it into the zip verbatim; there
+# is no second copy generated anywhere. Edit here.
+#
+# SCOPE: this file lives in public_html and its rules are INHERITED by every
+# subfolder, including public_html/projects/*. Rules below are deliberately
+# limited to transport (https/www), compression, caching and headers — no
+# rewriting of paths — so an existing project subfolder keeps working. Any
+# project with its own .htaccess (SPA fallback, PHP rules) overrides this one
+# for that folder.
+
+# index.php is listed because this directive reaches down into projects/*, and a
+# PHP project that does not declare its own DirectoryIndex would otherwise have
+# Apache look for an index.html it does not have, fail, and fall through to the
+# Options -Indexes below as a 403.
+DirectoryIndex index.html index.php
 
 # no directory listings — relevant with a projects/ folder present
 Options -Indexes
+
+# ── 404 handling ──
+# the host account ships a DirectFWD parking loader as its default ErrorDocument.
+# it is 583 bytes of spinner plus an external script pulled over plain http, and
+# it is what every missing path returned during the deploy window on 2026-08-08 —
+# including /robots.txt, /sitemap.xml and /llms.txt. a crawler that lands on it
+# sees a parked domain, not a 404. this line takes that decision back.
+ErrorDocument 404 /404.html
+
+# ── charset ──
+# without this Apache sends "Content-Type: text/html" bare and the browser has to
+# sniff the encoding, even though every document here declares UTF-8 internally.
+AddDefaultCharset UTF-8
 
 # ── force https + non-www (canonical is https://tunirsaha.com/) ──
 <IfModule mod_rewrite.c>
@@ -14,6 +43,8 @@ Options -Indexes
 </IfModule>
 
 # ── compression ──
+# woff2 is deliberately absent: it is already brotli-compressed internally, so
+# deflating it again costs CPU and adds bytes.
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
     application/javascript application/json application/xml image/svg+xml
@@ -29,13 +60,40 @@ Options -Indexes
   ExpiresByType image/x-icon          "access plus 30 days"
   ExpiresByType application/pdf       "access plus 7 days"
   ExpiresByType text/html             "access plus 0 seconds"
+  # the fonts are the one thing here that genuinely never changes — same three
+  # files, same glyphs, for the life of the design. a year is safe because a
+  # revision means a new filename, not new bytes behind the old one.
+  ExpiresByType font/woff2            "access plus 1 year"
 </IfModule>
 
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # ── HSTS ──
+  # the http→https RewriteRule above only helps AFTER a plaintext request has
+  # already left the machine. this stops the second one ever being sent.
+  #
+  # includeSubDomains is deliberately ABSENT. ftp.tunirsaha.com resolves but does
+  # not present a cert matching that name (the wildcard is not served on it), so
+  # pinning subdomains to https would break any browser hitting it — and unlike a
+  # normal header, an HSTS pin is cached client-side for the full max-age and
+  # cannot be recalled by editing this file. add it only after every subdomain
+  # (mail, webmail, cpanel, ftp) verifies clean, and add "preload" later still.
+  # "always" so the header also rides 404 and 301 responses, not just 200s.
+  Header always set Strict-Transport-Security "max-age=31536000"
+
+  # frame protection — nothing here is meant to be embedded
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
   <FilesMatch "\.(html)$">
     Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # immutable stops the browser revalidating the fonts on every reload — without
+  # it a returning visitor still pays three conditional requests before any text
+  # can be painted, which is most of what self-hosting them was meant to avoid.
+  <FilesMatch "\.woff2$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>
 </IfModule>
 
@@ -43,6 +101,10 @@ Options -Indexes
 AddType text/plain .txt
 AddType application/xml .xml
 AddType image/svg+xml .svg
+# older Apache mime.types predates woff2 and falls back to octet-stream, which
+# makes the browser reject the rel=preload as a type mismatch, fetch the font a
+# second time off the @font-face rule, and flash fallback text in between.
+AddType font/woff2 .woff2
 
 # never serve source/config files if any ever land here.
 # .md is intentionally NOT blocked — a project subfolder may legitimately
