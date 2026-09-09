@@ -182,7 +182,7 @@
   /* ── lab panel ── */
   function initLab() {
     const lab = $('.lab'), panel = $('#expPanel'); if (!lab) return;
-    const f = { name: $('#expPanelName'), desc: $('#expPanelDesc'), st: $('#expPanelSt'), stack: $('#expPanelStack'), link: $('#expPanelLink') };
+    const f = { name: $('#expPanelName'), desc: $('#expPanelDesc'), stack: $('#expPanelStack'), link: $('#expPanelLink') };
     let cur = null;
 
     /* the panel is authored after .lab, which is right for the 2- and 3-column
@@ -213,7 +213,7 @@
       btn.classList.add('active'); btn.setAttribute('aria-expanded', 'true'); cur = btn;
       place();
       f.name.textContent = $('.exp__name', btn).textContent;
-      f.st.textContent = btn.dataset.status; f.desc.textContent = btn.dataset.desc; f.stack.textContent = btn.dataset.stack;
+      f.desc.textContent = btn.dataset.desc; f.stack.textContent = btn.dataset.stack;
       if (f.link) {
         const url = btn.dataset.url || '';
         f.link.href = url;

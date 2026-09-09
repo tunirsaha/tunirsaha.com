@@ -356,7 +356,7 @@
       "@id": "https://tunirsaha.com/#projects",
       "name": "Projects by Tunir Saha",
       "itemListOrder": "https://schema.org/ItemListOrderAscending",
-      "numberOfItems": 3,
+      "numberOfItems": 4,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -403,6 +403,26 @@
           "position": 3,
           "item": {
             "@type": "SoftwareApplication",
+            "name": "Buttons",
+            "url": "https://tunirsaha.com/projects/buttons/",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Web",
+            "description": "One-tap logging for anything you repeat - feeds, naps and nappies for a new baby, or water, gym sets and office hours. Every tap is timestamped and daily, weekly, monthly and yearly totals build themselves. Offline-first PWA with CSV export and a share code so two people log to the same buttons.",
+            "author": {
+              "@id": "https://tunirsaha.com/#tunir"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "INR"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "SoftwareApplication",
             "name": "SocietyKit",
             "url": "https://societykit.in/",
             "applicationCategory": "BusinessApplication",
@@ -427,7 +447,7 @@
           "name": "Who is Tunir Saha?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20 and Module Federation. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014."
+            "text": "Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20, Module Federation and Node.js on AWS. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014."
           }
         },
         {
@@ -653,7 +673,7 @@
             <span class="acc__ico" aria-hidden="true"></span>
           </button>
           <div class="acc__body"><ul>
-            <li>Architecting enterprise <b>micro-frontend</b> solutions with <b>Angular 20</b> and <b>Module Federation</b>.</li>
+            <li>Architecting enterprise <b>micro-frontend</b> solutions with <b>Angular 20</b>, <b>Module Federation</b> and <b>Node.js</b> on <b>AWS</b>.</li>
             <li>Building reusable, performance-optimized <b>UI component libraries</b> consumed across multiple engineering teams.</li>
             <li>Establishing scalable frontend architecture and shared development standards for enterprise applications.</li>
             <li>Implementing automated testing with <b>Jest</b> and <b>Playwright</b> - strengthening application quality and release confidence.</li>
@@ -670,7 +690,7 @@
           <div class="acc__body"><ul>
             <li>Engineered <b>micro-frontend</b> solutions for logistics platforms via <b>Module Federation</b>, with <b>Angular 14</b> and <b>React 17/18</b> remotes.</li>
             <li>Pioneered a reusable <b>UI component library</b> shared across Angular and React products - cut development time <b>40%</b> and unified the design language.</li>
-            <li>Built and maintained <b>Node.js/Express</b> middleware and REST services over <b>PostgreSQL</b>, deployed on <b>Azure</b>.</li>
+            <li>Built and maintained <b>Node.js/Express</b> middleware and REST services over <b>PostgreSQL</b>, deployed on <b>AWS</b> and <b>Azure</b>.</li>
             <li>Translated business requirements into technical solutions with cross-functional stakeholders, driving architecture discussions and peer reviews.</li>
             <li>Eradicated technical debt across legacy products - improving maintainability, scalability and performance.</li>
           </ul></div>
@@ -684,7 +704,7 @@
             <span class="acc__ico" aria-hidden="true"></span>
           </button>
           <div class="acc__body"><ul>
-            <li>Designed full-stack solutions with <b>Angular 12</b>, <b>React 17</b> and <b>Node.js</b> for internal web applications at <b>Microsoft</b>, running on <b>Azure</b>.</li>
+            <li>Designed full-stack solutions with <b>Angular 12</b>, <b>React 17</b> and <b>Node.js</b> for internal web applications at <b>Microsoft</b>, running on <b>AWS</b> and <b>GCP</b>.</li>
             <li>Boosted application performance <b>30%</b> by modularizing data handling, reducing render times and optimizing API consumption.</li>
             <li>Led cross-functional collaboration across <b>6 developers</b>, driving feature delivery and technical debt reduction.</li>
           </ul></div>
@@ -804,25 +824,29 @@
       <!--
         ✎ TO ADD A PROJECT: copy one <button> below, change the data-* attributes and the
         two spans. data-url must be a real, reachable link - no card ships without one.
+        Every card is live and every card is a product, so the cards carry no status or
+        category chip - the section meta already says ALL LIVE once, for all of them.
         Queued: Parcel - https://parcel.societykit.in/
       -->
       <div class="lab" data-stagger>
-        <button class="exp" data-exp data-status="LIVE" data-stack="Angular 20 · PHP · MySQL"
+        <button class="exp" data-exp data-stack="Angular 20 · PHP · MySQL"
           data-url="https://tunirsaha.com/projects/billmate/"
           data-desc="GST-compliant invoicing for Indian businesses - manage businesses and clients, then generate sequential CGST/SGST/IGST invoices with amount-in-words, ready to print.">
-          <span class="exp__top mono"><span class="exp__tag">SAAS</span><span class="exp__st">LIVE</span></span>
           <span class="exp__name">BillMate</span><span class="exp__type mono">GST INVOICING</span>
         </button>
-        <button class="exp" data-exp data-status="LIVE" data-stack="JavaScript · Leaflet · OpenStreetMap · PWA"
+        <button class="exp" data-exp data-stack="JavaScript · Leaflet · OpenStreetMap · PWA"
           data-url="https://tunirsaha.com/projects/between/"
           data-desc="Finds the fair midpoint between you and a friend, then surfaces the coffee, fuel or ATMs around it - with a one-tap route each. No API key, no billing, works offline as a PWA.">
-          <span class="exp__top mono"><span class="exp__tag">MAPS</span><span class="exp__st">LIVE</span></span>
           <span class="exp__name">Between</span><span class="exp__type mono">MEETING POINT FINDER</span>
         </button>
-        <button class="exp" data-exp data-status="LIVE" data-stack="Angular · Node.js · Ionic · Capacitor"
+        <button class="exp" data-exp data-stack="JavaScript · PHP · IndexedDB · PWA"
+          data-url="https://tunirsaha.com/projects/buttons/"
+          data-desc="One tap to log anything you repeat - feeds, naps and nappies for a new baby, or water, gym sets and office hours. Every tap is timestamped and the day, week, month and year totals build themselves. Works offline, syncs later, and a six-character code lets two people log to the same buttons.">
+          <span class="exp__name">Buttons</span><span class="exp__type mono">ONE-TAP TRACKER</span>
+        </button>
+        <button class="exp" data-exp data-stack="Angular · Node.js · Ionic · Capacitor"
           data-url="https://societykit.in/"
           data-desc="Housing society management end to end - an admin dashboard for billing, invoices, expenses and property records, plus companion mobile apps for residents and gate security.">
-          <span class="exp__top mono"><span class="exp__tag">PLATFORM</span><span class="exp__st">LIVE</span></span>
           <span class="exp__name">SocietyKit</span><span class="exp__type mono">SOCIETY MANAGEMENT</span>
         </button>
       </div>
@@ -833,19 +857,19 @@
            and in the ItemList JSON-LD, but nothing on this page linked to them,
            which is the definition of an orphaned URL.
 
-           This list closes that gap with real, static <a href>s to the same three
-           destinations the buttons open. It is not cloaking: identical targets,
+           This list closes that gap with real, static <a href>s to the same
+           destinations the cards open. It is not cloaking: identical targets,
            identical labels, visible to keyboard users the moment one is focused
            (see .crawl-links in styles.css). Keep it in sync when a card is added. -->
       <ul class="crawl-links" aria-label="Project links">
         <li><a href="https://tunirsaha.com/projects/billmate/">BillMate - GST invoicing for Indian businesses</a></li>
         <li><a href="https://tunirsaha.com/projects/between/">Between - meeting point finder</a></li>
+        <li><a href="https://tunirsaha.com/projects/buttons/">Buttons - one-tap tracker for feeds, naps and anything you count</a></li>
         <li><a href="https://societykit.in/" target="_blank" rel="noopener">SocietyKit - housing society management</a></li>
       </ul>
 
       <div class="exp__panel" id="expPanel" role="region" aria-label="Selected project details" aria-hidden="true">
         <button class="exp__close mono" id="expClose">CLOSE ✕</button>
-        <span class="exp__panel-st mono" id="expPanelSt">LIVE</span>
         <h3 id="expPanelName">-</h3>
         <p id="expPanelDesc">-</p>
         <div class="exp__panel-stack mono" id="expPanelStack"></div>
@@ -905,9 +929,9 @@
         </div>
         <div class="cred">
           <h3 class="tk__lbl mono">OTHER INTERESTS</h3>
-          <div class="cred__item"><h4>Chess</h4><p class="mono">5-MIN BLITZ</p></div>
-          <div class="cred__item"><h4>Music</h4><p class="mono">LISTEN</p></div>
-          <div class="cred__item"><h4>Off-road Motorcycling</h4><p class="mono">RIDE</p></div>
+          <div class="cred__item"><h4>Chess</h4></div>
+          <div class="cred__item"><h4>Music</h4></div>
+          <div class="cred__item"><h4>Off-road Motorcycling</h4></div>
         </div>
       </div>
     </section>
@@ -950,7 +974,7 @@
       <div class="faq" data-stagger>
         <article class="faq__item">
           <h3 class="faq__q">Who is Tunir Saha?</h3>
-          <p class="faq__a">Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20 and Module Federation. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014.</p>
+          <p class="faq__a">Tunir Saha is a full stack developer based in Bengaluru, India, with more than 11 years of experience building web, mobile and cloud applications. He is currently Lead Engineer at FICO, where he architects enterprise micro-frontend platforms with Angular 20, Module Federation and Node.js on AWS. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, travel and energy. He has been writing production code since 2014.</p>
         </article>
 
         <article class="faq__item">

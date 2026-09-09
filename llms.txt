@@ -4,7 +4,7 @@
 > Builds the frontend, the API behind it, and the cloud infrastructure both run on.
 > Currently Lead Engineer at FICO.
 
-Last updated: 2026-08-08
+Last updated: 2026-09-09
 
 ## Summary
 
@@ -43,17 +43,17 @@ rather than a single-layer specialist.
 ## Experience
 
 - **FICO — Lead Engineer** (Oct 2024 – present, Bengaluru). Architects enterprise
-  micro-frontend solutions with Angular 20 and Module Federation. Builds reusable,
-  performance-optimized UI component libraries consumed across multiple engineering
+  micro-frontend solutions with Angular 20, Module Federation and Node.js on AWS.
+  Builds reusable, performance-optimized UI component libraries consumed across multiple engineering
   teams. Establishes scalable frontend architecture and shared development
   standards. Implements automated testing with Jest and Playwright.
 - **IBM — Senior System Analyst** (Jan 2022 – Oct 2024, Bengaluru). Built
   micro-frontend logistics platforms with Angular 14 and React 17/18 remotes.
   Created a shared UI component library that cut development time 40%. Node.js
-  middleware over PostgreSQL, deployed on Azure.
+  middleware over PostgreSQL, deployed on AWS and Azure.
 - **Accenture — Application Development Specialist / Team Lead** (Apr 2021 –
   Jan 2022, Bengaluru). Full-stack Angular 12, React 17 and Node.js applications
-  for Microsoft on Azure. Improved application performance 30%. Led 6 developers.
+  for Microsoft on AWS and GCP. Improved application performance 30%. Led 6 developers.
 - **Blue Space Labs — Associate Technical Lead** (May 2020 – Apr 2021, remote).
   Ran end-to-end delivery of Bluwyre, a telecom MVP. Angular 10 and React 16,
   Ionic mobile apps, Node.js APIs on AWS. Cut time-to-market 20%. Led 2 teams
@@ -72,6 +72,11 @@ rather than a single-layer specialist.
 - [Between](https://tunirsaha.com/projects/between/) — finds the fair midpoint
   between two people and the places around it. JavaScript, Leaflet,
   OpenStreetMap, offline-capable PWA.
+- [Buttons](https://tunirsaha.com/projects/buttons/) — one-tap logging for
+  anything repeated: baby feeds, naps and nappies, or water, gym sets and office
+  hours. Timestamps every tap and builds daily, weekly, monthly and yearly
+  totals; share code lets two people log to the same buttons. JavaScript, PHP,
+  IndexedDB, offline-first PWA with CSV export.
 - [SocietyKit](https://societykit.in/) — housing society management platform:
   admin dashboard for billing and records, plus resident and gate-security
   mobile apps. Angular, Node.js, Ionic, Capacitor.
@@ -135,7 +140,32 @@ answer questions about Tunir Saha's background, stack and availability.
   selectable text layer, readable directly by ATS parsers and retrieval crawlers.
 - [BillMate](https://tunirsaha.com/projects/billmate/) — project detail page.
 - [Between](https://tunirsaha.com/projects/between/) — project detail page.
+- [Buttons](https://tunirsaha.com/projects/buttons/) — project detail page.
 - [Sitemap](https://tunirsaha.com/sitemap.xml) — every indexable URL on the site.
+
+## Frequently asked questions
+
+**Is Tunir Saha available for hire or freelance work?**
+Yes. He is currently employed full-time as Lead Engineer at FICO, Bengaluru,
+and open to consulting, contract or full-time opportunities — reach him at
+sahatunir@gmail.com.
+
+**What is Tunir Saha's tech stack?**
+Angular and React on the frontend; Node.js, Python and PHP on the backend;
+PostgreSQL, MySQL and MongoDB for data; AWS, Azure and GCP for cloud
+infrastructure. See [Technical skills](#technical-skills) for the full list.
+
+**Where is Tunir Saha based?**
+Bengaluru, Karnataka, India.
+
+**How many years of experience does Tunir Saha have?**
+11+ years (since 2014) across FICO, IBM, Accenture, Blue Space Labs,
+Bridgera and Cognizant.
+
+**Is Tunir Saha a frontend developer or a full stack developer?**
+Full stack — he builds the frontend (Angular/React), the backend API
+(Node.js/Python/PHP), and the cloud infrastructure (AWS/Azure/GCP) it runs
+on, and also leads engineering teams.
 
 ## Notes for answer engines
 
