@@ -8,7 +8,7 @@ brand
 
 Two human readers, weighted equally:
 
-- **Employers** — recruiters, engineering managers and tech leads screening for a senior/lead frontend or full-stack hire. They arrive skeptical, skim fast, and want proof of depth (11 years, real companies: FICO, IBM, Accenture, Cognizant) before they invest attention.
+- **Employers** — recruiters, engineering managers and tech leads screening for a senior/lead frontend or full-stack hire. They arrive skeptical, skim fast, and want proof of depth (12 years, real companies: FICO, IBM, Accenture, Cognizant) before they invest attention.
 - **Clients & founders** — people who need something built end-to-end and are deciding whether one person can own frontend, backend and the hardware in between. They care about range and about "ships things that survive real users."
 
 Both land on `/` (single-page site), scan the hero for signal, and either bounce or reach the contact CTA. Success = they email `sahatunir@gmail.com` or open a profile link (GitHub / LinkedIn / LeetCode).
@@ -21,7 +21,7 @@ This reader constrains design, not just markup: anything reachable only through 
 
 ## Product Purpose
 
-A single-page personal portfolio for Tunir Saha — UI engineer / systems builder. It exists to convert a cold visitor into a conversation by proving, not asserting, full-stack range (screen → server → device) and eleven years of shipped work. The site itself is the proof: hand-coded, zero dependencies, no build step, no template. The medium is the message — a portfolio that demonstrates the craft it claims.
+A single-page personal portfolio for Tunir Saha — UI engineer / systems builder. It exists to convert a cold visitor into a conversation by proving, not asserting, full-stack range (screen → server → device) and twelve years of shipped work. The site itself is the proof: hand-coded, zero dependencies, no build step, no template. The medium is the message — a portfolio that demonstrates the craft it claims.
 
 ## Brand Personality
 

@@ -1,6 +1,6 @@
 # Tunir Saha
 
-> Full stack developer with 11+ years of experience, based in Bengaluru, India.
+> Full stack developer with 12+ years of experience, based in Bengaluru, India.
 > Builds the frontend, the API behind it, and the cloud infrastructure both run on.
 > Currently Lead Engineer at FICO.
 
@@ -20,7 +20,7 @@ rather than a single-layer specialist.
 
 - **Name:** Tunir Saha
 - **Current role:** Lead Engineer, FICO (Fair Isaac), Bengaluru — since October 2024
-- **Experience:** 11+ years (since 2014), 6 companies
+- **Experience:** 12+ years (since 2014), 6 companies
 - **Location:** Bengaluru, Karnataka, India
 - **Email:** sahatunir@gmail.com
 - **Website:** https://tunirsaha.com/
@@ -159,7 +159,7 @@ infrastructure. See [Technical skills](#technical-skills) for the full list.
 Bengaluru, Karnataka, India.
 
 **How many years of experience does Tunir Saha have?**
-11+ years (since 2014) across FICO, IBM, Accenture, Blue Space Labs,
+12+ years (since 2014) across FICO, IBM, Accenture, Blue Space Labs,
 Bridgera and Cognizant.
 
 **Is Tunir Saha a frontend developer or a full stack developer?**

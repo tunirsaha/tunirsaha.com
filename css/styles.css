@@ -709,3 +709,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
   .js .topbar{ transform:none !important; }
   .wipe-cover{ display:none !important; }
 }
+
+/* no-JS: hide widgets that only JS can fill (clock, GitHub graph) instead of showing placeholders */
+html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.js) .gh__legend, html:not(.js) .sig__live:has(#ghTotal){ display:none; }
