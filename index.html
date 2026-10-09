@@ -85,7 +85,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/space-grotesk-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261009b" />
+  <link rel="stylesheet" href="/css/styles.css?v=20261009c" />
   <!-- defer, in head: the parser starts fetching this during HTML parse instead
        of at the closing </body>, but still runs it after the document is parsed
        and before DOMContentLoaded — identical timing guarantees to the sync tag
@@ -546,8 +546,10 @@
         </div>
       </div>
       <figure class="hero__art" data-reveal>
-        <img src="/assets/img/tunir-halftone.png" width="900" height="1040" alt="Halftone portrait of Tunir Saha, a full stack developer in glasses" fetchpriority="high" />
-        <figcaption class="mono">FIG.01 - TUNIR SAHA / HALFTONE</figcaption>
+        <picture>
+          <source media="(min-width:768px)" srcset="/assets/img/tunir-halftone.png" />
+          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="900" height="1040" alt="Halftone portrait of Tunir Saha, a full stack developer in glasses" />
+        </picture>
       </figure>
     </div>
     <ul class="hero__facts mono" data-reveal>

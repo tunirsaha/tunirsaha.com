@@ -717,13 +717,14 @@ body.menu-open .mmenu{ transform:translateY(0); }
 html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.js) .gh__legend, html:not(.js) .sig__live:has(#ghTotal){ display:none; }
 
 /* ═══ HERO HALFTONE PORTRAIT ═══ */
-/* panel keeps a fixed paper colour in both themes so the halftone always sits on the paper it was printed for */
-.hero__art{ margin:2rem var(--sh-3) 0 0; max-width:34rem; background:#edeae2; color:#100f0d; border:var(--bd) solid var(--ink); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent-2); padding:.8rem .8rem .6rem; }
-.hero__art img{ display:block; width:100%; height:auto; animation:ht-in 1.6s steps(26) both; }
-.hero__art figcaption{ margin-top:.6rem; font-size:var(--fs-xs); letter-spacing:.06em; }
-@keyframes ht-in{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
-@media (min-width:900px){
-  .hero__mid{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:2.5rem; align-items:center; }
-  .hero__art{ margin:0 var(--sh-3) 0 0; justify-self:end; width:100%; }
+/* tablet and up only. below 768px the <source media> never matches, so the image is not even downloaded */
+.hero__art{ display:none; }
+@media (min-width:768px){
+  /* panel keeps a fixed paper colour in both themes so the halftone always sits on the paper it was printed for */
+  .hero__mid{ display:grid; grid-template-columns:minmax(0,1fr) clamp(15rem,30vw,25rem); gap:2.5rem; align-items:center; }
+  .hero__art{ display:block; position:relative; aspect-ratio:900/1040; margin:0 var(--sh-3) var(--sh-3) 0; background:#edeae2; border:var(--bd) solid var(--ink); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent-2); overflow:hidden; }
+  /* fixed ratio, sized to roughly match the text block at desktop widths */
+  .hero__art img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; animation:ht-in 1.6s steps(26) both; }
 }
+@keyframes ht-in{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
 @media (prefers-reduced-motion:reduce){ .hero__art img{ animation:none; } }
