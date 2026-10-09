@@ -482,6 +482,9 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .exp{ text-align:left; padding:1.4rem; border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); background:var(--paper); display:flex; flex-direction:column; gap:.6rem; min-height:150px; transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
 .exp__name{ font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); text-transform:uppercase; line-height:1; margin-top:auto; }
 .exp__type{ font-size:var(--fs-xs); text-transform:uppercase; color:var(--ink-2); }
+/* always-visible affordance: hover is not a signal on touch, so the card says what tapping does. */
+.exp::after{ content:"VIEW DETAILS +"; align-self:flex-start; margin-top:.5rem; padding:.55rem .8rem; min-height:44px; display:inline-flex; align-items:center; border:var(--bd) solid currentColor; font-family:var(--mono); font-size:var(--fs-xs); font-weight:600; letter-spacing:.06em; }
+.exp.active::after{ content:"CLOSE \2212"; }
 @media (hover:hover){
   .exp:hover{ background:var(--accent); color:var(--accent-ink); transform:translate(-2px,-2px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); }
   .exp:hover .exp__type{ color:var(--accent-ink); }
@@ -712,3 +715,16 @@ body.menu-open .mmenu{ transform:translateY(0); }
 
 /* no-JS: hide widgets that only JS can fill (clock, GitHub graph) instead of showing placeholders */
 html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.js) .gh__legend, html:not(.js) .sig__live:has(#ghTotal){ display:none; }
+
+/* ═══ HERO ASCII PORTRAIT ═══ */
+.hero__art{ margin:2rem 0 0; container-type:inline-size; border:var(--bd) solid var(--ink); padding:.8rem; background:var(--paper-2); max-width:34rem; }
+.hero__ascii{ font:700 calc(100cqw / 96)/1 var(--mono); letter-spacing:0; white-space:pre; color:var(--ink); overflow:hidden; position:relative; animation:ascii-in 2.4s steps(36) both; }
+.hero__ascii::after{ content:""; position:absolute; left:0; right:0; height:3px; background:var(--accent-2); animation:ascii-scan 4s steps(40) 2.4s infinite; }
+.hero__art figcaption{ margin-top:.6rem; font-size:var(--fs-xs); letter-spacing:.06em; color:var(--ink-2); }
+@keyframes ascii-in{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
+@keyframes ascii-scan{ from{ top:0; } to{ top:100%; } }
+@media (min-width:900px){
+  .hero__mid{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:2.5rem; align-items:center; }
+  .hero__art{ margin:0; justify-self:end; width:100%; }
+}
+@media (prefers-reduced-motion:reduce){ .hero__ascii,.hero__ascii::after{ animation:none; } .hero__ascii::after{ display:none; } }
