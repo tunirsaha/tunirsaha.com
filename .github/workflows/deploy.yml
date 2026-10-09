@@ -1,0 +1,35 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same payload as deploy.sh. Keep the two lists in sync.
+      - name: Stage site files
+        run: |
+          mkdir dist
+          cp .htaccess index.html 404.html robots.txt sitemap.xml llms.txt favicon.ico Tunir_Saha_Resume.pdf dist/
+          cp -R css js assets dist/
+          find dist -name '.DS_Store' -delete
+
+      # Only uploads what is in dist/. dangerous-clean-slate stays false, so
+      # nothing already on the server (projects/, etc.) is ever deleted.
+      - name: Upload dist/ via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./dist/
+          server-dir: ./public_html/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.DS_Store
