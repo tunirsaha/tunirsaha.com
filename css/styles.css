@@ -720,11 +720,16 @@ html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.
 /* tablet and up only. below 768px the <source media> never matches, so the image is not even downloaded */
 .hero__art{ display:none; }
 @media (min-width:768px){
-  /* panel keeps a fixed paper colour in both themes so the halftone always sits on the paper it was printed for */
+  
   .hero__mid{ display:grid; grid-template-columns:minmax(0,1fr) clamp(15rem,30vw,25rem); gap:2.5rem; align-items:center; }
   .hero__art{ display:block; position:relative; aspect-ratio:900/1040; margin:0 var(--sh-3) var(--sh-3) 0; background:#edeae2; border:var(--bd) solid var(--ink); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent-2); overflow:hidden; }
   /* fixed ratio, sized to roughly match the text block at desktop widths */
   .hero__art img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; animation:ht-in 1.6s steps(26) both; }
 }
+/* dark theme: transparent light-blue halftone on the charcoal panel. the dark <img> is lazy, so display:none keeps it from downloading in light mode */
+.hero__art-dark{ display:none; }
+:root[data-theme="dark"] .hero__art{ background:var(--paper-2); }
+:root[data-theme="dark"] .hero__art picture:not(.hero__art-dark){ display:none; }
+:root[data-theme="dark"] .hero__art-dark{ display:block; }
 @keyframes ht-in{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
 @media (prefers-reduced-motion:reduce){ .hero__art img{ animation:none; } }
