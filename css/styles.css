@@ -111,6 +111,10 @@ body{
 body.is-loading{ overflow:hidden; height:100svh; }
 body.menu-open{ overflow:hidden; }
 [id]{ scroll-margin-top:72px; }
+/* background: a faint dotted lattice on the 45-degree axis, behind every section.
+   solid panels (the ink blocks) cover it, so it only shows on the paper */
+body::before{ content:""; position:fixed; inset:-50%; z-index:0; pointer-events:none; background-image:radial-gradient(circle, var(--line-soft) 1px, transparent 1.6px); background-size:28px 28px; transform:rotate(45deg); }
+
 
 a{ color:inherit; text-decoration:none; }
 button{ font:inherit; border:none; background:none; color:inherit; cursor:pointer; }
@@ -132,9 +136,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   box-shadow:0 0 0 9px var(--ink);
 }
 /* ink-backed panels — the backing ring flips to paper */
-.block--alt a:focus-visible, .block--alt button:focus-visible,
-.exp__panel a:focus-visible, .exp__panel button:focus-visible,
-.exp.active:focus-visible{ box-shadow:0 0 0 9px var(--paper); }
+.block--alt a:focus-visible, .block--alt button:focus-visible{ box-shadow:0 0 0 9px var(--paper); }
 /* ultramarine surfaces */
 .contact a:focus-visible, .mmenu a:focus-visible{ box-shadow:0 0 0 9px var(--accent-ink); }
 /* focusables that already carry a hard-offset shadow keep it and gain the ring */
@@ -150,11 +152,18 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
    into position by a machine. steps() quantises the move so you SEE the frames.
    the three reveal kinds move on different axes on purpose — a single uniform
    entrance applied to every section is the tell, not the motion itself. */
-.js [data-reveal]{ opacity:0; transform:translateY(12px); transition:opacity .3s steps(3), transform .3s steps(3); }
+.js [data-reveal]{ opacity:0; transform:translateY(12px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
 .js [data-reveal].is-in{ opacity:1; transform:none; }
 /* lists ratchet in from the left — different axis to the block reveals above */
-.js [data-stagger] > *{ opacity:0; transform:translateX(-16px); transition:opacity .28s steps(4), transform .28s steps(4); }
+.js [data-stagger] > *{ opacity:0; transform:translateX(-16px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
 .js [data-stagger].is-in > *{ opacity:1; transform:none; }
+/* GSAP owns these properties when it is loaded (html.gsap, set in js/main.js) */
+/* until GSAP has finished a reveal it owns opacity and transform, so CSS must not
+   transition them. the hover colour and shadow transitions stay on throughout */
+.gsap [data-reveal]:not(.revealed){ transition:none; }
+.gsap [data-stagger] > *:not(.revealed){ transition-property:background-color,color,box-shadow,border-color; }
+/* magnetic controls: GSAP moves them, so their CSS must not also transition transform */
+.magnetic{ transition:background .25s var(--ease), color .25s, box-shadow .25s var(--ease), border-color .25s; }
 .js [data-stagger].is-in > *:nth-child(1){ transition-delay:.00s }
 .js [data-stagger].is-in > *:nth-child(2){ transition-delay:.07s }
 .js [data-stagger].is-in > *:nth-child(3){ transition-delay:.14s }
@@ -164,7 +173,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 
 /* name intro — spans rise once body.booted lands */
 .js [data-name]{ display:block; overflow:hidden; }
-.js [data-name] span{ display:inline-block; transform:translateY(105%); transition:transform .9s steps(7); }
+.js [data-name] span{ display:inline-block; transform:translateY(105%); transition:transform 1s var(--ease); }
 .booted [data-name] span{ transform:translateY(0); }
 .booted .hero__line--2 span{ transition-delay:.12s; }
 
@@ -332,17 +341,17 @@ body.menu-open .mmenu{ transform:translateY(0); }
    minmax(0,…) lets the track shrink and the content wrap instead. */
 .caps{ display:grid; grid-template-columns:minmax(0,1fr); border-top:var(--bd-hair) solid var(--line-alt-2); }
 .caps > *{ min-width:0; }
-.cap{ padding:1.8rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); border-top:var(--bd-heavy) solid transparent; transition:padding-left .35s var(--ease), border-top-color .25s var(--ease); position:relative; }
+.cap{ padding:1.8rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); border-top:var(--bd-heavy) solid transparent; transition:border-top-color .25s var(--ease); position:relative; }
 .cap:nth-child(3),
 .cap:last-child{ border-bottom:none; }
-.cap::before{ content:attr(data-pct); position:absolute; top:0.5rem; left:0.3rem; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); opacity:0; transition:opacity .25s var(--ease); text-transform:uppercase; }
+.cap::before{ content:attr(data-pct); position:absolute; top:0.5rem; right:0; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); opacity:0; transition:opacity .25s var(--ease); text-transform:uppercase; }
 .cap__no{ font-size:var(--fs-sm); color:var(--accent); }
 .cap h3{ font-family:var(--disp); font-weight:400; font-size:clamp(2rem,9vw,3rem); text-transform:uppercase; line-height:1; margin:.4rem 0 .7rem; }
 .cap p{ color:var(--soft-alt); font-size:1rem; line-height:1.5; max-width:48ch; }
 .cap__tags{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.1rem; }
 .cap__tags li{ font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.04em; padding:.35rem .65rem; border:var(--bd-hair) solid var(--line-alt-2); transition:background .2s var(--ease), color .2s, border-color .2s; }
 @media (hover:hover){
-  .cap:hover{ padding-left:1rem; border-top-color:var(--accent); }
+  .cap:hover{ border-top-color:var(--accent); }
   .cap:hover h3{ color:var(--accent); }
   .cap:hover::before{ opacity:1; }
   .cap__tags li:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
@@ -351,7 +360,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 /* ░░ WORK HISTORY — ACCORDION ░░ */
 .cv{ border-top:var(--bd) solid var(--ink); }
 .acc{ border-bottom:var(--bd) solid var(--ink); }
-.acc__hd{ width:100%; text-align:left; display:grid; grid-template-columns:1fr auto; grid-template-areas:"role ico" "yr ico" "co loc"; gap:.5rem 1rem; align-items:center; padding:1.4rem .2rem; transition:background .25s var(--ease), color .25s, padding-left .35s var(--ease); }
+.acc__hd{ width:100%; text-align:left; display:grid; grid-template-columns:1fr auto; grid-template-areas:"role ico" "yr ico" "co loc"; gap:.5rem 1rem; align-items:center; padding:1.4rem .2rem; transition:background .25s var(--ease), color .25s; }
 .acc__yr{ grid-area:yr; font-size:var(--fs-md); color:var(--accent); }
 .acc__role{ grid-area:role; font-family:var(--disp); font-weight:400; font-size:clamp(1.5rem,6.5vw,2.6rem); text-transform:uppercase; line-height:1; letter-spacing:-.02em; }
 .acc__co{ grid-area:co; }
@@ -369,22 +378,29 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .acc__ico::before{ left:0; top:50%; width:100%; height:var(--bd); transform:translateY(-50%); }
 .acc__ico::after{ top:0; left:50%; width:var(--bd); height:100%; transform:translateX(-50%); }
 .acc.open .acc__ico::after{ transform:translateX(-50%) scaleY(0); }
-.acc__body{ overflow:hidden; height:0; transition:height .5s var(--ease); }
-.acc__body ul{ padding:.9rem .2rem 1.7rem; display:flex; flex-direction:column; gap:.85rem; }
+/* open/close tweens grid-template-rows 0fr <-> 1fr, so no height is animated */
+.acc__body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .5s var(--ease); }
+.acc.open .acc__body{ grid-template-rows:1fr; }
+.acc__body ul{ min-height:0; overflow:hidden; padding:0 .2rem; display:flex; flex-direction:column; gap:.85rem; }
+.acc__body li:first-child{ margin-top:.9rem; }
+.acc__body li:last-child{ margin-bottom:1.7rem; }
 .acc__body li{ position:relative; padding-left:1.4rem; color:var(--ink-2); font-size:clamp(1rem,3.4vw,1.1rem); line-height:1.55; }
 .acc__body li::before{ content:"—"; position:absolute; left:0; color:var(--accent); }
 .acc__body b{ color:var(--ink); font-weight:600; }
+/* opening a row: its lines step in one after another, the +/- turns */
+.acc__ico{ transition:transform .45s var(--ease); }
+.acc.open .acc__ico{ transform:rotate(180deg); }
+.acc__body li{ opacity:0; transform:translateX(-12px); transition:opacity .35s var(--ease), transform .35s var(--ease); }
+.acc.open .acc__body li{ opacity:1; transform:none; }
+.acc.open .acc__body li:nth-child(1){ transition-delay:.12s; }
+.acc.open .acc__body li:nth-child(2){ transition-delay:.18s; }
+.acc.open .acc__body li:nth-child(3){ transition-delay:.24s; }
+.acc.open .acc__body li:nth-child(4){ transition-delay:.30s; }
+.acc.open .acc__body li:nth-child(5){ transition-delay:.36s; }
+/* hover: only the role title turns ultramarine. the row background stays put */
 @media (hover:hover){
-  .acc__hd:hover{ background:var(--ink); color:var(--paper); padding-left:1.2rem; }
-  .acc__hd:hover .acc__loc{ color:var(--dim-alt); }
-  .acc__hd:hover .acc__co img{ filter:brightness(0) invert(1); opacity:1; }
+  .acc__hd:hover .acc__role{ color:var(--accent); }
 }
-.acc.open .acc__hd{ background:var(--ink); color:var(--paper); }
-.acc.open .acc__hd .acc__loc{ color:var(--dim-alt); }
-.acc.open .acc__hd .acc__co img{ filter:brightness(0) invert(1); opacity:1; }
-:root[data-theme="dark"] .acc.open .acc__hd .acc__co img,
-:root[data-theme="dark"] .acc__hd:hover .acc__co img{ filter:brightness(0); opacity:.85; }
-.acc.open .acc__ico::before,.acc.open .acc__ico::after{ background:var(--paper); }
 
 /* ░░ SKILL DISTRIBUTION — segmented bar, hard edges ░░ */
 
@@ -464,6 +480,21 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .gh__legend i[data-lvl="3"]{ background:var(--gh-3); }
 .gh__legend i[data-lvl="4"]{ background:var(--gh-4); }
 
+/* year tabs beside the heatmap: a column on desktop, a scrolling row on phones.
+   the active year is the inverted paper tab, the same device the work history uses */
+.gh__main{ display:flex; flex-direction:column; gap:.8rem; min-width:0; }
+.gh__years{ display:flex; flex-direction:row; gap:.3rem; overflow-x:auto; scrollbar-width:none; padding-bottom:.2rem; }
+.gh__years::-webkit-scrollbar{ display:none; }
+.gh__tab{ flex:0 0 auto; min-height:36px; padding:.35rem .6rem; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.06em; color:var(--soft-alt); border:var(--bd-hair) solid var(--line-alt-2); text-align:left; transition:background .2s var(--ease), color .2s, border-color .2s; }
+.gh__tab:hover{ color:var(--paper); border-color:var(--paper); }
+.gh__tab[aria-selected="true"]{ background:var(--paper); color:var(--ink); border-color:var(--paper); }
+@media (min-width:768px){
+  .gh__main{ flex-direction:row; align-items:flex-start; gap:1.2rem; }
+  .gh__years{ flex-direction:column; flex:0 0 auto; overflow:visible; padding-bottom:0; }
+  .gh__tab{ min-width:5.2rem; }
+  .gh__main .gh__grid{ flex:1 1 auto; min-width:0; }
+}
+
 /* stat rows (leetcode + chess) */
 .stat-row{ display:flex; gap:1rem; flex-wrap:wrap; }
 .stat{ flex:1 1 70px; }
@@ -478,42 +509,26 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .lab__note{ color:var(--ink-2); font-size:1rem; max-width:55ch; margin:-1rem 0 2rem; }
 .lab{ display:grid; grid-template-columns:minmax(0,1fr); gap:1rem; }
 .lab > *{ min-width:0; }
-.exp{ text-align:left; padding:1.4rem; border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); background:var(--paper); display:flex; flex-direction:column; gap:.6rem; min-height:150px; transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
-.exp__name{ font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); text-transform:uppercase; line-height:1; margin-top:auto; }
+/* a card is one fixed box. both faces share one grid cell, so the box is as tall
+   as the taller face and does not change size when it flips */
+.exp{ position:relative; perspective:1400px; background:var(--paper); border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
+.exp__inner{ display:grid; height:100%; padding:1.4rem; transform-style:preserve-3d; transition:transform .7s var(--ease); }
+.exp.is-flipped .exp__inner{ transform:rotateY(180deg); }
+.exp__face{ grid-area:1 / 1; display:flex; flex-direction:column; gap:.7rem; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.exp__back{ transform:rotateY(180deg); }
+.exp__name{ font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); text-transform:uppercase; line-height:1; }
 .exp__type{ font-size:var(--fs-xs); text-transform:uppercase; color:var(--ink-2); }
-/* always-visible affordance: hover is not a signal on touch, so the card says what tapping does. */
-.exp::after{ content:"VIEW DETAILS +"; align-self:flex-start; margin-top:.5rem; padding:.55rem .8rem; min-height:44px; display:inline-flex; align-items:center; border:var(--bd) solid currentColor; font-family:var(--mono); font-size:var(--fs-xs); font-weight:600; letter-spacing:.06em; }
-.exp.active::after{ content:"CLOSE \2212"; }
+.exp__desc{ color:var(--ink-2); line-height:1.5; font-size:.98rem; }
+.exp__stack{ font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; color:var(--accent); }
+.exp__front .exp__toggle{ margin-top:auto; }
+.exp__foot{ margin-top:auto; display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
+.exp__toggle, .exp__link{ align-self:flex-start; min-height:44px; display:inline-flex; align-items:center; padding:.55rem .8rem; border:var(--bd) solid currentColor; font-family:var(--mono); font-size:var(--fs-xs); font-weight:600; letter-spacing:.06em; text-transform:uppercase; transition:background .2s var(--ease), color .2s; }
+.exp__toggle:hover, .exp__link:hover{ background:var(--ink); color:var(--paper); }
 @media (hover:hover){
   .exp:hover{ background:var(--accent); color:var(--accent-ink); transform:translate(-2px,-2px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); }
-  .exp:hover .exp__type{ color:var(--accent-ink); }
+  .exp:hover .exp__type, .exp:hover .exp__desc, .exp:hover .exp__stack{ color:inherit; }
+  .exp:hover .exp__toggle:hover, .exp:hover .exp__link:hover{ background:var(--accent-ink); color:var(--accent); }
 }
-.exp.active{ background:var(--ink); color:var(--paper); }
-.exp.active .exp__type{ color:var(--dim-alt); }
-.exp__panel{ position:relative; margin:1rem 10px 10px 0; padding:1.8rem; background:var(--ink); color:var(--paper); display:none; opacity:0; transform:translateY(12px); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent); transition:opacity .4s var(--ease), transform .4s var(--ease); }
-.exp__panel.open{ display:block; }
-.exp__panel.in{ opacity:1; transform:none; }
-/* stacked, the panel is moved INTO .lab so it opens under the tapped card. two
-   things follow from becoming a grid child: the grid's own 1rem gap now doubles
-   the panel's top margin, and .lab's [data-stagger] rules — .is-in > * at
-   (0,3,1) — outrank .exp__panel/.in and would pin it visible with a stagger
-   delay. drop the margin, re-assert the entrance at higher specificity. */
-.lab > .exp__panel{ margin-top:0; }
-.js .lab[data-stagger].is-in > .exp__panel{ opacity:0; transform:translateY(12px); transition-delay:0s; }
-.js .lab[data-stagger].is-in > .exp__panel.in{ opacity:1; transform:none; }
-.exp__panel ::selection{ background:var(--paper); color:var(--ink); }
-/* the label alone measured well under the 24x24 minimum - the text is small by
-   design, so the target grows around it via padding and a min box rather than by
-   scaling the type. negative offsets keep the glyphs optically where they were. */
-.exp__close{ position:absolute; top:.4rem; right:.4rem; display:inline-flex; align-items:center; justify-content:center; min-width:44px; min-height:44px; padding:.6rem; font-size:var(--fs-xs); font-weight:600; color:var(--paper); }
-.exp__close:hover{ color:var(--accent); }
-.exp__panel h3{ font-family:var(--disp); font-weight:400; font-size:clamp(2rem,8vw,3rem); text-transform:uppercase; line-height:1; margin:.4rem 0 .8rem; }
-.exp__panel p{ color:var(--soft-alt); max-width:60ch; line-height:1.55; font-size:1rem; }
-.exp__panel-stack{ margin-top:1rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; color:var(--accent); }
-.exp__panel-link{ display:inline-block; margin-top:1.4rem; padding:.7rem 1.1rem; border:var(--bd) solid var(--paper); font-size:var(--fs-sm); letter-spacing:.06em; text-transform:uppercase; transition:background .25s var(--ease), color .25s var(--ease); }
-.exp__panel-link:hover,.exp__panel-link:focus-visible{ background:var(--paper); color:var(--ink); }
-.exp__panel-link[hidden]{ display:none; }
-
 /* ░░ CONTACT ░░ */
 .contact{ background:var(--accent); color:var(--accent-ink); border-bottom:none; min-height:90svh; display:flex; flex-direction:column; justify-content:center; }
 .contact ::selection{ background:var(--accent-ink); color:var(--accent); }
@@ -537,7 +552,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 /* the accent slab wipe is now on exactly two headings — the first block title
    and the closing CTA — instead of all nine. a signature move repeated nine
    times stops being a signature and becomes the page's default transition. */
-.wipe-cover{ position:absolute; inset:0; background:var(--accent); transform-origin:right; z-index:2; transition:transform .55s steps(5); }
+.wipe-cover{ position:absolute; inset:0; background:var(--accent); transform-origin:right; z-index:2; transition:transform .7s var(--ease); }
 .wipe-cover.out{ transform:scaleX(0); }
 
 /* ░░ THE SUMMARY — plain-language Q&A (also the citable block for answer engines) ░░ */
@@ -660,12 +675,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
 @media (hover:hover){ .block--alt .cap:hover h3{ color:var(--accent-on-ink); } }
 /* ticker sits on the page surface — plain accent reads fine */
 .ticker__track i { color:var(--accent); }
-/* accordion: open + hovered header gets ink bg */
-.acc.open .acc__yr,
-.acc__hd:hover .acc__yr { color:var(--accent-on-ink); }
-/* lab panel (background: var(--ink)) */
-.exp__panel-stack,
-.exp__close:hover { color:var(--accent-on-ink); }
 
 /* ░░ SKIP LINK ░░
    off-screen until focused, then lands on the page proper. positioned fixed so
@@ -679,6 +688,36 @@ body.menu-open .mmenu{ transform:translateY(0); }
   letter-spacing:.08em; text-transform:uppercase; text-decoration:none;
 }
 .skip-link:focus{ transform:translateY(0); }
+
+
+/* ░░ SECTION MOTION (CSS only, runs once a block has been revealed) ░░
+   every rule is stepped like the rest of the page, and each one is additive:
+   without JS or without the .is-in hook the section is simply static. */
+
+/* 1. each section draws a 4px accent rule across its top edge as you scroll
+      into it. scroll-driven, so no JS; browsers without view() timelines keep
+      the block as-is because the rule is only declared inside the @supports. */
+@supports (animation-timeline: view()){
+  .block:not(.contact)::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:var(--bd-heavy);
+    background:var(--accent); transform-origin:left center;
+    animation:rule-draw linear both; animation-timeline:view(); animation-range:entry 0% cover 35%;
+  }
+}
+@keyframes rule-draw{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+
+/* 2. capability tags drop in in a four-beat cycle once their card block lands */
+@keyframes tag-in{ from{ opacity:0; transform:translateY(6px); } }
+.caps.is-in .cap__tags li{ animation:tag-in .5s var(--ease) both; }
+.caps.is-in .cap__tags li:nth-child(4n+2){ animation-delay:.08s; }
+.caps.is-in .cap__tags li:nth-child(4n+3){ animation-delay:.16s; }
+.caps.is-in .cap__tags li:nth-child(4n){ animation-delay:.24s; }
+
+/* 3. signal cards and lab cards "stamp" their hard shadow on: the offset grows
+      from nothing to its resting depth, as if pressed onto the panel */
+@keyframes stamp{ from{ box-shadow:0 0 0 0 transparent; } }
+.live.is-in > .sig,
+.lab.is-in > .exp{ animation:stamp .6s var(--ease); }
 
 /* ░░ CRAWLABLE PROJECT LINKS ░░
    the visual project list is a row of <button>s (they open a panel, they do not
@@ -703,14 +742,19 @@ body.menu-open .mmenu{ transform:translateY(0); }
 }
 .crawl-links a{ color:var(--ink); }
 
-/* ░░ REDUCED MOTION ░░ */
-@media (prefers-reduced-motion:reduce){
-  *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
-  html{ scroll-behavior:auto; }
-  .js [data-reveal],.js [data-stagger] > *,.js [data-name] span{ opacity:1 !important; transform:none !important; }
-  .js .topbar{ transform:none !important; }
-  .wipe-cover{ display:none !important; }
-}
+/* ░░ REDUCED MOTION ░░
+   html.reduce-motion is set pre-paint (index.html head) from the OS setting, or
+   from the footer MOTION switch. one class, so CSS and JS always agree */
+html.reduce-motion *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+html.reduce-motion{ scroll-behavior:auto; }
+html.reduce-motion .js [data-reveal],
+html.reduce-motion .js [data-stagger] > *,
+html.reduce-motion .js [data-name] span{ opacity:1 !important; transform:none !important; }
+html.reduce-motion .js .topbar{ transform:none !important; }
+html.reduce-motion .wipe-cover{ display:none !important; }
+html.reduce-motion .block::before{ animation:none !important; transform:none !important; }
+.motion-toggle{ font:inherit; font-size:var(--fs-sm); letter-spacing:.06em; color:inherit; background:none; border:0; padding:.3rem 0; min-height:44px; text-align:left; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+.motion-toggle:hover{ text-decoration:none; }
 
 /* no-JS: hide widgets that only JS can fill (clock, GitHub graph) instead of showing placeholders */
 html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.js) .gh__legend, html:not(.js) .sig__live:has(#ghTotal){ display:none; }
@@ -723,12 +767,16 @@ html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.
   .hero__mid{ display:grid; grid-template-columns:minmax(0,1fr) clamp(15rem,30vw,25rem); gap:2.5rem; align-items:center; }
   .hero__art{ display:block; position:relative; aspect-ratio:900/1040; margin:0 var(--sh-3) var(--sh-3) 0; background:#edeae2; border:var(--bd) solid var(--ink); box-shadow:var(--sh-3) var(--sh-3) 0 var(--accent-2); overflow:hidden; }
   /* fixed ratio, sized to roughly match the text block at desktop widths */
-  .hero__art img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; animation:ht-in 1.6s steps(26) both; }
+  .hero__art img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 0; }
 }
 /* dark theme: transparent light-blue halftone on the charcoal panel. the dark <img> is lazy, so display:none keeps it from downloading in light mode */
 .hero__art-dark{ display:none; }
 :root[data-theme="dark"] .hero__art{ background:var(--paper-2); }
 :root[data-theme="dark"] .hero__art picture:not(.hero__art-dark){ display:none; }
 :root[data-theme="dark"] .hero__art-dark{ display:block; }
-@keyframes ht-in{ from{ clip-path:inset(0 0 100% 0); } to{ clip-path:inset(0); } }
-@media (prefers-reduced-motion:reduce){ .hero__art img{ animation:none; } }
+/* dot assembly (js initPortrait): the canvas sits over the image only while the
+   dots are flying in, then is hidden so the real <img> is what the reader keeps.
+   the canvas paints its own paper, so the swap underneath is invisible. */
+.hero__art-canvas{ position:absolute; inset:0; width:100%; height:100%; display:none; }
+.hero__art.is-assembling .hero__art-canvas{ display:block; }
+.hero__art.is-assembling img{ visibility:hidden; }

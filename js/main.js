@@ -10,13 +10,24 @@
   const LEETCODE_USER = 'sahatunir';
   const CHESS_USER = 'tunirsaha';
 
-  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* set pre-paint by the head script: OS reduce-motion, or the footer switch */
+  const RM = document.documentElement.classList.contains('reduce-motion');
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const lerp = (a, b, t) => a + (b - a) * t;
 
   /* shared scroll velocity → ticker boost */
   let boost = 1;
+
+  /* GSAP is optional: when it loads, it owns the scroll reveals (initGsap);
+     when it does not, the IntersectionObserver path in initReveals still runs */
+  const GS = window.gsap && window.ScrollTrigger ? window.gsap : null;
+  const afterBoot = fn => {
+    if (document.body.classList.contains('booted')) { fn(); return; }
+    new MutationObserver((m, o) => {
+      if (document.body.classList.contains('booted')) { o.disconnect(); fn(); }
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  };
 
   /* ── theme ── */
   function initTheme() {
@@ -88,13 +99,96 @@
     };
     const targets = $$('[data-reveal], [data-stagger], [data-wipe], [data-countup]');
     if (!('IntersectionObserver' in window) || RM) { targets.forEach(fire); return; }
+    /* GSAP reveals these itself (initGsap); the observer keeps the rest */
+    const ioTargets = targets.filter(el => !(GS && gsapOwns(el)));
     const io = new IntersectionObserver((entries, obs) => {
       entries.forEach(e => { if (!e.isIntersecting) return; fire(e.target); obs.unobserve(e.target); });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-    targets.forEach(el => io.observe(el));
-    /* FAILSAFE: nothing stays hidden */
-    setTimeout(() => targets.forEach(el => { if (!el.classList.contains('is-in')) fire(el); }), 4000);
+    ioTargets.forEach(el => io.observe(el));
+    /* no timed fallback here: a timer revealed every section on load, before the
+       reader scrolled to it. the observer reveals each block as it arrives */
   }
+  /* the hero portrait keeps its own observer: its canvas must start when visible */
+  const gsapOwns = el => el.matches('[data-stagger], [data-reveal]:not(.hero__art)');
+
+  /* ── GSAP motion: each reveal is a tween fired by ScrollTrigger, once.
+        starts after the loader lifts, so the first block is seen, not hidden ── */
+  function initGsap() {
+    if (!GS || RM) return;   /* reduced motion: CSS/observer path only */
+    /* html.gsap turns off the CSS reveal transitions: GSAP writes these
+       properties every frame, and a CSS transition on top would lag them */
+    document.documentElement.classList.add('gsap');
+    GS.registerPlugin(ScrollTrigger);
+    afterBoot(() => {
+      /* single elements: rise and fade. hero items get a short lead-in */
+      GS.utils.toArray('[data-reveal]:not(.hero__art)').forEach(el => {
+        GS.fromTo(el, { y: 28, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+          delay: el.closest('.hero') ? .25 : 0,
+          onComplete: () => el.classList.add('revealed'),
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+      /* lists: children cascade in. cards and rows share one motion */
+      GS.utils.toArray('[data-stagger]').forEach(list => {
+        const kids = [...list.children], st = { trigger: list, start: 'top 85%', once: true };
+        GS.fromTo(kids, { y: 24, x: 0, opacity: 0 }, {
+          y: 0, x: 0, opacity: 1, duration: .8, stagger: .09, ease: 'power3.out',
+          onComplete: () => kids.forEach(k => k.classList.add('revealed')),
+          scrollTrigger: st
+        });
+        /* lab and signal cards stamp their hard shadow on as they land.
+           the shadow is cleared afterwards so the :hover shadow still works */
+        if (list.matches('.live, .lab')) {
+          const rest = getComputedStyle(kids[0]).boxShadow;
+          GS.fromTo(kids, { boxShadow: rest.replace(/[\d.]+px/g, '0px') }, {
+            boxShadow: rest, duration: .6, stagger: .09, ease: 'power3.out',
+            clearProps: 'boxShadow', scrollTrigger: st
+          });
+        }
+        /* capability tags drop in once their card has landed */
+        if (list.matches('.caps')) {
+          GS.fromTo(list.querySelectorAll('.cap__tags li'), { y: 6, opacity: 0 }, {
+            y: 0, opacity: 1, duration: .5, stagger: .015, delay: .3, ease: 'power3.out',
+            scrollTrigger: st
+          });
+        }
+      });
+    });
+  }
+
+  /* ── pointer interaction (GSAP quickTo): only with a fine pointer and motion
+        allowed. touch and reduced-motion visitors get the static page ── */
+  function initInteractive() {
+    if (!GS || RM || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    /* magnetic controls drift a fraction of the way toward the pointer */
+    GS.utils.toArray('.topbar__cta, .themer, .rsm__btn, .contact__link').forEach(el => {
+      el.classList.add('magnetic');
+      const x = GS.quickTo(el, 'x', { duration: .45, ease: 'power3.out' });
+      const y = GS.quickTo(el, 'y', { duration: .45, ease: 'power3.out' });
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        x((e.clientX - r.left - r.width / 2) * .22);
+        y((e.clientY - r.top - r.height / 2) * .22);
+      });
+      el.addEventListener('pointerleave', () => { x(0); y(0); });
+    });
+    /* the halftone portrait tilts a few degrees toward the pointer */
+    const fig = $('.hero__art');
+    if (fig) {
+      /* reset the reveal's translateY(12px) first, or GSAP keeps it as the rest position */
+      GS.set(fig, { x: 0, y: 0, transformPerspective: 900, transformOrigin: '50% 50%' });
+      const rx = GS.quickTo(fig, 'rotationX', { duration: .7, ease: 'power3.out' });
+      const ry = GS.quickTo(fig, 'rotationY', { duration: .7, ease: 'power3.out' });
+      fig.addEventListener('pointermove', e => {
+        const r = fig.getBoundingClientRect();
+        ry(((e.clientX - r.left) / r.width - .5) * 8);
+        rx(-((e.clientY - r.top) / r.height - .5) * 8);
+      });
+      fig.addEventListener('pointerleave', () => { rx(0); ry(0); });
+    }
+  }
+
   function runCounters(scope) {
     $$('[data-count]', scope).forEach(el =>
       countTo(el, +el.dataset.count, { pad: +(el.dataset.pad || 0), suffix: el.dataset.suffix || '' }));
@@ -149,22 +243,9 @@
   /* ── mission log accordion (height tween via CSS transition) ── */
   function initAccordion() {
     const items = $$('[data-acc]'); if (!items.length) return;
-    const expand = it => {
-      const b = $('.acc__body', it);
-      it.classList.add('open'); $('.acc__hd', it).setAttribute('aria-expanded', 'true');
-      b.style.height = b.scrollHeight + 'px';
-      b.addEventListener('transitionend', function f(e) {
-        if (e.propertyName !== 'height') return;
-        if (it.classList.contains('open')) b.style.height = 'auto';
-        b.removeEventListener('transitionend', f);
-      });
-    };
-    const collapse = it => {
-      const b = $('.acc__body', it);
-      it.classList.remove('open'); $('.acc__hd', it).setAttribute('aria-expanded', 'false');
-      b.style.height = b.scrollHeight + 'px';
-      void b.offsetHeight;                           // force reflow: auto → px → 0 animates
-      b.style.height = '0px';
+    /* the CSS tweens grid-template-rows, so open/close is just the class */
+    const setOpen = (it, on) => {
+      it.classList.toggle('open', on); $('.acc__hd', it).setAttribute('aria-expanded', on ? 'true' : 'false');
     };
     items.forEach((it, i) => {
       const hd = $('.acc__hd', it), body = $('.acc__body', it);
@@ -173,59 +254,142 @@
       hd.setAttribute('aria-expanded', it.classList.contains('open') ? 'true' : 'false');
       hd.addEventListener('click', () => {
         const open = it.classList.contains('open');
-        items.forEach(o => { if (o !== it && o.classList.contains('open')) collapse(o); });
-        open ? collapse(it) : expand(it);
+        items.forEach(o => { if (o !== it && o.classList.contains('open')) setOpen(o, false); });
+        setOpen(it, !open);
       });
     });
   }
 
-  /* ── lab panel ── */
-  function initLab() {
-    const lab = $('.lab'), panel = $('#expPanel'); if (!lab) return;
-    const f = { name: $('#expPanelName'), desc: $('#expPanelDesc'), stack: $('#expPanelStack'), link: $('#expPanelLink') };
-    let cur = null;
+  /* ── hero portrait: halftone dots fly in from everywhere and settle into the
+        photo. runs once the loader clears and again on every theme switch, using
+        that theme's PNG. the dots are sampled from the same file the <img> shows,
+        so when they land the real image takes over with nothing visibly changing.
+        a canvas read on file:// is tainted, so the catch leaves the static image. */
+  function initPortrait() {
+    const art = $('.hero__art'), cv = $('.hero__art-canvas');
+    const wide = matchMedia('(min-width: 768px)');
+    if (!art || !cv || RM || !wide.matches) return;
+    const ctx = cv.getContext('2d');
+    const cache = {};
+    let run = 0;
 
-    /* the panel is authored after .lab, which is right for the 2- and 3-column
-       grids: it spans the full width below every card. stacked on one column it
-       is wrong - tap the first card and the detail opens past the last one, with
-       no visible connection to what you tapped. so while the grid is stacked,
-       move the panel to sit directly under the active card instead. */
-    const homeParent = panel.parentNode, homeNext = panel.nextSibling;
-    const stacked = matchMedia('(max-width: 767px)');
-    const place = () => {
-      if (cur && stacked.matches) { if (cur.nextElementSibling !== panel) cur.after(panel); }
-      else if (panel.parentNode !== homeParent) homeParent.insertBefore(panel, homeNext);
-    };
-    (stacked.addEventListener ? stacked.addEventListener.bind(stacked, 'change') : stacked.addListener.bind(stacked))(place);
+    /* decode once per file: RGBA pixels of the native 900x1040 PNG */
+    const load = src => cache[src] || (cache[src] = new Promise((ok, no) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          const x = c.getContext('2d', { willReadFrequently: true });
+          x.drawImage(img, 0, 0);
+          ok({ w: c.width, h: c.height, px: x.getImageData(0, 0, c.width, c.height).data });
+        } catch (e) { no(e); }
+      };
+      img.onerror = no;
+      img.src = src;
+    }));
 
-    const close = () => {
-      panel.classList.remove('open', 'in'); panel.setAttribute('aria-hidden', 'true');
-      $$('.exp').forEach(e => { e.classList.remove('active'); e.setAttribute('aria-expanded', 'false'); });
-      cur = null;
-      place();
-    };
-    $$('[data-exp]').forEach(btn => {
-      btn.setAttribute('aria-controls', 'expPanel');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.addEventListener('click', () => {
-      if (cur === btn) { close(); return; }
-      $$('.exp').forEach(e => { e.classList.remove('active'); e.setAttribute('aria-expanded', 'false'); });
-      btn.classList.add('active'); btn.setAttribute('aria-expanded', 'true'); cur = btn;
-      place();
-      f.name.textContent = $('.exp__name', btn).textContent;
-      f.desc.textContent = btn.dataset.desc; f.stack.textContent = btn.dataset.stack;
-      if (f.link) {
-        const url = btn.dataset.url || '';
-        f.link.href = url;
-        f.link.hidden = !url;
+    /* only assemble while the photo is on screen, so the reader sees the whole
+       gather. a theme switch made off-screen waits until the photo scrolls in. */
+    let visible = false, pending = false;
+    const assemble = async () => {
+      if (!visible) { pending = true; return; }
+      const mine = ++run;
+      const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const srcEl = $(dark ? '.hero__art-dark source' : '.hero__art picture:not(.hero__art-dark) source');
+      let src;
+      try { src = await load(srcEl.getAttribute('srcset')); } catch (e) { return; }
+      if (mine !== run) return;
+
+      /* the CSS box is object-fit:cover, object-position 50% 0 - mirror that mapping */
+      const W = art.clientWidth, H = art.clientHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const s = Math.max(W / src.w, H / src.h);
+      const ox = (W - src.w * s) / 2;
+      /* one dot per ~3 css px: dense enough to read as the halftone, light enough
+         to animate ~10k squares a frame */
+      const step = Math.max(1, Math.round(3 / s));
+      const dots = [];
+      for (let y = 0; y < src.h; y += step) for (let x = 0; x < src.w; x += step) {
+        const i = (y * src.w + x) * 4;
+        if (src.px[i + 3] < 128) continue;
+        dots.push({
+          x: ox + x * s, y: y * s, sz: step * s,
+          c: `rgb(${src.px[i]},${src.px[i + 1]},${src.px[i + 2]})`,
+          sx: Math.random() * W * 1.6 - W * 0.3,   /* start from everywhere, incl. just off-canvas */
+          sy: Math.random() * H * 1.6 - H * 0.3,
+          d: Math.random() * 700                    /* per-dot start delay, ms */
+        });
       }
-      panel.classList.remove('in');
-      panel.classList.add('open');
-      panel.setAttribute('aria-hidden', 'false');
-      requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('in')));
-      });
+
+      const bg = getComputedStyle(art).backgroundColor;
+      const DUR = 1700;
+      const t0 = performance.now();
+      art.classList.add('is-assembling');
+      const frame = t => {
+        if (mine !== run) return;
+        const k = t - t0;
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+        let done = true;
+        for (const p of dots) {
+          const q = Math.min(Math.max((k - p.d) / DUR, 0), 1);
+          if (q < 1) done = false;
+          const e = q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;   /* ease-in-out cubic */
+          ctx.fillStyle = p.c;
+          ctx.fillRect(p.sx + (p.x - p.sx) * e, p.sy + (p.y - p.sy) * e, p.sz, p.sz);
+        }
+        if (done) { art.classList.remove('is-assembling'); return; }
+        requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    };
+
+    new IntersectionObserver(es => {
+      visible = es[0].isIntersecting;
+      if (visible && pending) { pending = false; assemble().catch(() => {}); }
+    }, { threshold: 0.35 }).observe(art);
+
+    /* wait for the loader to lift, so the first assembly is seen, not hidden */
+    const whenBooted = fn => {
+      if (document.body.classList.contains('booted')) { fn(); return; }
+      new MutationObserver((m, o) => {
+        if (document.body.classList.contains('booted')) { o.disconnect(); fn(); }
+      }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    };
+    whenBooted(() => { assemble().catch(() => {}); });
+    new MutationObserver(() => { assemble().catch(() => {}); })
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
+  /* ── lab cards: each card flips in place to show its detail on the back.
+        the faces are inert while hidden, so only the visible face is reachable ── */
+  function initFlip() {
+    $$('[data-card]').forEach(card => {
+      const front = $('.exp__front', card), back = $('.exp__back', card);
+      const open = $('[data-flip-open]', front), close = $('[data-flip-close]', back);
+      const set = on => {
+        card.classList.toggle('is-flipped', on);
+        open.setAttribute('aria-expanded', on ? 'true' : 'false');
+        front.toggleAttribute('inert', on); back.toggleAttribute('inert', !on);
+      };
+      set(false);
+      open.addEventListener('click', () => { set(true); close.focus(); });
+      close.addEventListener('click', () => { set(false); open.focus(); });
     });
-    $('#expClose').addEventListener('click', close);
+  }
+
+  /* ── footer switch: flips the reduce-motion override and reloads, so every
+        tween and observer is set up again from scratch ── */
+  function initMotion() {
+    const btn = $('#motionToggle'); if (!btn) return;
+    btn.textContent = `MOTION: ${RM ? 'OFF' : 'ON'}`;
+    btn.setAttribute('aria-pressed', RM ? 'false' : 'true');
+    btn.addEventListener('click', () => {
+      try { localStorage.setItem('motion', RM ? 'on' : 'off'); } catch (e) {}
+      location.reload();
+    });
   }
 
   /* ── smooth anchor scroll (native) ── */
@@ -334,31 +498,64 @@
     } finally { clearTimeout(t); }
   }
 
-  /* ── GitHub contribution heatmap ── */
+  /* ── GitHub contribution heatmap, with year tabs (2019 to now, 2026 by default) ── */
   async function initGitHub() {
-    const grid = $('#ghGrid'), total = $('#ghTotal'); if (!grid) return;
-    try {
-      const data = await getJSON(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}?y=last`);
-      const days = data.contributions || [];
-      if (!days.length) throw new Error('empty');
-      grid.innerHTML = '';
-      /* pad to weekday of first datapoint so columns align with real weeks */
-      const offset = new Date(days[0].date + 'T00:00:00').getDay();
-      for (let i = 0; i < offset; i++) grid.appendChild(Object.assign(document.createElement('span'), { className: 'gh__cell' }));
-      let sum = 0;
-      days.forEach(d => {
-        sum += d.count || 0;
-        const cell = document.createElement('span');
-        cell.className = 'gh__cell';
-        cell.dataset.lvl = d.level || 0;
-        cell.title = `${d.date}: ${d.count} contribution${d.count === 1 ? '' : 's'}`;
-        grid.appendChild(cell);
+    const grid = $('#ghGrid'), total = $('#ghTotal'), tabs = $('#ghYears'); if (!grid) return;
+    const now = new Date().getFullYear();
+    const years = Array.from({ length: now - 2019 + 1 }, (_, i) => String(now - i));
+    const render = async year => {
+      total.textContent = '…';
+      try {
+        const data = await getJSON(`https://github-contributions-api.jogruber.de/v4/${GITHUB_USER}?y=${year}`);
+        const days = data.contributions || [];
+        if (!days.length) throw new Error('empty');
+        grid.innerHTML = '';
+        /* pad to weekday of first datapoint so columns align with real weeks */
+        const offset = new Date(days[0].date + 'T00:00:00').getDay();
+        for (let i = 0; i < offset; i++) grid.appendChild(Object.assign(document.createElement('span'), { className: 'gh__cell' }));
+        let sum = 0;
+        days.forEach(d => {
+          sum += d.count || 0;
+          const cell = document.createElement('span');
+          cell.className = 'gh__cell';
+          cell.dataset.lvl = d.level || 0;
+          cell.title = `${d.date}: ${d.count} contribution${d.count === 1 ? '' : 's'}`;
+          grid.appendChild(cell);
+        });
+        grid.setAttribute('aria-label', `GitHub contribution graph, ${year}`);
+        countTo(total, sum, { dur: 1400, fmt: v => `${v.toLocaleString()} contributions / ${year}` });
+      } catch (e) {
+        total.textContent = 'graph unavailable';
+        grid.innerHTML = '<span class="sig__err mono">Couldn\'t reach GitHub - view profile ↗</span>';
+      }
+    };
+    if (tabs) {
+      tabs.innerHTML = '';
+      years.forEach(y => {
+        const t = document.createElement('button');
+        t.type = 'button'; t.className = 'gh__tab mono'; t.setAttribute('role', 'tab');
+        t.textContent = y; t.dataset.year = y;
+        t.setAttribute('aria-selected', y === String(now) ? 'true' : 'false');
+        t.setAttribute('aria-controls', 'ghGrid');
+        t.tabIndex = y === String(now) ? 0 : -1;
+        t.addEventListener('click', () => select(t));
+        /* arrow keys walk the tabs, as the tab pattern expects */
+        t.addEventListener('keydown', e => {
+          const i = [...tabs.children].indexOf(t);
+          const next = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+          if (!next) return;
+          e.preventDefault();
+          const n = tabs.children[(i + next + tabs.children.length) % tabs.children.length];
+          n.focus(); select(n);
+        });
+        tabs.appendChild(t);
       });
-      countTo(total, sum, { dur: 1400, fmt: v => `${v.toLocaleString()} contributions / 1y` });
-    } catch (e) {
-      total.textContent = 'graph unavailable';
-      grid.innerHTML = '<span class="sig__err mono">Couldn\'t reach GitHub - view profile ↗</span>';
     }
+    const select = t => {
+      [...tabs.children].forEach(o => { const on = o === t; o.setAttribute('aria-selected', on ? 'true' : 'false'); o.tabIndex = on ? 0 : -1; });
+      render(t.dataset.year);
+    };
+    render(String(now));
   }
 
   /* ── LeetCode stats ── */
@@ -436,7 +633,7 @@
   /* ── boot ── */
   function boot() {
     initTheme(); initNav(); initMenu();
-    initReveals(); initMarquee(); initAccordion(); initLab();
+    initReveals(); initGsap(); initInteractive(); initMarquee(); initAccordion(); initFlip(); initMotion(); initPortrait();
     initLoader(); initSys(); initConsoleNote();
     initGitHub(); initLeetCode(); initChess(); initResume();
     /* hero facts count up on reveal */
