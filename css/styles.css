@@ -111,9 +111,15 @@ body{
 body.is-loading{ overflow:hidden; height:100svh; }
 body.menu-open{ overflow:hidden; }
 [id]{ scroll-margin-top:72px; }
-/* background: a faint dotted lattice on the 45-degree axis, behind every section.
-   solid panels (the ink blocks) cover it, so it only shows on the paper */
-body::before{ content:""; position:fixed; inset:-50%; z-index:0; pointer-events:none; background-image:radial-gradient(circle, var(--line-soft) 1px, transparent 1.6px); background-size:28px 28px; transform:rotate(45deg); }
+/* background: a blueprint grid that is deliberately NOT equally spaced, tilted 45deg,
+   behind every section. lines run the full sheet but vary: clusters of tight lines then
+   wide gaps, and each line gets its own look (crisp, dash-dot, dashed, fine, hairline) at
+   its own faintness. drawn as the two diagonal line families directly in a tiling SVG
+   (no rotated oversized layer, no mask: both are costly to paint), one tile per theme,
+   tinted from that theme's accent. solid panels cover it. */
+:root{ --bp-img:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%221200%22 viewBox=%220 0 1200 1200%22%3E%3Cg stroke=%22%232436ff%22 fill=%22none%22%3E%3Cpath d=%22M11.2 0.0L0.0 11.2%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 11.2L11.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M56.2 0.0L0.0 56.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 56.2L56.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M79.9 0.0L0.0 79.9%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 79.9L79.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M227.6 0.0L0.0 227.6%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 227.6L227.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M271.8 0.0L0.0 271.8%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 271.8L271.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M416.2 0.0L0.0 416.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 416.2L416.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M462.4 0.0L0.0 462.4%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 462.4L462.4 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M482.9 0.0L0.0 482.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 482.9L482.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M495.9 0.0L0.0 495.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 495.9L495.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M521.9 0.0L0.0 521.9%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M1200.0 521.9L521.9 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M555.5 0.0L0.0 555.5%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 555.5L555.5 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M621.9 0.0L0.0 621.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 621.9L621.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M635.6 0.0L0.0 635.6%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 635.6L635.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M660.5 0.0L0.0 660.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 660.5L660.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M677.2 0.0L0.0 677.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 677.2L677.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M702.8 0.0L0.0 702.8%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 702.8L702.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M806.1 0.0L0.0 806.1%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 806.1L806.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M830.9 0.0L0.0 830.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 830.9L830.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M975.2 0.0L0.0 975.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 975.2L975.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M987.7 0.0L0.0 987.7%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 987.7L987.7 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1021.2 0.0L0.0 1021.2%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 1021.2L1021.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1048.2 0.0L0.0 1048.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 1048.2L1048.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1062.7 0.0L0.0 1062.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1062.7L1062.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1098.1 0.0L0.0 1098.1%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1098.1L1098.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1124.7 0.0L0.0 1124.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1124.7L1124.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1171.7 0.0L0.0 1171.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1171.7L1171.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M12.1 0.0L1200.0 1187.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1187.9L12.1 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M31.5 0.0L1200.0 1168.5%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 1168.5L31.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M65.0 0.0L1200.0 1135.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 1135.0L65.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M92.5 0.0L1200.0 1107.5%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1107.5L92.5 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M193.2 0.0L1200.0 1006.8%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1006.8L193.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M216.9 0.0L1200.0 983.1%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 983.1L216.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M319.5 0.0L1200.0 880.5%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 880.5L319.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M337.7 0.0L1200.0 862.3%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 862.3L337.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M438.6 0.0L1200.0 761.4%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 761.4L438.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M451.7 0.0L1200.0 748.3%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 748.3L451.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M597.3 0.0L1200.0 602.7%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 602.7L597.3 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M632.0 0.0L1200.0 568.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 568.0L632.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M733.7 0.0L1200.0 466.3%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 466.3L733.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M765.8 0.0L1200.0 434.2%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 434.2L765.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M793.1 0.0L1200.0 406.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 406.9L793.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M816.6 0.0L1200.0 383.4%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M0.0 383.4L816.6 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M882.8 0.0L1200.0 317.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 317.2L882.8 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M928.6 0.0L1200.0 271.4%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 271.4L928.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M942.0 0.0L1200.0 258.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 258.0L942.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M965.9 0.0L1200.0 234.1%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M0.0 234.1L965.9 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M990.9 0.0L1200.0 209.1%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 209.1L990.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1035.0 0.0L1200.0 165.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 165.0L1035.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1048.5 0.0L1200.0 151.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 151.5L1048.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1197.5 0.0L1200.0 2.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 2.5L1197.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3C/g%3E%3C/svg%3E"); }
+:root[data-theme="dark"]{ --bp-img:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221200%22 height=%221200%22 viewBox=%220 0 1200 1200%22%3E%3Cg stroke=%22%237c88ff%22 fill=%22none%22%3E%3Cpath d=%22M11.2 0.0L0.0 11.2%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 11.2L11.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M56.2 0.0L0.0 56.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 56.2L56.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M79.9 0.0L0.0 79.9%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 79.9L79.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M227.6 0.0L0.0 227.6%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 227.6L227.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M271.8 0.0L0.0 271.8%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 271.8L271.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M416.2 0.0L0.0 416.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 416.2L416.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M462.4 0.0L0.0 462.4%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 462.4L462.4 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M482.9 0.0L0.0 482.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 482.9L482.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M495.9 0.0L0.0 495.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 495.9L495.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M521.9 0.0L0.0 521.9%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M1200.0 521.9L521.9 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M555.5 0.0L0.0 555.5%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 555.5L555.5 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M621.9 0.0L0.0 621.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 621.9L621.9 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M635.6 0.0L0.0 635.6%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 635.6L635.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M660.5 0.0L0.0 660.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 660.5L660.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M677.2 0.0L0.0 677.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 677.2L677.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M702.8 0.0L0.0 702.8%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 702.8L702.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M806.1 0.0L0.0 806.1%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 806.1L806.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M830.9 0.0L0.0 830.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 830.9L830.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M975.2 0.0L0.0 975.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 975.2L975.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M987.7 0.0L0.0 987.7%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1200.0 987.7L987.7 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1021.2 0.0L0.0 1021.2%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1200.0 1021.2L1021.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1048.2 0.0L0.0 1048.2%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1200.0 1048.2L1048.2 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M1062.7 0.0L0.0 1062.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1062.7L1062.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1098.1 0.0L0.0 1098.1%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1098.1L1098.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1124.7 0.0L0.0 1124.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1124.7L1124.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1171.7 0.0L0.0 1171.7%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1200.0 1171.7L1171.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M12.1 0.0L1200.0 1187.9%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1187.9L12.1 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M31.5 0.0L1200.0 1168.5%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 1168.5L31.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M65.0 0.0L1200.0 1135.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 1135.0L65.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M92.5 0.0L1200.0 1107.5%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1107.5L92.5 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M193.2 0.0L1200.0 1006.8%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 1006.8L193.2 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M216.9 0.0L1200.0 983.1%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 983.1L216.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M319.5 0.0L1200.0 880.5%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 880.5L319.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M337.7 0.0L1200.0 862.3%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 862.3L337.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M438.6 0.0L1200.0 761.4%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 761.4L438.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M451.7 0.0L1200.0 748.3%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 748.3L451.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M597.3 0.0L1200.0 602.7%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 602.7L597.3 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M632.0 0.0L1200.0 568.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 568.0L632.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M733.7 0.0L1200.0 466.3%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 466.3L733.7 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M765.8 0.0L1200.0 434.2%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 434.2L765.8 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M793.1 0.0L1200.0 406.9%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M0.0 406.9L793.1 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.128%22 stroke-dasharray=%2212 4 2 4%22/%3E%3Cpath d=%22M816.6 0.0L1200.0 383.4%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M0.0 383.4L816.6 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M882.8 0.0L1200.0 317.2%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 317.2L882.8 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M928.6 0.0L1200.0 271.4%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 271.4L928.6 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M942.0 0.0L1200.0 258.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 258.0L942.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M965.9 0.0L1200.0 234.1%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M0.0 234.1L965.9 1200.0%22 stroke-width=%220.7%22 stroke-opacity=%220.088%22 stroke-dasharray=%223 5%22/%3E%3Cpath d=%22M990.9 0.0L1200.0 209.1%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M0.0 209.1L990.9 1200.0%22 stroke-width=%220.6%22 stroke-opacity=%220.072%22/%3E%3Cpath d=%22M1035.0 0.0L1200.0 165.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M0.0 165.0L1035.0 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.152%22/%3E%3Cpath d=%22M1048.5 0.0L1200.0 151.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 151.5L1048.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M1197.5 0.0L1200.0 2.5%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3Cpath d=%22M0.0 2.5L1197.5 1200.0%22 stroke-width=%221%22 stroke-opacity=%220.112%22 stroke-dasharray=%227 5%22/%3E%3C/g%3E%3C/svg%3E"); }
+body::before{ content:""; position:fixed; inset:0; z-index:0; pointer-events:none; background-image:var(--bp-img); background-size:1200px 1200px; }
 
 
 a{ color:inherit; text-decoration:none; }
@@ -205,12 +211,14 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 :root[data-theme="dark"] .themer__moon{ opacity:0; transform:scale(.4) rotate(90deg); }
 
 /* ░░ TOPBAR ░░ */
-.topbar{ position:fixed; top:0; left:0; width:100%; z-index:120; display:flex; align-items:center; justify-content:space-between; padding:.85rem var(--pad); border-bottom:var(--bd) solid var(--ink); background:var(--paper); transition:transform .5s var(--ease), background .4s var(--ease), border-color .4s; }
+.topbar{ position:fixed; top:0; left:0; width:100%; z-index:120; display:flex; align-items:center; justify-content:space-between; padding:.85rem var(--pad); border-bottom:var(--bd) solid var(--ink); background:color-mix(in srgb, var(--paper) 84%, transparent); -webkit-backdrop-filter:blur(8px) saturate(1.1); backdrop-filter:blur(8px) saturate(1.1); transition:transform .5s var(--ease), background .4s var(--ease), border-color .4s; }
 .js .topbar{ transform:translateY(-101%); }
 .booted .topbar{ transform:translateY(0); }
 .topbar.hide, .booted .topbar.hide{ transform:translateY(-101%); }
 .topbar__id{ font-family:var(--disp); font-size:1.05rem; letter-spacing:-.01em; display:flex; align-items:baseline; gap:.3rem; }
-.topbar__sup{ font-size:var(--fs-xs); color:var(--accent); }
+.topbar__ts{ font-size:1.25rem; line-height:1; padding:.2rem .4rem; background:var(--ink); color:var(--paper); }
+.topbar__sec{ font-size:var(--fs-xs); color:var(--accent); text-transform:uppercase; letter-spacing:.06em; transition:opacity .25s var(--ease), transform .25s var(--ease); }
+.topbar__sec.swap{ opacity:0; transform:translateY(5px); }
 .topbar__nav{ display:none; gap:1.6rem; }
 .topbar__nav a{ font-family:var(--mono); font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.05em; }
 .topbar__nav a span{ color:var(--accent); }
@@ -246,7 +254,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 
 /* ░░ HERO ░░ */
 .hero{ position:relative; z-index:1; min-height:100svh; display:flex; flex-direction:column; padding:6rem var(--pad) 2rem; border-bottom:var(--bd) solid var(--ink); }
-.hero__top{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:.4rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.05em; padding-bottom:1.2rem; }
+.hero__top{ display:flex; justify-content:flex-end; flex-wrap:wrap; gap:.4rem; font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.05em; padding-bottom:1.2rem; }
 .hero__avail{ display:inline-flex; align-items:center; gap:.5rem; }
 .hero__avail .dot{ animation:blink 1.6s infinite; }
 @keyframes blink{ 50%{ opacity:.25; } }
@@ -268,10 +276,9 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .hero__scroll{ display:inline-flex; align-items:center; gap:.7rem; font-size:var(--fs-sm); font-weight:600; text-transform:uppercase; letter-spacing:.06em; padding-top:1rem; }
 
 /* ░░ TICKER ░░ */
-.ticker{ position:relative; z-index:1; background:var(--paper-2); color:var(--ink); overflow-x:auto; overflow-y:hidden; padding:.7rem 0; border-top:var(--bd) solid var(--ink); border-bottom:var(--bd) solid var(--ink); cursor:grab; scrollbar-width:none; -ms-overflow-style:none; -webkit-overflow-scrolling:touch; }
-.ticker::-webkit-scrollbar{ display:none; }
+.ticker{ position:relative; z-index:1; background:var(--paper-2); color:var(--ink); overflow:hidden; touch-action:pan-y; user-select:none; -webkit-user-select:none; padding:.7rem 0; border-top:var(--bd) solid var(--ink); border-bottom:var(--bd) solid var(--ink); cursor:grab;}
 .ticker:active{ cursor:grabbing; }
-.ticker__track{ display:flex; gap:1.4rem; align-items:center; width:max-content; white-space:nowrap; font-family:var(--disp); font-size:clamp(1.3rem,5vw,2.4rem); text-transform:uppercase; will-change:transform; }
+.ticker__track{ display:flex; transform-origin:50% 50%; gap:1.4rem; align-items:center; width:max-content; white-space:nowrap; font-family:var(--disp); font-size:clamp(1.3rem,5vw,2.4rem); text-transform:uppercase; will-change:transform; }
 .ticker__track > *{ flex:0 0 auto; }
 .ticker__track i{ font-style:normal; }
 
@@ -344,7 +351,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .cap{ padding:1.8rem 0; border-bottom:var(--bd-hair) solid var(--line-alt-2); border-top:var(--bd-heavy) solid transparent; transition:border-top-color .25s var(--ease); position:relative; }
 .cap:nth-child(3),
 .cap:last-child{ border-bottom:none; }
-.cap::before{ content:attr(data-pct); position:absolute; top:0.5rem; right:0; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); opacity:0; transition:opacity .25s var(--ease); text-transform:uppercase; }
+.cap::before{ content:attr(data-pct); position:absolute; top:0.5rem; right:0; font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); opacity:0; transform:scale(7); transform-origin:100% 0; pointer-events:none; transition:opacity .3s var(--ease), transform .55s cubic-bezier(.2,.9,.25,1); text-transform:uppercase; }
 .cap__no{ font-size:var(--fs-sm); color:var(--accent); }
 .cap h3{ font-family:var(--disp); font-weight:400; font-size:clamp(2rem,9vw,3rem); text-transform:uppercase; line-height:1; margin:.4rem 0 .7rem; }
 .cap p{ color:var(--soft-alt); font-size:1rem; line-height:1.5; max-width:48ch; }
@@ -353,7 +360,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 @media (hover:hover){
   .cap:hover{ border-top-color:var(--accent); }
   .cap:hover h3{ color:var(--accent); }
-  .cap:hover::before{ opacity:1; }
+  .cap:hover::before{ opacity:1; transform:none; }
   .cap__tags li:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 }
 
@@ -379,7 +386,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .acc__ico::after{ top:0; left:50%; width:var(--bd); height:100%; transform:translateX(-50%); }
 .acc.open .acc__ico::after{ transform:translateX(-50%) scaleY(0); }
 /* open/close tweens grid-template-rows 0fr <-> 1fr, so no height is animated */
-.acc__body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .5s var(--ease); }
+.acc__body{ display:grid; grid-template-rows:0fr; transition:grid-template-rows .65s cubic-bezier(.65,0,.35,1); }
 .acc.open .acc__body{ grid-template-rows:1fr; }
 .acc__body ul{ min-height:0; overflow:hidden; padding:0 .2rem; display:flex; flex-direction:column; gap:.85rem; }
 .acc__body li:first-child{ margin-top:.9rem; }
@@ -390,7 +397,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
 /* opening a row: its lines step in one after another, the +/- turns */
 .acc__ico{ transition:transform .45s var(--ease); }
 .acc.open .acc__ico{ transform:rotate(180deg); }
-.acc__body li{ opacity:0; transform:translateX(-12px); transition:opacity .35s var(--ease), transform .35s var(--ease); }
+.acc__body li{ opacity:0; transform:translateX(-12px); transition:opacity .4s cubic-bezier(.65,0,.35,1), transform .5s cubic-bezier(.65,0,.35,1); }
 .acc.open .acc__body li{ opacity:1; transform:none; }
 .acc.open .acc__body li:nth-child(1){ transition-delay:.12s; }
 .acc.open .acc__body li:nth-child(2){ transition-delay:.18s; }
@@ -489,8 +496,10 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .gh__tab:hover{ color:var(--paper); border-color:var(--paper); }
 .gh__tab[aria-selected="true"]{ background:var(--paper); color:var(--ink); border-color:var(--paper); }
 @media (min-width:768px){
-  .gh__main{ flex-direction:row; align-items:flex-start; gap:1.2rem; }
-  .gh__years{ flex-direction:column; flex:0 0 auto; overflow:visible; padding-bottom:0; }
+  .gh__main{ flex-direction:row; align-items:stretch; gap:1.2rem; }
+  /* height:0 + min-height:100% takes the tab column out of the row's sizing, so
+     the row is exactly as tall as the heatmap; extra years scroll inside it */
+  .gh__years{ flex-direction:column; flex:0 0 auto; height:0; min-height:100%; overflow-y:auto; overflow-x:hidden; scrollbar-width:thin; padding-bottom:0; }
   .gh__tab{ min-width:5.2rem; }
   .gh__main .gh__grid{ flex:1 1 auto; min-width:0; }
 }
@@ -512,13 +521,13 @@ body.menu-open .mmenu{ transform:translateY(0); }
 /* a card is one fixed box. both faces share one grid cell, so the box is as tall
    as the taller face and does not change size when it flips */
 .exp{ position:relative; perspective:1400px; background:var(--paper); border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); transition:background .2s var(--ease), color .2s, transform .2s var(--ease), box-shadow .2s var(--ease); }
-.exp__inner{ display:grid; height:100%; padding:1.4rem; transform-style:preserve-3d; transition:transform .7s var(--ease); }
+.exp__inner{ display:grid; height:100%; padding:1.1rem 1.2rem; transform-style:preserve-3d; transition:transform .7s var(--ease); }
 .exp.is-flipped .exp__inner{ transform:rotateY(180deg); }
-.exp__face{ grid-area:1 / 1; display:flex; flex-direction:column; gap:.7rem; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.exp__face{ grid-area:1 / 1; display:flex; flex-direction:column; gap:.5rem; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
 .exp__back{ transform:rotateY(180deg); }
 .exp__name{ font-family:var(--disp); font-weight:400; font-size:clamp(1.6rem,7vw,2.4rem); text-transform:uppercase; line-height:1; }
 .exp__type{ font-size:var(--fs-xs); text-transform:uppercase; color:var(--ink-2); }
-.exp__desc{ color:var(--ink-2); line-height:1.5; font-size:.98rem; }
+.exp__desc{ color:var(--ink-2); line-height:1.4; font-size:.95rem; }
 .exp__stack{ font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.04em; color:var(--accent); }
 .exp__front .exp__toggle{ margin-top:auto; }
 .exp__foot{ margin-top:auto; display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; }
@@ -554,24 +563,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
    times stops being a signature and becomes the page's default transition. */
 .wipe-cover{ position:absolute; inset:0; background:var(--accent); transform-origin:right; z-index:2; transition:transform .7s var(--ease); }
 .wipe-cover.out{ transform:scaleX(0); }
-
-/* ░░ THE SUMMARY — plain-language Q&A (also the citable block for answer engines) ░░ */
-.faq{ border-top:var(--bd) solid var(--ink); counter-reset:faq; }
-.faq__item{ padding:1.6rem 0; border-bottom:var(--bd-hair) solid var(--line); }
-.faq__q{
-  counter-increment:faq;
-  font-family:var(--sans); font-weight:700; font-size:clamp(1.15rem,4.2vw,1.5rem);
-  line-height:1.2; letter-spacing:-.01em; margin:0 0 .7rem;
-}
-.faq__q::before{
-  content:counter(faq,decimal-leading-zero);
-  font-family:var(--mono); font-size:var(--fs-sm); font-weight:500;
-  color:var(--accent); margin-right:.8rem; vertical-align:.15em;
-}
-.faq__a{ color:var(--ink-2); font-size:1rem; line-height:1.65; max-width:68ch; }
-.faq__a b{ color:var(--ink); font-weight:600; }
-.faq__a a{ color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
-@media (hover:hover){ .faq__a a:hover{ background:var(--accent); color:var(--accent-ink); text-decoration:none; } }
 
 /* ░░ THE RESUME — PDF download ░░ */
 .rsm{ display:grid; grid-template-columns:1fr; gap:2rem; border-top:var(--bd) solid var(--ink); padding-top:2rem; }
@@ -632,10 +623,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
   .topbar__burger{ display:none; }
   .lab{ grid-template-columns:repeat(3,minmax(0,1fr)); }
   .block__head{ margin-bottom:3.5rem; }
-  /* question left, answer right — editorial two-column */
-  .faq__item{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.7fr); gap:2.5rem; padding:2.2rem 0; }
-  .faq__q{ margin:0; }
-  .faq__a{ margin:0; }
 }
 
 /* ░░ ACCENT-ON-INK — readable accent for text sitting on var(--ink) backgrounds ░░ */
@@ -645,16 +632,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .block--alt .cred__lbl,
 .block--alt .sig__src { color:var(--accent-on-ink); }
 .block--alt .block__title-2 { color:var(--accent-on-ink); }
-/* FAQ — base-surface tokens have to flip on the inverted summary panel */
-.block--alt .faq{ border-top-color:var(--paper); }
-.block--alt .faq__item{ border-bottom-color:var(--line-alt-2); }
-.block--alt .faq__q::before{ color:var(--accent-on-ink); }
-.block--alt .faq__a{ color:var(--soft-alt); }
-.block--alt .faq__a b{ color:var(--paper); }
-.block--alt .faq__a a{ color:var(--accent-on-ink); }
-@media (hover:hover){
-  .block--alt .faq__a a:hover{ background:var(--accent-on-ink); color:var(--ink); }
-}
 .block--alt .sig__link:hover { color:var(--accent-on-ink); }
 /* hover percentage + top rule — plain accent is ~2.2:1 on ink, under 1.4.11 */
 .block--alt .cap::before{ color:var(--accent-on-ink); }
@@ -742,20 +719,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
 }
 .crawl-links a{ color:var(--ink); }
 
-/* ░░ REDUCED MOTION ░░
-   html.reduce-motion is set pre-paint (index.html head) from the OS setting, or
-   from the footer MOTION switch. one class, so CSS and JS always agree */
-html.reduce-motion *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
-html.reduce-motion{ scroll-behavior:auto; }
-html.reduce-motion .js [data-reveal],
-html.reduce-motion .js [data-stagger] > *,
-html.reduce-motion .js [data-name] span{ opacity:1 !important; transform:none !important; }
-html.reduce-motion .js .topbar{ transform:none !important; }
-html.reduce-motion .wipe-cover{ display:none !important; }
-html.reduce-motion .block::before{ animation:none !important; transform:none !important; }
-.motion-toggle{ font:inherit; font-size:var(--fs-sm); letter-spacing:.06em; color:inherit; background:none; border:0; padding:.3rem 0; min-height:44px; text-align:left; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
-.motion-toggle:hover{ text-decoration:none; }
-
 /* no-JS: hide widgets that only JS can fill (clock, GitHub graph) instead of showing placeholders */
 html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.js) .gh__legend, html:not(.js) .sig__live:has(#ghTotal){ display:none; }
 
@@ -778,5 +741,34 @@ html:not(.js) .loader, html:not(.js) .js-only, html:not(.js) #ghGrid, html:not(.
    dots are flying in, then is hidden so the real <img> is what the reader keeps.
    the canvas paints its own paper, so the swap underneath is invisible. */
 .hero__art-canvas{ position:absolute; inset:0; width:100%; height:100%; display:none; }
-.hero__art.is-assembling .hero__art-canvas{ display:block; }
+.hero__art.is-assembling .hero__art-canvas,
+.hero__art.is-settling .hero__art-canvas{ display:block; }
 .hero__art.is-assembling img{ visibility:hidden; }
+
+/* ░░ MOTION ADDITIONS ░░ */
+/* caps: a soft spotlight follows the pointer (--mx/--my set in main.js) */
+@media (hover:hover){
+  .cap{ background:radial-gradient(340px circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, currentColor 7%, transparent), transparent 65%) no-repeat; background-size:100% 100%; }
+}
+/* heatmap cells pop in as a wave, left to right (delay set per cell in main.js) */
+@keyframes cell-in{ from{ opacity:0; transform:scale(.3); } }
+.gh__cell{ animation:cell-in .45s var(--ease) both; }
+
+/* ░░ WHATSAPP FLOATER ░░ bottom-right, below the header and mobile menu, above the page */
+.wa{ position:fixed; right:max(1rem, env(safe-area-inset-right)); bottom:max(1rem, env(safe-area-inset-bottom)); z-index:100; width:56px; height:56px; display:grid; place-items:center; background:#25d366; color:#fff; border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--ink); opacity:0; transform:translateY(16px) scale(.8); pointer-events:none; transition:opacity .5s var(--ease), transform .5s var(--ease), box-shadow .2s var(--ease), bottom .5s var(--ease); }
+.booted .wa{ opacity:1; transform:none; pointer-events:auto; transition-delay:.6s, .6s, 0s; }
+.wa svg{ width:30px; height:30px; }
+.wa::after{ content:""; position:absolute; inset:-2px; border:var(--bd) solid #25d366; animation:wa-ping 2.6s var(--ease) infinite; pointer-events:none; }
+@keyframes wa-ping{ 0%{ transform:scale(1); opacity:.7; } 70%,100%{ transform:scale(1.5); opacity:0; } }
+.wa:hover{ transform:translate(-2px,-2px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--ink); transition-delay:0s; }
+.wa:focus-visible{ outline:3px solid var(--accent); outline-offset:4px; }
+body.menu-open .wa{ opacity:0; pointer-events:none; }
+
+/* back-to-top takes the bottom-right slot once the page is scrolled; WhatsApp rises above it */
+.totop{ position:fixed; right:max(1rem, env(safe-area-inset-right)); bottom:max(1rem, env(safe-area-inset-bottom)); z-index:100; width:56px; height:56px; display:grid; place-items:center; background:var(--ink); color:var(--paper); border:var(--bd) solid var(--ink); box-shadow:var(--sh-2) var(--sh-2) 0 var(--accent); opacity:0; transform:translateY(16px) scale(.8); pointer-events:none; transition:opacity .4s var(--ease), transform .4s var(--ease), box-shadow .2s var(--ease); }
+.totop svg{ width:26px; height:26px; }
+.scrolled .totop{ opacity:1; transform:none; pointer-events:auto; }
+.scrolled .totop:hover{ transform:translate(-2px,-2px); box-shadow:var(--sh-2-up) var(--sh-2-up) 0 var(--accent); }
+.totop:focus-visible{ outline:3px solid var(--accent); outline-offset:4px; }
+.scrolled .wa{ bottom:calc(max(1rem, env(safe-area-inset-bottom)) + 56px + .9rem); }
+body.menu-open .totop{ opacity:0; pointer-events:none; }

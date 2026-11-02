@@ -10,8 +10,6 @@
   const LEETCODE_USER = 'sahatunir';
   const CHESS_USER = 'tunirsaha';
 
-  /* set pre-paint by the head script: OS reduce-motion, or the footer switch */
-  const RM = document.documentElement.classList.contains('reduce-motion');
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -45,7 +43,6 @@
   /* ── count-up ── */
   function countTo(el, target, { dur = 1100, pad = 0, suffix = '', fmt = null } = {}) {
     const out = v => fmt ? fmt(v) : String(v).padStart(pad, '0') + suffix;
-    if (RM) { el.textContent = out(target); return; }
     const t0 = performance.now();
     const step = t => {
       const p = Math.min((t - t0) / dur, 1);
@@ -67,12 +64,11 @@
       loader.addEventListener('transitionend', hide, { once: true });
       setTimeout(hide, 1200);                        // failsafe
     };
-    if (RM) { fill.style.width = '100%'; pct.textContent = '100'; done(); return; }
     const lines = ['> TUNIRSAHA.COM', '> LOADING PORTFOLIO ... OK', '> PREPARING INTERFACE ... OK', '> CONNECTING LIVE FEEDS ... OK'];
     lines.forEach((l, i) => setTimeout(() => {
       const s = document.createElement('span'); s.textContent = l; boot.appendChild(s);
     }, 150 + i * 280));
-    const t0 = performance.now(), dur = 1650;
+    const t0 = performance.now(), dur = 1200;
     const step = t => {
       const p = Math.min((t - t0) / dur, 1);
       const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
@@ -98,7 +94,7 @@
       if (el.hasAttribute('data-countup')) runCounters(el);
     };
     const targets = $$('[data-reveal], [data-stagger], [data-wipe], [data-countup]');
-    if (!('IntersectionObserver' in window) || RM) { targets.forEach(fire); return; }
+    if (!('IntersectionObserver' in window)) { targets.forEach(fire); return; }
     /* GSAP reveals these itself (initGsap); the observer keeps the rest */
     const ioTargets = targets.filter(el => !(GS && gsapOwns(el)));
     const io = new IntersectionObserver((entries, obs) => {
@@ -114,7 +110,7 @@
   /* ── GSAP motion: each reveal is a tween fired by ScrollTrigger, once.
         starts after the loader lifts, so the first block is seen, not hidden ── */
   function initGsap() {
-    if (!GS || RM) return;   /* reduced motion: CSS/observer path only */
+    if (!GS) return;
     /* html.gsap turns off the CSS reveal transitions: GSAP writes these
        properties every frame, and a CSS transition on top would lag them */
     document.documentElement.classList.add('gsap');
@@ -128,6 +124,27 @@
           onComplete: () => el.classList.add('revealed'),
           scrollTrigger: { trigger: el, start: 'top 88%', once: true }
         });
+      });
+      /* parallax: the hero name runs ahead of the page, the portrait lags it,
+         and each section's second title line slides in from the right as it nears */
+      if (matchMedia('(min-width: 768px)').matches) {
+        const hero = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6 };
+        GS.to('.hero__name', { y: -70, ease: 'none', scrollTrigger: hero });
+        GS.to('.hero__art', { y: 60, ease: 'none', scrollTrigger: hero });
+      }
+      /* section headers drift a little against the scroll, same idea as the hero name.
+         on the head wrapper, so it never fights the title's own rise-and-fade reveal */
+      GS.utils.toArray('.block:not(.contact) .block__head').forEach(el => {
+        GS.fromTo(el, { y: 34 }, { y: -34, ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: .6 } });
+      });
+      /* the closing "LET'S BUILD." gets the same drift. it is the last thing on the
+         page, so the range ends earlier (the page runs out before it reaches the top) */
+      GS.fromTo('.contact__big', { y: 34 }, { y: -34, ease: 'none',
+        scrollTrigger: { trigger: '.contact__big', start: 'top bottom', end: 'bottom 45%', scrub: .6 } });
+      GS.utils.toArray('.block__title-2').forEach(el => {
+        GS.fromTo(el, { x: 70 }, { x: 0, ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top bottom', end: 'top 45%', scrub: .8 } });
       });
       /* lists: children cascade in. cards and rows share one motion */
       GS.utils.toArray('[data-stagger]').forEach(list => {
@@ -158,9 +175,9 @@
   }
 
   /* ── pointer interaction (GSAP quickTo): only with a fine pointer and motion
-        allowed. touch and reduced-motion visitors get the static page ── */
+        allowed. touch visitors get the static page ── */
   function initInteractive() {
-    if (!GS || RM || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (!GS || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     /* magnetic controls drift a fraction of the way toward the pointer */
     GS.utils.toArray('.topbar__cta, .themer, .rsm__btn, .contact__link').forEach(el => {
       el.classList.add('magnetic');
@@ -173,6 +190,12 @@
       });
       el.addEventListener('pointerleave', () => { x(0); y(0); });
     });
+    /* capability cards: the spotlight (CSS) follows the pointer */
+    $$('.cap').forEach(c => c.addEventListener('pointermove', e => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }));
     /* the halftone portrait tilts a few degrees toward the pointer */
     const fig = $('.hero__art');
     if (fig) {
@@ -194,50 +217,58 @@
       countTo(el, +el.dataset.count, { pad: +(el.dataset.pad || 0), suffix: el.dataset.suffix || '' }));
   }
 
-  /* ── ticker (rAF marquee, scroll-velocity reactive) ── */
+  /* ── ticker: drifts left on its own, speeds up with page scroll, and can be
+        grabbed. let go mid-swipe and it keeps its momentum, then eases back to
+        the drift. it leans (skew) in the direction it is moving, by its speed ── */
   function initMarquee() {
-    const track = $('[data-marquee]'); if (!track || RM) return;
+    const track = $('[data-marquee]'); if (!track) return;
     const rail = track.parentElement;
-    let w = 0, x = 0, last = performance.now(), paused = false;
+    const BASE = 80, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    let w = 0, x = 0, v = -BASE, last = performance.now();
+    let dragging = false, hover = false, px = 0, pt = 0, pv = 0;
     const measure = () => { w = track.scrollWidth / 2; };
     measure();
     addEventListener('resize', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
     const tick = t => {
       const dt = Math.min((t - last) / 1000, .05); last = t;
-      if (!paused) {
-        x -= 80 * boost * dt;
-        if (w && -x >= w) x += w;
-        track.style.transform = `translateX(${x}px)`;
-        boost = lerp(boost, 1, .04);
+      if (!dragging) {
+        /* velocity eases toward the drift (0 while hovered); k sets how long a fling lasts */
+        const target = hover ? 0 : -BASE * boost;
+        v += (target - v) * (1 - Math.exp(-dt * 1.4));
+        x += v * dt;
       }
+      boost = lerp(boost, 1, .04);
+      if (w) x = -((((-x) % w) + w) % w);
+      const sk = clamp(-(v + BASE) * .006, -8, 8);
+      track.style.transform = `translate3d(${x}px,0,0) skewX(${sk}deg)`;
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
 
-    /* pause auto-scroll + let user drag/scroll the rail manually */
-    rail.addEventListener('mouseenter', () => { paused = true; });
-    rail.addEventListener('mouseleave', () => { paused = false; dragging = false; });
-    let dragging = false, startX = 0, startScroll = 0;
-    rail.addEventListener('mousedown', e => {
-      dragging = true; paused = true;
-      startX = e.pageX; startScroll = rail.scrollLeft;
+    rail.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hover = true; });
+    rail.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') hover = false; });
+    rail.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      dragging = true; px = e.clientX; pt = performance.now(); pv = 0; v = 0;
+      rail.setPointerCapture(e.pointerId);
     });
-    addEventListener('mouseup', () => { dragging = false; });
-    rail.addEventListener('mousemove', e => {
+    rail.addEventListener('pointermove', e => {
       if (!dragging) return;
-      e.preventDefault();
-      rail.scrollLeft = startScroll - (e.pageX - startX);
+      const now = performance.now(), dx = e.clientX - px, dt = (now - pt) / 1000;
+      x += dx;
+      if (dt > 0) pv = lerp(pv, dx / dt, .4);   /* smoothed release velocity, px/s */
+      px = e.clientX; pt = now;
     });
-    /* touch has no mouseleave to resume on, so the pause has to be released
-       explicitly - without this the first tap froze the ticker for the rest of
-       the visit. the delay lets momentum scrolling settle before the transform
-       starts moving again, otherwise the two fight each other under the finger. */
-    let resume;
-    rail.addEventListener('touchstart', () => { paused = true; clearTimeout(resume); }, { passive: true });
-    const unpause = () => { clearTimeout(resume); resume = setTimeout(() => { paused = false; }, 900); };
-    rail.addEventListener('touchend', unpause, { passive: true });
-    rail.addEventListener('touchcancel', unpause, { passive: true });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      /* a pause before letting go means no fling */
+      v = performance.now() - pt > 90 ? 0 : clamp(pv, -4500, 4500);
+    };
+    rail.addEventListener('pointerup', release);
+    rail.addEventListener('pointercancel', release);
   }
 
   /* ── mission log accordion (height tween via CSS transition) ── */
@@ -268,8 +299,7 @@
   function initPortrait() {
     const art = $('.hero__art'), cv = $('.hero__art-canvas');
     const wide = matchMedia('(min-width: 768px)');
-    if (!art || !cv || RM || !wide.matches) return;
-    const ctx = cv.getContext('2d');
+    if (!art || !cv || !wide.matches) return;
     const cache = {};
     let run = 0;
 
@@ -301,46 +331,80 @@
       try { src = await load(srcEl.getAttribute('srcset')); } catch (e) { return; }
       if (mine !== run) return;
 
-      /* the CSS box is object-fit:cover, object-position 50% 0 - mirror that mapping */
-      const W = art.clientWidth, H = art.clientHeight;
+      /* work in device pixels, straight into an RGBA buffer: no per-dot fillStyle
+         strings, so the dots can be as fine as ~1 css px (2 device px) and the
+         settled mosaic is the photo itself, resampled 1:1, not an approximation.
+         the CSS box is object-fit:cover at 50% 0, mirrored here. */
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = W * dpr; cv.height = H * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const s = Math.max(W / src.w, H / src.h);
-      const ox = (W - src.w * s) / 2;
-      /* one dot per ~3 css px: dense enough to read as the halftone, light enough
-         to animate ~10k squares a frame */
-      const step = Math.max(1, Math.round(3 / s));
-      const dots = [];
-      for (let y = 0; y < src.h; y += step) for (let x = 0; x < src.w; x += step) {
-        const i = (y * src.w + x) * 4;
-        if (src.px[i + 3] < 128) continue;
-        dots.push({
-          x: ox + x * s, y: y * s, sz: step * s,
-          c: `rgb(${src.px[i]},${src.px[i + 1]},${src.px[i + 2]})`,
-          sx: Math.random() * W * 1.6 - W * 0.3,   /* start from everywhere, incl. just off-canvas */
-          sy: Math.random() * H * 1.6 - H * 0.3,
-          d: Math.random() * 700                    /* per-dot start delay, ms */
-        });
+      const Wd = Math.round(art.clientWidth * dpr), Hd = Math.round(art.clientHeight * dpr);
+      cv.width = Wd; cv.height = Hd;
+      const sd = Math.max(Wd / src.w, Hd / src.h);
+      const oxd = (Wd - src.w * sd) / 2;
+      const B = 2, bs = B / sd;                       /* block edge: device px, and the source px it spans */
+      const cols = Math.ceil(Wd / B), rows = Math.ceil(Hd / B);
+      const cap = cols * rows;
+      const X = new Float32Array(cap), Y = new Float32Array(cap), SX = new Float32Array(cap),
+            SY = new Float32Array(cap), D = new Float32Array(cap), C = new Uint32Array(cap);
+      let n = 0;
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        const bx = c * B, by = r * B;
+        const x0 = Math.floor((bx - oxd) / sd), y0 = Math.floor(by / sd);
+        const x1 = Math.min(Math.max(x0 + 1, Math.ceil((bx - oxd) / sd + bs)), src.w), y1 = Math.min(Math.max(y0 + 1, Math.ceil(by / sd + bs)), src.h);
+        if (x0 < 0 || y0 < 0 || x0 >= src.w || y0 >= src.h) continue;
+        let R = 0, G = 0, Bl = 0, A = 0, k = 0;
+        for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) {
+          const i = (yy * src.w + xx) * 4, al = src.px[i + 3];
+          R += src.px[i] * al; G += src.px[i + 1] * al; Bl += src.px[i + 2] * al; A += al; k++;
+        }
+        if (!A || A / k < 128) continue;
+        X[n] = bx; Y[n] = by;
+        SX[n] = Math.random() * Wd * 1.6 - Wd * 0.3;   /* start from everywhere, incl. just off-canvas */
+        SY[n] = Math.random() * Hd * 1.6 - Hd * 0.3;
+        D[n] = Math.random() * 700;                      /* per-dot start delay, ms */
+        C[n] = (255 << 24) | (Math.round(Bl / A) << 16) | (Math.round(G / A) << 8) | Math.round(R / A);   /* little-endian ABGR */
+        n++;
       }
 
-      const bg = getComputedStyle(art).backgroundColor;
+      const m = getComputedStyle(art).backgroundColor.match(/[\d.]+/g) || [237, 234, 226];
+      const bgc = (255 << 24) | (+m[2] << 16) | (+m[1] << 8) | +m[0];
+      const ctx = cv.getContext('2d');
+      const img = ctx.createImageData(Wd, Hd), buf = new Uint32Array(img.data.buffer);
       const DUR = 1700;
       const t0 = performance.now();
+      art.classList.remove('is-settling'); cv.style.cssText = '';
       art.classList.add('is-assembling');
       const frame = t => {
         if (mine !== run) return;
         const k = t - t0;
-        ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+        buf.fill(bgc);
         let done = true;
-        for (const p of dots) {
-          const q = Math.min(Math.max((k - p.d) / DUR, 0), 1);
-          if (q < 1) done = false;
-          const e = q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;   /* ease-in-out cubic */
-          ctx.fillStyle = p.c;
-          ctx.fillRect(p.sx + (p.x - p.sx) * e, p.sy + (p.y - p.sy) * e, p.sz, p.sz);
+        for (let i = 0; i < n; i++) {
+          const q = Math.min(Math.max((k - D[i]) / DUR, 0), 1);
+          let px, py;
+          if (q >= 1) { px = X[i]; py = Y[i]; }
+          else {
+            done = false;
+            const e = q < .5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;   /* ease-in-out cubic */
+            px = (SX[i] + (X[i] - SX[i]) * e) | 0; py = (SY[i] + (Y[i] - SY[i]) * e) | 0;
+          }
+          if (px < 0 || py < 0 || px + B > Wd || py + B > Hd) {
+            if (px + B <= 0 || py + B <= 0 || px >= Wd || py >= Hd) continue;
+          }
+          const col = C[i];
+          for (let dy = 0; dy < B; dy++) {
+            const yy = py + dy; if (yy < 0 || yy >= Hd) continue;
+            for (let dx = 0; dx < B; dx++) { const xx = px + dx; if (xx >= 0 && xx < Wd) buf[yy * Wd + xx] = col; }
+          }
         }
-        if (done) { art.classList.remove('is-assembling'); return; }
+        ctx.putImageData(img, 0, 0);
+        if (done) {
+          /* hand over to the real photo by fading the mosaic out over it, not a hard swap */
+          art.classList.remove('is-assembling'); art.classList.add('is-settling');
+          cv.style.transition = 'opacity .6s ease';
+          requestAnimationFrame(() => { cv.style.opacity = '0'; });
+          setTimeout(() => { if (mine === run) { art.classList.remove('is-settling'); cv.style.cssText = ''; } }, 700);
+          return;
+        }
         requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
@@ -380,22 +444,10 @@
     });
   }
 
-  /* ── footer switch: flips the reduce-motion override and reloads, so every
-        tween and observer is set up again from scratch ── */
-  function initMotion() {
-    const btn = $('#motionToggle'); if (!btn) return;
-    btn.textContent = `MOTION: ${RM ? 'OFF' : 'ON'}`;
-    btn.setAttribute('aria-pressed', RM ? 'false' : 'true');
-    btn.addEventListener('click', () => {
-      try { localStorage.setItem('motion', RM ? 'on' : 'off'); } catch (e) {}
-      location.reload();
-    });
-  }
-
   /* ── smooth anchor scroll (native) ── */
   function goTo(t) {
     const el = typeof t === 'string' ? $(t) : t; if (!el) return;
-    el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth' });
+    el.scrollIntoView({ behavior: 'smooth' });
   }
 
   /* ── mobile menu ── */
@@ -440,6 +492,7 @@
     addEventListener('scroll', () => {
       const s = scrollY;
       bar.classList.toggle('hide', s > last && s > 500);
+      document.body.classList.toggle('scrolled', s > 600);
       boost = 1 + Math.min(Math.abs(s - last) * .05, 7);
       last = s;
       prog.style.width = (s / (document.documentElement.scrollHeight - innerHeight) * 100) + '%';
@@ -447,19 +500,30 @@
     $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
       const id = a.getAttribute('href'); if (id.length > 1 && $(id)) { e.preventDefault(); goTo(id); }
     }));
+    /* the brand slot doubles as a section indicator: the TS mark stays, the label
+       beside it follows whichever section is under the header */
+    const lab = $('#secLabel');
+    if (lab && 'IntersectionObserver' in window) {
+      const names = { arsenal: '01 / BUILD', missions: '02 / EXPERIENCE', telemetry: '03 / LIVE STATS', lab: '04 / LAB',
+                      dossier: '05 / CREDENTIALS', resume: '06 / RESUME', contact: '07 / CONTACT' };
+      let cur = lab.textContent, t;
+      const show = txt => {
+        if (txt === cur) return; cur = txt;
+        lab.classList.add('swap'); clearTimeout(t);
+        t = setTimeout(() => { lab.textContent = txt; lab.classList.remove('swap'); }, 220);
+      };
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) show(names[e.target.id] || '00 / HOME');
+      }), { rootMargin: '-45% 0px -50% 0px' });
+      $$('main > section[id], main > .hero, main section.block[id]').forEach(el => io.observe(el));
+      const hero = $('.hero'); if (hero) io.observe(hero);
+    }
     $('#yr').textContent = new Date().getFullYear();
   }
 
-  /* ── hero system readout: IST clock, uptime, visit n° ── */
+  /* ── hero readout: years / months / days since Oct 2014 ── */
   function initSys() {
-    const time = $('#sysTime'), up = $('#upYears');
-    const tick = () => {
-      /* IST regardless of where the visitor is - it's *my* clock */
-      const ist = new Date(Date.now() + (330 + new Date().getTimezoneOffset()) * 60000);
-      if (time) time.textContent = [ist.getHours(), ist.getMinutes(), ist.getSeconds()]
-        .map(n => String(n).padStart(2, '0')).join(':');
-    };
-    tick(); setInterval(tick, 1000);
+    const up = $('#upYears');
     if (up) {
       const f = () => {
         const a = new Date(2014, 9, 14), b = new Date();
@@ -522,6 +586,7 @@
           cell.title = `${d.date}: ${d.count} contribution${d.count === 1 ? '' : 's'}`;
           grid.appendChild(cell);
         });
+        [...grid.children].forEach((c, i) => { c.style.animationDelay = Math.floor(i / 7) * 14 + 'ms'; });
         grid.setAttribute('aria-label', `GitHub contribution graph, ${year}`);
         countTo(total, sum, { dur: 1400, fmt: v => `${v.toLocaleString()} contributions / ${year}` });
       } catch (e) {
@@ -633,13 +698,13 @@
   /* ── boot ── */
   function boot() {
     initTheme(); initNav(); initMenu();
-    initReveals(); initGsap(); initInteractive(); initMarquee(); initAccordion(); initFlip(); initMotion(); initPortrait();
+    initReveals(); initGsap(); initInteractive(); initMarquee(); initAccordion(); initFlip(); initPortrait();
     initLoader(); initSys(); initConsoleNote();
     initGitHub(); initLeetCode(); initChess(); initResume();
     /* hero facts count up on reveal */
     const facts = $('.hero__facts');
     if (facts) {
-      if (!('IntersectionObserver' in window) || RM) runCounters(facts);
+      if (!('IntersectionObserver' in window)) runCounters(facts);
       else {
         const io = new IntersectionObserver((es, obs) => {
           es.forEach(e => { if (!e.isIntersecting) return; runCounters(e.target); obs.unobserve(e.target); });

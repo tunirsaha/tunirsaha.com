@@ -203,7 +203,7 @@ The site has a reader that never sees the design: the answer engine that summari
 - **Do** shift accent to Accent-on-Ink (`#8899ff`) on every `.block--alt` ink panel to keep text ≥4.5:1.
 - **Do** set all instrumentation (labels, numbers, tags, timestamps) in JetBrains Mono, uppercase, tracked.
 - **Do** make every effect informational — if a flourish carries no data, cut it (medium-is-the-proof).
-- **Do** keep the reduced-motion path intact: content visible without JS, animations collapsed under `prefers-reduced-motion`.
+- **Do** keep content visible without JS. Motion is always on by owner decision: there is no reduced-motion path and no motion switch.
 - **Do** honor the 13px type floor and the loud orange focus-visible outline.
 - **Do** keep the skip link as the first focusable element, and keep every landmark (`main`, `nav`, `header`, `footer`) and the single `<h1>` intact.
 - **Do** give every button-driven destination a real `<a href>` twin in the markup.

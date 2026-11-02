@@ -85,7 +85,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/space-grotesk-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261102a" />
+  <link rel="stylesheet" href="/css/styles.css?v=20261103s" />
   <!-- defer, in head: the parser starts fetching this during HTML parse instead
        of at the closing </body>, but still runs it after the document is parsed
        and before DOMContentLoaded — identical timing guarantees to the sync tag
@@ -94,19 +94,16 @@
        page falls back to the CSS/IntersectionObserver reveals in js/main.js. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="/js/main.js?v=20261102a" defer></script>
+  <script src="/js/main.js?v=20261103s" defer></script>
   <script>
     /* set theme + js flag pre-paint to avoid flash / stranded content */
     (function(){var d=document.documentElement;d.classList.add('js');
-      /* reduce-motion: from the OS setting, unless the footer switch overrides it */
-      var mo=null;try{mo=localStorage.getItem('motion');}catch(e){}
-      if(mo==='off'||(mo!=='on'&&matchMedia('(prefers-reduced-motion: reduce)').matches))d.classList.add('reduce-motion');
       try{var t=localStorage.getItem('theme');
         if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
         d.setAttribute('data-theme',t);}catch(e){}})();
   </script>
 
-  <!-- ═══ STRUCTURED DATA — one graph: person, site, profile, projects, FAQ ═══ -->
+  <!-- ═══ STRUCTURED DATA — one graph: person, site, profile, projects ═══ -->
   <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
@@ -185,7 +182,7 @@
         "@type": "Occupation",
         "name": "Lead Full Stack Engineer",
         "occupationalCategory": "15-1252.00",
-        "skills": "Angular, React, Next.js, TypeScript, JavaScript, RxJS, NgRx, Module Federation, micro-frontends, Node.js, Express, Python, FastAPI, PHP, REST APIs, Backend-for-Frontend, Socket.IO, Kafka, MQTT, PostgreSQL, MySQL, MongoDB, AWS, Azure, GCP, Docker, GitHub Actions, Jest, Playwright, E2E testing, Ionic, XGBoost, WCAG AA Accessibility, Team Leadership",
+        "skills": "Angular, React, Next.js, TypeScript, JavaScript, RxJS, NgRx, Module Federation, Nx, Signals, micro-frontends, Node.js, Express, Python, FastAPI, PHP, REST APIs, Backend-for-Frontend, Socket.IO, Kafka, MQTT, PostgreSQL, MySQL, MongoDB, AWS, Azure, GCP, Docker, CI/CD, GitHub Actions, Jest, Playwright, E2E testing, Ionic, XGBoost, WCAG AA Accessibility, Team Leadership",
         "experienceRequirements": "12+ years",
         "occupationLocation": {
           "@type": "City",
@@ -305,7 +302,7 @@
         "url": "https://tunirsaha.com/Tunir_Saha_Resume.pdf",
         "encodingFormat": "application/pdf",
         "inLanguage": "en",
-        "dateModified": "2026-11-02",
+        "dateModified": "2026-11-03",
         "author": {
           "@id": "https://tunirsaha.com/#tunir"
         },
@@ -351,7 +348,7 @@
         "@id": "https://tunirsaha.com/#ogimage"
       },
       "inLanguage": "en",
-      "dateModified": "2026-11-02"
+      "dateModified": "2026-11-03"
     },
     {
       "@type": "ImageObject",
@@ -446,39 +443,6 @@
           }
         }
       ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://tunirsaha.com/#summary",
-      "isPartOf": {
-        "@id": "https://tunirsaha.com/#website"
-      },
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Who is Tunir Saha?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Tunir Saha is a full stack developer based in Bengaluru, India, with more than 12 years of experience building web, mobile and cloud applications. He most recently served as Lead Engineer at FICO (Oct 2024 - Oct 2026), where he architected a micro-frontend feature-authoring platform with Angular 20, Module Federation and Node.js on AWS, and won the worldwide AWS Cost Optimization Hackathon. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, education and hospitality. He has been writing production code since 2014."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is Tunir Saha's tech stack?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "On the frontend: Angular (versions 2 through 20) and React (16 through 19) with TypeScript, RxJS, NgRx, Redux, Zustand and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and GitHub Actions. Testing with Jest, React Testing Library, Jasmine, Karma and Playwright for end-to-end. He also ships cross-platform mobile apps with Ionic, and has worked on IoT telemetry and firmware integration."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I get in touch with Tunir Saha?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "He is based in Bengaluru, India. The fastest way to reach him is email at sahatunir@gmail.com or phone at +91 84314 23820. His GitHub is github.com/tunirsaha and his LinkedIn is linkedin.com/in/tunirsaha."
-          }
-        }
-      ]
     }
   ]
 }</script>
@@ -501,7 +465,7 @@
 
   <!-- NAV -->
   <header class="topbar" id="topbar">
-    <a href="#top" class="topbar__id">TUNIR SAHA<span class="topbar__sup mono">/FULL-STACK</span></a>
+    <a href="#top" class="topbar__id" title="Tunir Saha - back to top"><span class="topbar__ts">TS</span><span class="topbar__sec mono" id="secLabel">00 / HOME</span></a>
     <nav class="topbar__nav" aria-label="Primary">
       <a href="#arsenal" data-link><span class="mono">01</span> Build</a>
       <a href="#missions" data-link><span class="mono">02</span> Experience</a>
@@ -526,8 +490,7 @@
     <a href="#lab" data-mlink><span class="mono">04</span> Lab</a>
     <a href="#dossier" data-mlink><span class="mono">05</span> Credentials</a>
     <a href="#resume" data-mlink><span class="mono">06</span> Resume</a>
-    <a href="#summary" data-mlink><span class="mono">07</span> Summary</a>
-    <a href="#contact" data-mlink><span class="mono">08</span> Contact</a>
+    <a href="#contact" data-mlink><span class="mono">07</span> Contact</a>
   </div>
 
   <main id="top">
@@ -535,7 +498,6 @@
     <!-- ═══ HERO ═══ -->
     <section class="hero">
       <div class="hero__top mono" data-reveal>
-        <span>PORTFOLIO - 2026</span>
         <span class="hero__avail"><i class="dot"></i> BENGALURU, INDIA</span>
       </div>
 
@@ -546,11 +508,9 @@
           <span class="hero__line hero__line--2" data-name><span>SAHA</span></span>
         </h1>
         <p class="hero__tag">Lead Full Stack Engineer</p>
-        <p class="hero__intro" data-reveal>I build the interface, the API behind it, and the cloud setup that runs both. Twelve years deep across web, mobile and cloud - architecting, shipping and leading at enterprise scale.</p>
+        <p class="hero__intro">I build the interface, the API behind it, and the cloud setup that runs both. Twelve years deep across web, mobile and cloud - architecting, shipping and leading at enterprise scale.</p>
         <div class="hero__sys mono" data-reveal>
-          <span class="js-only">BLR <b id="sysTime"></b> IST</span>
           <span>EXPERIENCE <b id="upYears">12Y</b></span>
-          <span>BASED IN <b>BENGALURU, INDIA</b></span>
         </div>
       </div>
       <figure class="hero__art" data-reveal>
@@ -655,25 +615,25 @@
           <span class="cap__no mono">A</span>
           <h3>Frontend</h3>
           <p>Angular and React applications, micro-frontends, and shared component libraries that stay consistent across products.</p>
-          <ul class="cap__tags mono"><li>Microfrontends</li><li>Module Federation</li><li>Angular 2-20</li><li>RxJS</li><li>NgRx</li><li>NgXs</li><li>PrimeNG</li><li>React 16-19</li><li>Next.js</li><li>Redux</li><li>Redux Thunk</li><li>Zustand</li><li>TanStack Query</li><li>Ionic</li><li>Tailwind</li><li>Bootstrap</li><li>jQuery</li><li>HTML5</li><li>CSS3</li><li>SCSS</li><li>SASS</li><li>LESS</li></ul>
+          <ul class="cap__tags mono"><li>Microfrontends</li><li>Module Federation</li><li>Nx</li><li>Angular 2-20</li><li>Signals</li><li>RxJS</li><li>NgRx</li><li>NgXs</li><li>PrimeNG</li><li>React 16-19</li><li>Hooks</li><li>Next.js</li><li>Redux</li><li>Redux Thunk</li><li>Zustand</li><li>TanStack Query</li><li>Ionic</li><li>Tailwind</li><li>Bootstrap</li><li>jQuery</li><li>HTML5</li><li>CSS3</li><li>SCSS</li><li>SASS</li><li>LESS</li></ul>
         </article>
         <article class="cap" data-pct="26%">
           <span class="cap__no mono">B</span>
           <h3>Backend &amp; Data</h3>
           <p>REST APIs, real-time services and the schemas underneath them - built to stay maintainable long after launch.</p>
-          <ul class="cap__tags mono"><li>Node.js / Express.js</li><li>Python / FastAPI</li><li>REST APIs</li><li>Socket.IO</li><li>SQL</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li></ul>
+          <ul class="cap__tags mono"><li>Node.js / Express.js</li><li>Python / FastAPI</li><li>PHP (7+)</li><li>REST APIs</li><li>Socket.IO</li><li>SQL</li><li>PostgreSQL</li><li>MySQL</li><li>MongoDB</li></ul>
         </article>
         <article class="cap" data-pct="22%">
           <span class="cap__no mono">C</span>
           <h3>Cloud, DevOps &amp; Testing</h3>
           <p>Getting it deployed and keeping it deployed - containers, pipelines and test coverage that make releases boring.</p>
-          <ul class="cap__tags mono"><li>AWS</li><li>Azure</li><li>GCP</li><li>Heroku</li><li>Docker</li><li>GitHub Actions</li><li>Jest</li><li>React Testing Library</li><li>Jasmine</li><li>Karma</li><li>Playwright</li></ul>
+          <ul class="cap__tags mono"><li>AWS</li><li>Azure</li><li>GCP</li><li>Heroku</li><li>Docker</li><li>CI/CD (GitHub Actions)</li><li>Jest</li><li>React Testing Library</li><li>Jasmine</li><li>Karma</li><li>Playwright</li></ul>
         </article>
         <article class="cap" data-pct="16%">
           <span class="cap__no mono">D</span>
           <h3>Languages &amp; Tools</h3>
           <p>The languages I write in and the tools that keep delivery moving, from source control to AI assistants.</p>
-          <ul class="cap__tags mono"><li>JavaScript (ES6+)</li><li>TypeScript</li><li>Python</li><li>PHP (7+)</li><li>SQL</li><li>GitHub</li><li>Bitbucket</li><li>GitLab</li><li>Postman</li><li>Insomnia</li><li>Jira</li><li>Trello</li><li>ClickUp</li><li>Claude</li><li>Cursor</li><li>GitHub Copilot</li></ul>
+          <ul class="cap__tags mono"><li>JavaScript (ES6+)</li><li>TypeScript</li><li>Python</li><li>SQL</li><li>GitHub</li><li>Bitbucket</li><li>GitLab</li><li>Postman</li><li>Insomnia</li><li>Jira</li><li>Trello</li><li>ClickUp</li><li>Figma</li><li>Adobe Photoshop</li><li>Claude</li><li>Cursor</li><li>GitHub Copilot</li><li>Kilo Code</li></ul>
         </article>
       </div>
     </section>
@@ -858,7 +818,7 @@
               <button class="exp__toggle mono" type="button" data-flip-open aria-expanded="false" aria-controls="lab-detail-1">VIEW DETAILS +</button>
             </div>
             <div class="exp__face exp__back" id="lab-detail-1">
-              <p class="exp__desc">GST-compliant invoicing for Indian businesses - manage businesses and clients, then generate sequential CGST/SGST/IGST invoices with amount-in-words, ready to print.</p>
+              <p class="exp__desc">GST invoicing for Indian businesses: clients, sequential CGST/SGST/IGST invoices, print-ready.</p>
               <p class="exp__stack mono">Angular 20 · PHP · MySQL</p>
               <div class="exp__foot">
                 <a class="exp__link mono" href="https://tunirsaha.com/projects/billmate/">OPEN PROJECT ↗</a>
@@ -875,7 +835,7 @@
               <button class="exp__toggle mono" type="button" data-flip-open aria-expanded="false" aria-controls="lab-detail-2">VIEW DETAILS +</button>
             </div>
             <div class="exp__face exp__back" id="lab-detail-2">
-              <p class="exp__desc">Finds the fair midpoint between you and a friend, then surfaces the coffee, fuel or ATMs around it - with a one-tap route each. No API key, no billing, works offline as a PWA.</p>
+              <p class="exp__desc">Finds the fair midpoint between two people, then the coffee, fuel or ATMs near it. Works offline.</p>
               <p class="exp__stack mono">JavaScript · Leaflet · OpenStreetMap · PWA</p>
               <div class="exp__foot">
                 <a class="exp__link mono" href="https://tunirsaha.com/projects/between/">OPEN PROJECT ↗</a>
@@ -892,7 +852,7 @@
               <button class="exp__toggle mono" type="button" data-flip-open aria-expanded="false" aria-controls="lab-detail-3">VIEW DETAILS +</button>
             </div>
             <div class="exp__face exp__back" id="lab-detail-3">
-              <p class="exp__desc">One tap to log anything you repeat - feeds, naps and nappies for a new baby, or water, gym sets and office hours. Every tap is timestamped and the day, week, month and year totals build themselves. Works offline, syncs later, and a six-character code lets two people log to the same buttons.</p>
+              <p class="exp__desc">One tap logs anything you repeat, from baby feeds to gym sets. Timestamped totals, offline-first, shareable by code.</p>
               <p class="exp__stack mono">JavaScript · PHP · IndexedDB · PWA</p>
               <div class="exp__foot">
                 <a class="exp__link mono" href="https://tunirsaha.com/projects/buttons/">OPEN PROJECT ↗</a>
@@ -909,7 +869,7 @@
               <button class="exp__toggle mono" type="button" data-flip-open aria-expanded="false" aria-controls="lab-detail-4">VIEW DETAILS +</button>
             </div>
             <div class="exp__face exp__back" id="lab-detail-4">
-              <p class="exp__desc">Housing society management end to end - an admin dashboard for billing, invoices, expenses and property records, plus companion mobile apps for residents and gate security.</p>
+              <p class="exp__desc">Housing society management: a billing and records dashboard, plus resident and gate-security apps.</p>
               <p class="exp__stack mono">Angular · Node.js · Ionic · Capacitor</p>
               <div class="exp__foot">
                 <a class="exp__link mono" href="https://societykit.in/" target="_blank" rel="noopener">OPEN PROJECT ↗</a>
@@ -945,9 +905,9 @@
         <div class="cred">
           <h3 class="tk__lbl mono">CERTIFICATIONS</h3>
           <div class="cred__item"><h4>Executive PGP in Applied AI &amp; Agentic AI</h4><p class="mono">upGrad · Ongoing</p></div>
-          <div class="cred__item"><h4>JavaScript Full-Stack Developer</h4><p class="mono">Jun 2023</p></div>
-          <div class="cred__item"><h4>IBM Garage Essentials</h4><p class="mono">Jan 2023</p></div>
-          <div class="cred__item"><h4>Microsoft - Azure Fundamentals (AZ-900)</h4><p class="mono">Jan 2022</p></div>
+          <div class="cred__item"><h4>JavaScript Full-Stack Developer</h4><p class="mono">IBM · Jun 2023</p></div>
+          <div class="cred__item"><h4>IBM Garage Essentials</h4><p class="mono">IBM · Jan 2023</p></div>
+          <div class="cred__item"><h4>Azure Fundamentals (AZ-900)</h4><p class="mono">Microsoft · Jan 2022</p></div>
         </div>
         <div class="cred">
           <h3 class="tk__lbl mono">AWARDS</h3>
@@ -999,34 +959,9 @@
       </div>
     </section>
 
-    <!-- ═══ 07 THE SUMMARY - plain-language answers, for humans and answer engines ═══ -->
-    <section class="block block--alt" id="summary">
-      <div class="block__head">
-        <h2 class="block__title" data-reveal>THE<br><span class="block__title-2">SUMMARY</span></h2>
-        <span class="block__meta mono">07 / PLAIN ENGLISH<br>NO JARGON, NO PADDING</span>
-      </div>
-
-      <div class="faq" data-stagger>
-        <article class="faq__item">
-          <h3 class="faq__q">Who is Tunir Saha?</h3>
-          <p class="faq__a">Tunir Saha is a full stack developer based in Bengaluru, India, with more than 12 years of experience building web, mobile and cloud applications. He most recently served as Lead Engineer at FICO (Oct 2024 - Oct 2026), where he architected a micro-frontend feature-authoring platform with Angular 20, Module Federation and Node.js on AWS, and won the worldwide AWS Cost Optimization Hackathon. Before FICO he worked at IBM, Accenture, Blue Space Labs, Bridgera and Cognizant, shipping software across finance, logistics, telecom, healthcare, banking, education and hospitality. He has been writing production code since 2014.</p>
-        </article>
-
-        <article class="faq__item">
-          <h3 class="faq__q">What is his tech stack?</h3>
-          <p class="faq__a">On the frontend: Angular (versions 2 through 20) and React (16 through 19) with TypeScript, RxJS, NgRx, Redux, Zustand and Module Federation for micro-frontends. On the backend: Node.js, Express, Python, FastAPI and PHP, serving REST and Socket.IO real-time APIs over PostgreSQL, MySQL and MongoDB. For infrastructure: AWS, Azure and GCP with Docker and GitHub Actions. Testing with Jest, React Testing Library, Jasmine, Karma and Playwright for end-to-end. He also ships cross-platform mobile apps with Ionic, and has worked on IoT telemetry and firmware integration.</p>
-        </article>
-
-        <article class="faq__item">
-          <h3 class="faq__q">How do I get in touch?</h3>
-          <p class="faq__a">He is based in Bengaluru, India. The fastest way to reach him is email at <a href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a> or phone at <a href="tel:+918431423820">+91 84314 23820</a>. His GitHub is <a href="https://github.com/tunirsaha" target="_blank" rel="noopener">github.com/tunirsaha</a> and his LinkedIn is <a href="https://www.linkedin.com/in/tunirsaha/" target="_blank" rel="noopener">linkedin.com/in/tunirsaha</a>.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- ═══ 08 CONTACT ═══ -->
+    <!-- ═══ 07 CONTACT ═══ -->
     <section class="block contact" id="contact">
-      <span class="contact__eyebrow mono" data-reveal>08 / CONTACT</span>
+      <span class="contact__eyebrow mono" data-reveal>07 / CONTACT</span>
       <h2 class="contact__big" data-wipe>LET'S<br>BUILD.</h2>
       <a class="contact__mail" href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a>
       <div class="contact__grid" data-reveal>
@@ -1041,12 +976,20 @@
       </div>
       <footer class="foot mono">
         <span>© <span id="yr"></span> TUNIR SAHA</span>
-        <a href="#top" id="toTop">BACK TO TOP ↑</a>
-        <button class="motion-toggle mono" id="motionToggle" type="button" aria-pressed="false">MOTION: OFF</button>
       </footer>
     </section>
 
   </main>
+
+  <!-- back to top: bottom-right slot; appears after scrolling, WhatsApp rides above it -->
+  <a class="totop" href="#top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M12 20V5M5 11l7-7 7 7"/></svg>
+  </a>
+
+  <!-- WhatsApp floater: opens a chat with a pre-filled first line -->
+  <a class="wa" href="https://wa.me/918431423820?text=Hi%20Tunir%2C%20I%20found%20you%20through%20your%20website." target="_blank" rel="noopener" aria-label="Chat with Tunir on WhatsApp">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16.04 3C9.4 3 4 8.4 4 15.04c0 2.12.55 4.18 1.6 6L4 28l7.1-1.86a12 12 0 0 0 4.94 1.06h.01C22.68 27.2 28 21.8 28 15.16 28 8.5 22.68 3 16.04 3Zm0 21.96h-.01a10 10 0 0 1-5.1-1.4l-.37-.22-3.78.99 1.01-3.68-.24-.38a9.9 9.9 0 0 1-1.52-5.27c0-5.5 4.5-9.97 10.02-9.97 5.5 0 9.97 4.48 9.97 9.98 0 5.5-4.48 9.95-9.98 9.95Zm5.47-7.45c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.48.71.3 1.26.49 1.7.63.71.23 1.36.2 1.87.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg>
+  </a>
 
 </body>
 </html>

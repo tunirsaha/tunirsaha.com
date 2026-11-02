@@ -4,7 +4,7 @@
 > Builds the frontend, the API behind it, and the cloud infrastructure both run on.
 > Most recently Lead Engineer at FICO (Oct 2024 - Oct 2026).
 
-Last updated: 2026-11-02
+Last updated: 2026-11-03
 
 ## Summary
 
@@ -12,7 +12,9 @@ Tunir Saha is a full stack software developer and engineering lead who has shipp
 production web, mobile and cloud applications since 2014 at FICO, IBM, Accenture,
 Blue Space Labs, Bridgera and Cognizant. He works end to end: Angular and React on
 the frontend, Node.js, Python and PHP on the backend, PostgreSQL/MySQL/MongoDB for
-data, and AWS, Azure or GCP underneath. He also leads teams — sprint planning, code
+data, and AWS, Azure or GCP underneath. His clients span banking, financial
+markets, logistics, telecom, healthcare, EdTech, hospitality, aviation and
+technology. He also leads teams (up to 15 developers) — sprint planning, code
 review, architecture decisions and mentoring — which makes him an all-round hire
 rather than a single-layer specialist.
 
@@ -29,16 +31,17 @@ rather than a single-layer specialist.
 ## Technical skills
 
 - **Frontend:** Angular (2 through 20), React (16 through 19), Next.js, TypeScript,
-  JavaScript ES6+, RxJS, NgRx, NgXs, Redux/Thunk, Zustand, TanStack Query, Module Federation,
+  JavaScript ES6+, Nx, Signals, Hooks, RxJS, NgRx, NgXs, Redux/Thunk, Zustand, TanStack Query, Module Federation,
   micro-frontends, PrimeNG, Ionic, Tailwind, HTML5, CSS3, SCSS, WCAG AA
 - **Backend:** Node.js, Express, Python, FastAPI, PHP (core and 7.x), REST APIs,
   Socket.IO, Kafka, MQTT, real-time and event-driven services
 - **Data:** PostgreSQL, MySQL, MongoDB
-- **Cloud & DevOps:** AWS, Azure, GCP, Docker, GitHub Actions, Heroku
+- **Cloud & DevOps:** AWS, Azure, GCP, Docker, CI/CD (GitHub Actions), Heroku
 - **Testing:** Jest, React Testing Library, Jasmine, Karma, Playwright, unit and end-to-end coverage
-- **Other:** XGBoost, IoT telemetry, AI-assisted development (Claude, Cursor, GitHub Copilot)
+- **Other:** XGBoost, IoT telemetry
+- **AI tools:** Claude, Cursor, GitHub Copilot, Kilo Code
 - **Tools:** GitHub/GitLab/Bitbucket,
-  Jira, Trello, ClickUp
+  Jira, Trello, ClickUp, Figma, Adobe Photoshop
 
 ## Experience
 
@@ -88,9 +91,9 @@ rather than a single-layer specialist.
 
 - B.Tech, Electrical Engineering — B.P. Poddar Institute, Kolkata, 2014 (CGPA 7.75)
 - Executive PGP in Applied AI and Agentic AI — upGrad (ongoing)
-- JavaScript Full-Stack Developer certification (Jun 2023)
-- IBM Garage Essentials (Jan 2023)
-- Microsoft Certified: Azure Fundamentals, AZ-900 (Jan 2022)
+- JavaScript Full-Stack Developer certification (IBM, Jun 2023)
+- IBM Garage Essentials (IBM, Jan 2023)
+- Azure Fundamentals, AZ-900 (Microsoft, Jan 2022)
 - Winner, AWS Cost Optimization Hackathon — FICO, worldwide (2026)
 - Winner, ServiceNow Create-A-Thon — Cognizant, Kolkata (2018)
 - Digital Champion of the Quarter — Cognizant (2017)

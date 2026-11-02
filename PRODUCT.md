@@ -45,5 +45,5 @@ A single-page personal portfolio for Tunir Saha — UI engineer / systems builde
 
 - Target **WCAG 2.1 AA**. Body text ≥4.5:1, large text ≥3:1, in both light and dark themes.
 - Existing floors to preserve: minimum font sizes (`--fs-xs:13px`), loud focus-visible outlines, `prefers-color-scheme`-aware theming with a manual toggle.
-- Motion must honor `prefers-reduced-motion` — the reveal/stagger/scramble system needs a fail-safe (content visible without JS, calm alternative when reduced).
+- Motion is always on by owner decision (no `prefers-reduced-motion` path, no motion switch). The reveal/stagger system still needs a fail-safe: content visible without JS.
 - Signal orange + ultramarine must not be the *only* channel for status/live state; pair color with text or shape.
