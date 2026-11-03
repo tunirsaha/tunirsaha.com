@@ -299,9 +299,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
 .block__head{ display:grid; grid-template-columns:minmax(0,1fr); gap:.9rem; margin-bottom:2.5rem; }
 .block__title{ font-family:var(--disp); font-weight:400; font-size:clamp(2.6rem,13vw,7rem); line-height:.86; text-transform:uppercase; letter-spacing:-.02em; }
 .block__title-2{ color:var(--accent); }
-/* single-word title set on one line — scaled down by its character count so it
-   still fills the same measure as the two-line titles instead of overflowing */
-.block__title--solo{ font-size:clamp(1.7rem,8.3vw,4.4rem); }
 /* stacked default: label first, reading left like the rest of the page */
 .block__meta{ order:-1; font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.06em; text-align:left; line-height:1.7; color:var(--ink-2); }
 .block__title{ min-width:0; overflow-wrap:break-word; }
