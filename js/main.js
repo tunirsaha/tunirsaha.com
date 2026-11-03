@@ -291,6 +291,15 @@
     });
   }
 
+  /* ── capability cards on touch: no hover there, so the percentage zooms in while
+        a card sits in the middle band of the screen, and back out when it leaves ── */
+  function initCapTouch() {
+    if (!matchMedia('(hover: none)').matches || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-active', e.isIntersecting)),
+      { rootMargin: '-35% 0px -35% 0px' });
+    $$('.cap').forEach(c => io.observe(c));
+  }
+
   /* ── hero portrait: halftone dots fly in from everywhere and settle into the
         photo. runs once the loader clears and again on every theme switch, using
         that theme's PNG. the dots are sampled from the same file the <img> shows,
@@ -698,7 +707,7 @@
   /* ── boot ── */
   function boot() {
     initTheme(); initNav(); initMenu();
-    initReveals(); initGsap(); initInteractive(); initMarquee(); initAccordion(); initFlip(); initPortrait();
+    initReveals(); initGsap(); initInteractive(); initMarquee(); initAccordion(); initFlip(); initCapTouch(); initPortrait();
     initLoader(); initSys(); initConsoleNote();
     initGitHub(); initLeetCode(); initChess(); initResume();
     /* hero facts count up on reveal */

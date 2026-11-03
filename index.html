@@ -85,7 +85,7 @@
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/archivo-black-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/space-grotesk-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/jetbrains-mono-latin.woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261103t" />
+  <link rel="stylesheet" href="/css/styles.css?v=20261103x" />
   <!-- defer, in head: the parser starts fetching this during HTML parse instead
        of at the closing </body>, but still runs it after the document is parsed
        and before DOMContentLoaded — identical timing guarantees to the sync tag
@@ -94,7 +94,7 @@
        page falls back to the CSS/IntersectionObserver reveals in js/main.js. -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-  <script src="/js/main.js?v=20261103t" defer></script>
+  <script src="/js/main.js?v=20261103x" defer></script>
   <script>
     /* set theme + js flag pre-paint to avoid flash / stranded content */
     (function(){var d=document.documentElement;d.classList.add('js');
@@ -516,7 +516,7 @@
       <figure class="hero__art" data-reveal>
         <picture>
           <source media="(min-width:768px)" srcset="/assets/img/tunir-halftone.png" />
-          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="900" height="1040" alt="Halftone portrait of Tunir Saha, a full stack developer in glasses" />
+          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="900" height="1040" alt="Halftone portrait of Tunir Saha" />
         </picture>
         <picture class="hero__art-dark">
           <source media="(min-width:768px)" srcset="/assets/img/tunir-halftone-dark.png" />
@@ -584,29 +584,29 @@
         </svg>
         <svg class="schem schem--v" viewBox="0 0 300 368" role="img" aria-labelledby="schemTitleV">
           <title id="schemTitleV">The four layers I work in: the interface, the services behind it, the servers both run on, and - when the product needs it - the firmware on the device.</title>
-          <rect class="schem__bar" x="2" y="2" width="178" height="48"/>
-          <rect class="schem__tab" x="2" y="2" width="178" height="5"/>
-          <text x="91" y="33">INTERFACE</text>
-          <text class="schem__sub" x="91" y="68">WEB · MOBILE</text>
-          <rect class="schem__bar" x="2" y="98" width="178" height="48"/>
-          <rect class="schem__tab" x="2" y="98" width="178" height="5"/>
-          <text x="91" y="129">SERVICES</text>
-          <text class="schem__sub" x="91" y="164">APIS · REALTIME</text>
-          <rect class="schem__bar" x="2" y="194" width="178" height="48"/>
-          <rect class="schem__tab" x="2" y="194" width="178" height="5"/>
-          <text x="91" y="225">SERVERS</text>
-          <text class="schem__sub" x="91" y="260">CLOUD · CI/CD</text>
-          <rect class="schem__bar schem__opt" x="2" y="290" width="178" height="48"/>
-          <rect class="schem__tab" x="2" y="290" width="178" height="5"/>
-          <text x="91" y="321">FIRMWARE</text>
-          <text class="schem__sub" x="91" y="356">DEVICES · IOT</text>
-          <path class="schem__tick" d="M91,74 v10"/><path class="schem__tick" d="M85,78 l6,6 6,-6"/>
-          <path class="schem__tick" d="M91,170 v10"/><path class="schem__tick" d="M85,174 l6,6 6,-6"/>
-          <path class="schem__tick" d="M91,266 v10"/><path class="schem__tick" d="M85,270 l6,6 6,-6"/>
-          <path class="schem__brace" d="M188,2 h6 V264 h-6"/>
-          <text class="schem__sub schem__r" x="200" y="137">EVERY BUILD</text>
-          <path class="schem__brace schem__ret" d="M188,290 h6 V360 h-6"/>
-          <text class="schem__sub schem__r" x="200" y="329">ON DEMAND</text>
+          <rect class="schem__bar" x="2" y="2" width="226" height="48"/>
+          <rect class="schem__tab" x="2" y="2" width="226" height="5"/>
+          <text x="115" y="33">INTERFACE</text>
+          <text class="schem__sub" x="115" y="68">WEB · MOBILE</text>
+          <rect class="schem__bar" x="2" y="98" width="226" height="48"/>
+          <rect class="schem__tab" x="2" y="98" width="226" height="5"/>
+          <text x="115" y="129">SERVICES</text>
+          <text class="schem__sub" x="115" y="164">APIS · REALTIME</text>
+          <rect class="schem__bar" x="2" y="194" width="226" height="48"/>
+          <rect class="schem__tab" x="2" y="194" width="226" height="5"/>
+          <text x="115" y="225">SERVERS</text>
+          <text class="schem__sub" x="115" y="260">CLOUD · CI/CD</text>
+          <rect class="schem__bar schem__opt" x="2" y="290" width="226" height="48"/>
+          <rect class="schem__tab" x="2" y="290" width="226" height="5"/>
+          <text x="115" y="321">FIRMWARE</text>
+          <text class="schem__sub" x="115" y="356">DEVICES · IOT</text>
+          <path class="schem__tick" d="M115,74 v10"/><path class="schem__tick" d="M109,78 l6,6 6,-6"/>
+          <path class="schem__tick" d="M115,170 v10"/><path class="schem__tick" d="M109,174 l6,6 6,-6"/>
+          <path class="schem__tick" d="M115,266 v10"/><path class="schem__tick" d="M109,270 l6,6 6,-6"/>
+          <path class="schem__brace" d="M236,2 h6 V264 h-6"/>
+          <text class="schem__sub" x="260" y="133" transform="rotate(90 260 133)">EVERY BUILD</text>
+          <path class="schem__brace schem__ret" d="M236,290 h6 V360 h-6"/>
+          <text class="schem__sub" x="260" y="325" transform="rotate(90 260 325)">ON DEMAND</text>
         </svg>
       </figure>
 
@@ -801,7 +801,7 @@
     <!-- ═══ 04 THE LAB ═══ -->
     <section class="block" id="lab">
       <div class="block__head">
-        <h2 class="block__title" data-reveal>THE<br><span class="block__title-2">LAB</span></h2>
+        <h2 class="block__title" data-reveal>MY<br><span class="block__title-2">LAB</span></h2>
         <span class="block__meta mono">04 / SIDE PROJECTS<br>ALL LIVE · GO POKE THEM</span>
       </div>
       <p class="lab__note">Things I build outside client work. All of these are live - flip a card for the detail, then go use it.</p>
@@ -891,7 +891,7 @@
     <!-- ═══ 05 CREDENTIALS - principles + proof + human ═══ -->
     <section class="block block--alt" id="dossier">
       <div class="block__head">
-        <h2 class="block__title" data-reveal>THE<br><span class="block__title-2">PROOF</span></h2>
+        <h2 class="block__title" data-reveal>MY<br><span class="block__title-2">CREDS</span></h2>
         <span class="block__meta mono">05 / CREDENTIALS<br>EDU · CERTS · AWARDS · LANGUAGES</span>
       </div>
 
@@ -934,7 +934,7 @@
     <!-- ═══ 06 RESUME - downloadable PDF ═══ -->
     <section class="block" id="resume">
       <div class="block__head">
-        <h2 class="block__title" data-reveal>THE<br><span class="block__title-2">RESUME</span></h2>
+        <h2 class="block__title" data-reveal>MY<br><span class="block__title-2">RESUME</span></h2>
         <span class="block__meta mono">06 / DOWNLOAD<br>PDF · 2 PAGES</span>
       </div>
 
@@ -961,7 +961,6 @@
 
     <!-- ═══ 07 CONTACT ═══ -->
     <section class="block contact" id="contact">
-      <span class="contact__eyebrow mono" data-reveal>07 / CONTACT</span>
       <h2 class="contact__big" data-wipe>LET'S<br>BUILD.</h2>
       <a class="contact__mail" href="mailto:sahatunir@gmail.com">sahatunir@gmail.com</a>
       <div class="contact__grid" data-reveal>

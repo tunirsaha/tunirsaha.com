@@ -319,7 +319,7 @@ body.menu-open .mmenu{ transform:translateY(0); }
    the DOM's a11y tree at a time: display:none removes the other outright, which
    is why each carries its own <title> id. */
 .schem--h{ display:none; min-width:620px; }
-.schem--v{ display:block; max-width:360px; }
+.schem--v{ display:block; max-width:480px; }
 @media (min-width:768px){
   .schem--h{ display:block; }
   .schem--v{ display:none; }
@@ -358,6 +358,10 @@ body.menu-open .mmenu{ transform:translateY(0); }
   .cap:hover{ border-top-color:var(--accent); }
   .cap:hover h3{ color:var(--accent); }
   .cap:hover::before{ opacity:1; transform:none; }
+}
+/* touch: same zoom-out, driven by scroll position (initCapTouch) instead of hover */
+.cap.is-active::before{ opacity:1; transform:none; }
+@media (hover:hover){
   .cap__tags li:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
 }
 
@@ -538,7 +542,6 @@ body.menu-open .mmenu{ transform:translateY(0); }
 /* ░░ CONTACT ░░ */
 .contact{ background:var(--accent); color:var(--accent-ink); border-bottom:none; min-height:90svh; display:flex; flex-direction:column; justify-content:center; }
 .contact ::selection{ background:var(--accent-ink); color:var(--accent); }
-.contact__eyebrow{ font-size:var(--fs-sm); text-transform:uppercase; letter-spacing:.08em; margin-bottom:1rem; }
 .contact__big{ font-family:var(--disp); font-weight:400; font-size:clamp(4rem,24vw,16rem); line-height:.82; text-transform:uppercase; letter-spacing:-.03em; }
 .contact__mail{ display:inline-block; font-family:var(--disp); font-size:clamp(1.3rem,6vw,2.6rem); text-transform:uppercase; margin:1.4rem 0 2.4rem; border-bottom:var(--bd) solid var(--accent-ink); padding-bottom:.2rem; word-break:break-all; }
 .contact__mail:hover{ background:var(--accent-ink); color:var(--accent); }
@@ -769,3 +772,9 @@ body.menu-open .wa{ opacity:0; pointer-events:none; }
 .totop:focus-visible{ outline:3px solid var(--accent); outline-offset:4px; }
 .scrolled .wa{ bottom:calc(max(1rem, env(safe-area-inset-bottom)) + 56px + .9rem); }
 body.menu-open .totop{ opacity:0; pointer-events:none; }
+
+/* github stats scrollbars (year tabs + heatmap): thumb stays, track is transparent */
+.gh__years, .gh__grid{ scrollbar-color:color-mix(in srgb, var(--paper) 35%, transparent) transparent; }
+.gh__years::-webkit-scrollbar, .gh__grid::-webkit-scrollbar{ width:6px; height:6px; background:transparent; }
+.gh__years::-webkit-scrollbar-track, .gh__grid::-webkit-scrollbar-track{ background:transparent; }
+.gh__years::-webkit-scrollbar-thumb, .gh__grid::-webkit-scrollbar-thumb{ background:color-mix(in srgb, var(--paper) 35%, transparent); }
