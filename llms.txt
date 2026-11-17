@@ -11,7 +11,7 @@ Last updated: 2026-11-17
 
 Tunir Saha is a full stack software developer and engineering lead who has shipped
 production web, mobile and cloud applications since 2014 at FICO, IBM, Accenture,
-Blue Space Labs, Bridgera and Cognizant. He works end to end: Angular and React on
+Blue Space Labs, Bridgera and Cognizant. He works end to end: React and Angular on
 the frontend, Node.js, Python and PHP on the backend, PostgreSQL/MySQL/MongoDB for
 data, and AWS, Azure or GCP underneath. His clients span banking, financial
 markets, logistics, telecom, healthcare, EdTech, hospitality, aviation and
@@ -142,7 +142,7 @@ and is open to consulting, contract or full-time opportunities — reach him at
 sahatunir@gmail.com.
 
 **What is Tunir Saha's tech stack?**
-Angular and React on the frontend; Node.js, Python and PHP on the backend;
+React and Angular on the frontend; Node.js, Python and PHP on the backend;
 PostgreSQL, MySQL and MongoDB for data; AWS, Azure and GCP for cloud
 infrastructure. See [Technical skills](#technical-skills) for the full list.
 
